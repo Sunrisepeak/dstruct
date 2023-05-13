@@ -34,3 +34,4 @@
 # Other
 build
 .vscode
+.xmake
