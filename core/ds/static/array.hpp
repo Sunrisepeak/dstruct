@@ -1,26 +1,26 @@
 #ifndef __ARRAY_HPP__DSTRUCT
 #define __ARRAY_HPP__DSTRUCT
 
-#include <dstruct-port.h>
+#include <common.hpp>
 
 namespace dstruct {
 
 template <typename T, size_t N>
-class Array {
+class Array : public DStructTypeSpec<T>{
 
 public:
 
     T & operator[](int index) {
         if (index < 0)
             index = N + index;
-        ASSERT(index < static_cast<int>(N));
+        DSTRUCT_ASSERT(index < static_cast<int>(N));
         return __mC[index];
     }
 
     T operator[](int index) const {
         if (index < 0)
             index = N + index;
-        ASSERT(index < static_cast<int>(N));
+        DSTRUCT_ASSERT(index < static_cast<int>(N));
         return __mC[index];
     }
 

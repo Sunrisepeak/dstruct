@@ -3,15 +3,6 @@
 
 namespace dstruct {
 
-#define _ASSERT(x, panic) \
-    if (!(x)) { \
-        if (panic) \
-            *(static_cast<volatile char *>(0)) = 'E'; \
-    }
-
-#define ASSERT(x) _ASSERT(x, true)
-
-
 using int8_t = char;
 using int16_t = short;
 using int32_t = int;
@@ -25,15 +16,30 @@ using uint64_t = unsigned long long;
 using size_t = unsigned long long;
 using ptr_t = size_t;
 
-template<typename T>
-struct DSAlloc {
-    static T *allocate(size_t n = 1);
-    static void deallocate(T *p, size_t n = 1);
+
+#define __DSTRUCT_CRASH(expr) \
+    if (!(expr)) { \
+        *(static_cast<volatile char *>(0)) = 'E'; \
+    }
+
+namespace port {
+// pls impl/port the alloc 
+struct Alloc {
+    static void *allocate(size_t bytes);
+    static void deallocate(void *addr, size_t bytes);
 };
 
-};
+}
+
+}
 
 // interface impl
 #include <libc-dstruct-port.hpp>
+
+#ifdef __DSTRUCT_PORT_ASSERT
+#define DSTRUCT_ASSERT(expr) __DSTRUCT_PORT_ASSERT(expr)
+#else
+#define DSTRUCT_ASSERT(expr) __DSTRUCT_CRASH(expr)
+#endif
 
 #endif /* __DSTRUCT_PORT_HPP__DSTRUCT */

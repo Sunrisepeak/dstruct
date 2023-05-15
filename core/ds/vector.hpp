@@ -1,12 +1,12 @@
 #ifndef __VECTOR_HPP__DSTRUCT
 #define __VECTOR_HPP__DSTRUCT
 
-#include <dstruct-port.h>
+#include <common.hpp>
 
 namespace dstruct {
 
-template <typename T, typename Alloc = DSAlloc<T>>
-class Vector {
+template <typename T, typename __Alloc = port::Alloc>
+class Vector : public DStructTypeSpec<T, __Alloc> {
 
 public:
     Vector() :  __mSize { 0 }, __mCapacity { 0 }, __mC { nullptr } { }
@@ -21,7 +21,7 @@ public:
 
     ~Vector() {
         if (__mC) {
-            Alloc::deallocate(__mC, __mCapacity);
+            Vector::_Alloc::deallocate(__mC, __mCapacity);
         }
     }
 
@@ -96,11 +96,11 @@ private:
 
     void __resize(size_t n) {
         T *oldC = __mC;
-        __mC = Alloc::allocate(n);
+        __mC = Vector::_Alloc::allocate(n);
         for (int i = 0; i < __mSize; i++) {
             __mC[i] = oldC[i];
         }
-        Alloc::deallocate(oldC, __mCapacity);
+        Vector::_Alloc::deallocate(oldC, __mCapacity);
         __mCapacity = n;
     }
 };

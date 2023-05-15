@@ -14,7 +14,9 @@ int main() {
 
     std::cout << std::endl;
 
-    vec[0] = vec[5] = 11;
+    decltype(vec)::ValueType val = 11;
+
+    vec[0] = vec[5] = val;
 
     while (!vec.empty()) {
         std::cout << vec.back() << " " << vec.size() << " " << vec.capacity() << std::endl;

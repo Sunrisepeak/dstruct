@@ -1,3 +1,5 @@
+set_languages("c++11")
+
 add_includedirs(
     "port",
     "core",

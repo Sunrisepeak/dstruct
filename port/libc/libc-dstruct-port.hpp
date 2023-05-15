@@ -2,18 +2,19 @@
 #define __LIBC_DSTRUCT_PORT_HPP__DSTRUCT
 
 #include <cstdlib>
+#include <cassert>
 
 #include <dstruct-port.h>
 
+#define __DSTRUCT_PORT_ASSERT(expr) assert(expr)
+
 namespace dstruct {
 
-template<typename T>
-T* DSAlloc<T>::allocate(size_t n) {
-    return static_cast<T *>(malloc(n * sizeof(T)));
+void* port::Alloc::allocate(size_t bytes) {
+    return malloc(bytes);
 }
 
-template<typename T>
-void DSAlloc<T>::deallocate(T *addr, size_t) {
+void port::Alloc::deallocate(void *addr, size_t bytes) {
     free(addr);
 }
 

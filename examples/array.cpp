@@ -7,7 +7,9 @@ int main() {
 
     dstruct::Array<int, 10> arr(2); // 0. test cntor
 
-    arr[0] = arr[-1] = 6;       // 1. test subscript access & assignment
+    decltype(arr)::ValueType val = 6;
+
+    arr[0] = arr[-1] = val;       // 1. test subscript access & assignment
 
     const auto backup = arr;
     for (auto v : backup) {     // 2. test const / range-for
