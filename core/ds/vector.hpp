@@ -9,19 +9,19 @@ template <typename T, typename __Alloc = port::Alloc>
 class Vector : public DStructTypeSpec<T, __Alloc> {
 
 public:
-    Vector() :  __mSize { 0 }, __mCapacity { 0 }, __mC { nullptr } { }
+    Vector() :  _mSize { 0 }, _mCapacity { 0 }, _mC { nullptr } { }
 
     Vector(const T &obj, size_t n) : Vector() {
-        __resize(n);
+        _resize(n);
         for (int i = 0; i < n; i++)
-            __mC[i] = obj;
-        __mSize = n;
-        __mCapacity = n;
+            _mC[i] = obj;
+        _mSize = n;
+        _mCapacity = n;
     }
 
     ~Vector() {
-        if (__mC) {
-            Vector::_Alloc::deallocate(__mC, __mCapacity);
+        if (_mC) {
+            Vector::_Alloc::deallocate(_mC, _mCapacity);
         }
     }
 
@@ -29,79 +29,80 @@ public:
 
     T & operator[](int index) {
         if (index < 0)
-            index = __mSize + index;
-        return __mC[index];
+            index = _mSize + index;
+        return _mC[index];
     }
 
     T operator[](int index) const {
         if (index < 0)
-            index = __mSize + index;
-        return __mC[index];
+            index = _mSize + index;
+        return _mC[index];
     }
 public:
 
     bool empty() const {
-        return __mSize == 0;
+        return _mSize == 0;
     }
 
     size_t size() const {
-        return __mSize;
+        return _mSize;
     }
 
     size_t capacity() const {
-        return __mCapacity;
+        return _mCapacity;
     }
 
     T back() const {
-        return __mC[__mSize - 1];
+        return _mC[_mSize - 1];
     }
 
 public: // Modifiers
 
     void push_back(const T &obj) {
-        if (__mSize + 1 > __mCapacity) {
-            __resize(2 * __mSize);
+        if (_mSize + 1 > _mCapacity) {
+            _resize(2 * _mSize);
         }
-        __mC[__mSize++] = obj;
+        _mC[_mSize++] = obj;
     }
 
     void pop_back() {
-        __mSize--;
-        if (__mSize < __mCapacity / 3) {
-            __resize(__mCapacity / 2);
+        _mSize--;
+        if (_mSize < _mCapacity / 3) {
+            _resize(_mCapacity / 2);
         }
     }
 
 public: // other
     T * begin() {
-        return __mC;
+        return _mC;
     }
 
     const T * begin() const {
-        return __mC;
+        return _mC;
     }
 
     T * end() {
-        return __mC + __mSize;
+        return _mC + _mSize;
     }
 
     const T * end() const {
-        return __mC + __mSize;
+        return _mC + _mSize;
     }
 
-private:
+protected:
 
-    size_t __mSize, __mCapacity;
-    T *__mC;
+    size_t _mSize, _mCapacity;
+    T *_mC;
 
-    void __resize(size_t n) {
-        T *oldC = __mC;
-        __mC = Vector::_Alloc::allocate(n);
-        for (int i = 0; i < __mSize; i++) {
-            __mC[i] = oldC[i];
+    void _resize(size_t n) {
+        T *oldC = _mC;
+        _mC = Vector::_Alloc::allocate(n);
+        for (int i = 0; i < _mSize; i++) {
+            contruct(_mC + i, oldC[i]);
+            destory(oldC + i);
         }
-        Vector::_Alloc::deallocate(oldC, __mCapacity);
-        __mCapacity = n;
+        Vector::_Alloc::deallocate(oldC, _mCapacity);
+        _mCapacity = n;
     }
 };
 

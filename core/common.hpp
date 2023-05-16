@@ -19,13 +19,26 @@ struct DSAlloc {
 template<typename T, class Alloc = port::Alloc>
 class DStructTypeSpec {
 public:
-    using ValueType       = T;
-    using PointerType     = ValueType*;
-    using SizeType        = size_t;
-    using DifferenceType  = PointerType;
+    using ValueType            = T;
+    using ReferenceType        = ValueType&;
+    using ConstReferenceType   = const ReferenceType;
+    using PointerType          = ValueType*;
+    using ConstPointerType     = const PointerType;
+    using SizeType             = size_t;
+    using DifferenceType       = PointerType;
 protected:
     using _Alloc          = DSAlloc<T, Alloc>;
 };
+
+template<typename T>
+T* contruct(void *addr, const T& obj) {
+    return new(addr) T(obj); // use T's move/assign contructor
+}
+
+template<typename T>
+void destory(T *ptr) {
+    ptr->~T();
+}
 
 };
 

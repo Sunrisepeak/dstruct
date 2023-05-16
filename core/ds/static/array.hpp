@@ -14,14 +14,14 @@ public:
         if (index < 0)
             index = N + index;
         DSTRUCT_ASSERT(index < static_cast<int>(N));
-        return __mC[index];
+        return _mC[index];
     }
 
     T operator[](int index) const {
         if (index < 0)
             index = N + index;
         DSTRUCT_ASSERT(index < static_cast<int>(N));
-        return __mC[index];
+        return _mC[index];
     }
 
 public: // big Five
@@ -30,7 +30,7 @@ public: // big Five
 
     Array(const T &value) {
         for (size_t i = 0; i < N; i++) {
-            __mC[i] = value;
+            _mC[i] = value;
         }
     }
 
@@ -40,7 +40,7 @@ public: // big Five
 
     Array & operator=(const Array &arr) {
         for (size_t i = 0; i < N; i++) {
-            __mC[i] = arr.__mC[i];
+            _mC[i] = arr._mC[i];
         }
         return *this;
     }
@@ -53,24 +53,24 @@ public: // big Five
     }
 
     T * begin() {
-        return __mC;
+        return _mC;
     }
 
     const T * begin() const {
-        return __mC;
+        return _mC;
     }
 
     T * end() {
-        return __mC + N;
+        return _mC + N;
     }
 
     const T * end() const {
-        return __mC + N;
+        return _mC + N;
     }
 
-private:
+protected:
 
-    T __mC[N + 1];
+    T _mC[N + 1];
     //T c[N == 0 ? 1 : N];
 
 }; // Array
