@@ -79,8 +79,6 @@ class DStructRandomIteratorTypeSpec :
 // overlay
 public:
     using CategoryType    = DStructRandomIteratorTypeSpec<void>;
-protected:
-    using _Super          = DStructRandomIteratorTypeSpec;
 private:
     using __Self          = DStructRandomIteratorTypeSpec;
 
