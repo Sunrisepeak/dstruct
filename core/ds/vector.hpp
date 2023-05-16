@@ -73,7 +73,7 @@ public: // Modifiers
     }
 
 public: // other
-    T * begin() {
+    typename Vector::IteratorType begin() {
         return _mC;
     }
 
@@ -81,7 +81,7 @@ public: // other
         return _mC;
     }
 
-    T * end() {
+    typename Vector::IteratorType end() {
         return _mC + _mSize;
     }
 
