@@ -2,7 +2,6 @@
 #define __COMMON_HPP__DSTRUCT
 
 #include <dstruct-port.h>
-#include <list>
 
 namespace dstruct {
 
@@ -30,7 +29,7 @@ protected:
     using _Alloc          = DSAlloc<T, Alloc>;
 };
 
-template<typename DStruct>
+template<typename T>
 class DStructForwardIteratorTypeSpec {
 
 public:
@@ -40,11 +39,10 @@ private:
 
 
 public: // common type
-    using DStructType     = DStruct;
-    using ValueType       = typename DStruct::ValueType;
-    using PointerType     = typename DStruct::PointerType;
-    using ReferenceType   = typename DStruct::ReferenceType;
-    using DifferenceType  = typename DStruct::DifferenceType;
+    using ValueType       = T;
+    using PointerType     = ValueType*;
+    using ReferenceType   = ValueType&;
+    using DifferenceType  = size_t;
 
 public: // base op, this const keyword: use const keyword to def iterator and const_iterator
     virtual __Self& operator++() = 0;
@@ -83,8 +81,8 @@ private:
     using __Self          = DStructRandomIteratorTypeSpec;
 
 public: // op
-    virtual __Self& operator+(const __Self&) = 0;
-    virtual __Self& operator-(const __Self&) = 0;
+    virtual __Self& operator+(const int&) = 0;
+    virtual __Self& operator-(const int&) = 0;
 };
 
 
