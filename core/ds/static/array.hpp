@@ -50,6 +50,7 @@ public: // big Five
     Array(const Array &&) = delete;
     Array & operator=(const Array &&) = delete;
 
+public: // base op
     size_t size() const {
         return N;
     }

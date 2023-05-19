@@ -20,3 +20,7 @@ target("dstruct_array")
 target("dstruct_vector")
     set_kind("binary")
     add_files("examples/vector.cpp")
+
+target("dstruct_double_linked_list")
+    set_kind("binary")
+    add_files("examples/double_linked_list.cpp")

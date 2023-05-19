@@ -98,7 +98,7 @@ protected:
         T *oldC = _mC;
         _mC = Vector::_Alloc::allocate(n);
         for (int i = 0; i < _mSize; i++) {
-            contruct(_mC + i, oldC[i]);
+            construct(_mC + i, oldC[i]);
             destory(oldC + i);
         }
         Vector::_Alloc::deallocate(oldC, _mCapacity);

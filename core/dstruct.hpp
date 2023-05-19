@@ -5,4 +5,6 @@
 
 #include <vector.hpp>
 
+#include <LinkedList/DoubleLinkedlist.hpp>
+
 #endif

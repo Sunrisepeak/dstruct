@@ -5,6 +5,8 @@
 
 int main() {
 
+    std::cout << "\n\nTesting: " << __FILE__ << std::endl;
+
     dstruct::Array<int, 10> arr(2); // 0. test cntor
 
     decltype(arr)::ValueType val = 6;

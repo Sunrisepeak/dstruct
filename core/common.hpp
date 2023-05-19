@@ -33,11 +33,28 @@ public:
     using ConstIteratorType    = Iterator<const ValueType>;
 protected:
     using _Alloc          = DSAlloc<T, Alloc>;
+
+/*
+public: // base op
+    // status
+    virtual SizeType size() const = 0;
+    virtual bool empty() const = 0;
+
+    // push/pop
+    virtual void push(const T&) = 0;
+    virtual ValueType pop() = 0;
+
+    // iterator/range-for support
+    virtual IteratorType begin() = 0;
+    virtual ConstIteratorType begin() const = 0;
+    virtual IteratorType end() = 0;
+    virtual ConstIteratorType end() const = 0;
+*/
 };
 
 template<typename T>
-T* contruct(void *addr, const T& obj) {
-    return new(addr) T(obj); // use T's move/assign contructor
+T* construct(void *addr, const T& obj) {
+    return new(addr) T(obj); // use T's constructor(copy/spec)
 }
 
 template<typename T>

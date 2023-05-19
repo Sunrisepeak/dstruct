@@ -8,20 +8,20 @@ struct BidirectionalIterator { };
 struct RandomIterator { };
 
 template<typename T, typename Category = ForwardIterator>
-struct DStructIteratorTypeSpec {
-    // common type
+class DStructIteratorTypeSpec {
+public: // common type
     using CategoryType    = Category;
     using ValueType       = T;
     using PointerType     = ValueType*;
     using ReferenceType   = ValueType&;
     using DifferenceType  = size_t;
 
-    // base op
+public: // base op
     ReferenceType operator*() const { return *mPointer; };
     PointerType operator->() const { return mPointer; };
     bool operator!=(const DStructIteratorTypeSpec &it) const { return mPointer != it.mPointer; }
 
-    // member var
+protected: // member var
     PointerType mPointer;
 
 /* pls: according to your dstruct impl them
@@ -51,7 +51,7 @@ public:
     PrimitiveIterator(T *ptr) : PrimitiveIterator() {
         __Self::mPointer = ptr;
     }
-    
+
 public: // ForwardIterator
     __Self& operator++() { __Self::mPointer++; return *this; };
     __Self operator++(int) { return __Self::mPointer++; };
