@@ -3,8 +3,6 @@
 
 #include <common.hpp>
 
-#include <list>
-
 namespace dstruct {
 
 template <typename T, typename __Alloc = port::Alloc>
