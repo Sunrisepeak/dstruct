@@ -26,9 +26,9 @@ public:
 
 public: // big Five
 
-    Array() = default;
+    Array() /*: _mIterator { _mC }, _mConstIterator { _mC }*/ { };
 
-    Array(const T &value) {
+    Array(const T &value) : Array() {
         for (size_t i = 0; i < N; i++) {
             _mC[i] = value;
         }
@@ -42,6 +42,8 @@ public: // big Five
         for (size_t i = 0; i < N; i++) {
             _mC[i] = arr._mC[i];
         }
+        //_mIterator = arr._mIterator;
+        //_mConstIterator = arr._mConstIterator;
         return *this;
     }
 
@@ -52,25 +54,27 @@ public: // big Five
         return N;
     }
 
-    T * begin() {
+    typename Array::IteratorType begin() {
         return _mC;
     }
 
-    const T * begin() const {
+    typename Array::ConstIteratorType begin() const {
         return _mC;
     }
 
-    T * end() {
+    typename Array::IteratorType end() {
         return _mC + N;
     }
 
-    const T * end() const {
+    typename Array::ConstIteratorType end() const {
         return _mC + N;
     }
 
 protected:
 
     T _mC[N + 1];
+    //typename Array::IteratorType _mIterator;
+    //typename Array::ConstIteratorType _mConstIterator;
     //T c[N == 0 ? 1 : N];
 
 }; // Array

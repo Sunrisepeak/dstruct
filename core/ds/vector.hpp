@@ -3,6 +3,8 @@
 
 #include <common.hpp>
 
+#include <list>
+
 namespace dstruct {
 
 template <typename T, typename __Alloc = port::Alloc>
@@ -77,7 +79,7 @@ public: // other
         return _mC;
     }
 
-    const T * begin() const {
+    typename Vector::ConstIteratorType begin() const {
         return _mC;
     }
 
@@ -85,7 +87,7 @@ public: // other
         return _mC + _mSize;
     }
 
-    const T * end() const {
+    typename Vector::ConstIteratorType end() const {
         return _mC + _mSize;
     }
 
