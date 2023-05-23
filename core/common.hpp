@@ -1,8 +1,10 @@
 #ifndef __COMMON_HPP__DSTRUCT
 #define __COMMON_HPP__DSTRUCT
 
+// Don't modify this file easily
+
 #include <dstruct-port.h>
-#include <iterator.hpp>
+#include <Iterator.hpp>
 
 namespace dstruct {
 

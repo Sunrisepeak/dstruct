@@ -6,7 +6,8 @@ int main() {
 
     std::cout << "\n\nTesting: " << __FILE__ << std::endl;
 
-    dstruct::DoubleLinkedList<int> list(2, 10);
+    dstruct::DoublyLinkedlist<int> list(2, 10);
+    dstruct::DList<double> list2(1.1, 2);
 
     for (auto v : list) {     // 2. test const / range-for
         std::cout << v << " " << list.size() << std::endl;
