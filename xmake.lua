@@ -2,9 +2,9 @@ set_languages("c++11")
 
 add_includedirs(
     "port",
-    "core",
-    "core/ds",
-    "core/ds/static"
+    "core"
+    --"core/ds",
+    --"core/ds/static"
 )
 
 add_includedirs("port/libc")

@@ -1,10 +1,10 @@
 #ifndef __DSTRUCT_HPP__DSTRUCT
 #define __DSTRUCT_HPP__DSTRUCT
 
-#include <static/Array.hpp>
-#include <static/EmbeddedList.hpp>
-#include <Vector.hpp>
-#include <LinkedList/DoublyLinkedlist.hpp>
+#include <ds/static/Array.hpp>
+#include <ds/static/EmbeddedList.hpp>
+#include <ds/Vector.hpp>
+#include <ds/LinkedList/DoublyLinkedlist.hpp>
 
 
 namespace dstruct {
