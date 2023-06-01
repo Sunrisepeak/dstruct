@@ -12,6 +12,7 @@ struct B : public A<T> {
 };
 
 #include <iostream>
+#include <map>
 struct C {
     C() {
         std::cout << "C()" << std::endl;
@@ -38,6 +39,10 @@ int main() {
         C &refC = *cPtr;
     } // refC lifetime end
     delete cPtr;
-
+// test 4: cpp17 for
+    std::map<int,int> tmp {{1,2},{3,4}};
+    for(auto& x:tmp) {
+        std::cout << x.first << x.second;
+    }
     return 0;
 }
