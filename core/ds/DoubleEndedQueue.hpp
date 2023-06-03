@@ -31,7 +31,10 @@ public: // ForwardIterator
         _mCurr++;
         if (_mCurr == (*(_mCurrArrPtrIt))->end()) {
             _mCurrArrPtrIt++;
-            _mCurr = (*(_mCurrArrPtrIt))->begin();
+            auto arrPtr = *(_mCurrArrPtrIt);
+            if (arrPtr) { // _ArrMapTable will assign a nullptr to "end-element" (N + 1)
+                _mCurr = arrPtr->begin();
+            }
         }
         return *this;
     }
