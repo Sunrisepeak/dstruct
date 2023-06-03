@@ -42,9 +42,17 @@ public: // base op
     virtual SizeType size() const = 0;
     virtual bool empty() const = 0;
 
+    // check
+    ValueType back() const = 0;
+    ValueType front() const = 0;
+
     // push/pop
     virtual void push(const T&) = 0;
-    virtual ValueType pop() = 0;
+    virtual void push_back() = 0;
+    virtual void push_front() = 0;
+    virtual void pop() = 0;
+    virtual void pop_back() = 0;
+    virtual void pop_front() = 0;
 
     // iterator/range-for support
     virtual IteratorType begin() = 0;
@@ -52,6 +60,25 @@ public: // base op
     virtual IteratorType end() = 0;
     virtual ConstIteratorType end() const = 0;
 */
+};
+
+template<
+    typename T,
+    typename Alloc = port::Alloc,
+    typename Iterator = PrimitiveIterator<T>,
+    typename ConstIterator = PrimitiveIterator<const T>
+>
+class _DStructTypeSpec {
+public:
+    using ValueType            = T;
+    using ReferenceType        = ValueType&;
+    using PointerType          = ValueType*;
+    using SizeType             = size_t;
+    using DifferenceType       = PointerType;
+    using IteratorType         = Iterator;
+    using ConstIteratorType    = ConstIterator;
+protected:
+    using _Alloc          = DSAlloc<T, Alloc>;
 };
 
 template<typename T>
@@ -62,6 +89,7 @@ T* construct(void *addr, const T& obj) {
 template<typename T>
 void destory(T *ptr) {
     ptr->~T();
+    // intPtr->~int();
 }
 
 };

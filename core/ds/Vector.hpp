@@ -12,7 +12,7 @@ public:
     Vector() :  _mSize { 0 }, _mCapacity { 0 }, _mC { nullptr } { }
 
     Vector(const T &obj, size_t n) : Vector() {
-        _resize(n);
+        resize(n);
         for (int i = 0; i < n; i++)
             _mC[i] = obj;
         _mSize = n;
@@ -60,7 +60,7 @@ public: // Modifiers
 
     void push_back(const T &obj) {
         if (_mSize + 1 > _mCapacity) {
-            _resize(2 * _mSize);
+            resize(2 * _mSize);
         }
         _mC[_mSize++] = obj;
     }
@@ -68,7 +68,26 @@ public: // Modifiers
     void pop_back() {
         _mSize--;
         if (_mSize < _mCapacity / 3) {
-            _resize(_mCapacity / 2);
+            resize(_mCapacity / 2);
+        }
+    }
+
+    void resize(size_t n) {
+        T *oldC = _mC;
+        _mC = Vector::_Alloc::allocate(n);
+        for (int i = 0; i < _mSize; i++) {
+            construct(_mC + i, oldC[i]);
+            destory(oldC + i);
+        }
+        Vector::_Alloc::deallocate(oldC, _mCapacity);
+        _mCapacity = n;
+    }
+
+    void resize(size_t n, const T &obj) {
+        _mC = Vector::_Alloc::allocate(n);
+        _mCapacity = _mSize = n;
+        for (int i = 0; i < _mSize; i++) {
+            construct(_mC + i, obj);
         }
     }
 
@@ -93,17 +112,6 @@ protected:
 
     size_t _mSize, _mCapacity;
     T *_mC;
-
-    void _resize(size_t n) {
-        T *oldC = _mC;
-        _mC = Vector::_Alloc::allocate(n);
-        for (int i = 0; i < _mSize; i++) {
-            construct(_mC + i, oldC[i]);
-            destory(oldC + i);
-        }
-        Vector::_Alloc::deallocate(oldC, _mCapacity);
-        _mCapacity = n;
-    }
 };
 
 };

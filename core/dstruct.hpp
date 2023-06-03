@@ -4,6 +4,7 @@
 #include <ds/static/Array.hpp>
 #include <ds/static/EmbeddedList.hpp>
 #include <ds/Vector.hpp>
+#include <ds/DoubleEndedQueue.hpp>
 #include <ds/LinkedList/DoublyLinkedlist.hpp>
 
 
