@@ -16,7 +16,7 @@ namespace dstruct {
     using SLink = _SinglyLink;
     using DLink = _DoublyLink;
     template<typename T, typename Link = DLink>
-    using EList /* Node */ = _EmbeddedList<T, DLink>;
+    using EListNode = _EmbeddedListNode<T, DLink>;
 
     // DoublyLinkedlist
     template<typename T, typename Alloc = port::Alloc>

@@ -55,37 +55,33 @@ public: // op
 };
 
 template<typename T, typename Link = _DoublyLink>
-struct _EmbeddedList /* Node */ {
+struct _EmbeddedListNode /* Node */ {
     Link link;
     T data;
 public:
     using LinkType = Link;
 public: // op
-    static void init(_EmbeddedList *list) {
-        init(to_link(list));
+    static void init(_EmbeddedListNode *list) {
+        Link::init(to_link(list));
     }
 
-    static void init(Link *link) {
-        Link::init(link);
+    static bool empty(_EmbeddedListNode *list) {
+        return Link::empty(to_link(list));
     }
 
-    static bool empty(Link *link) {
-        return Link::empty(link);
+    static void add(_EmbeddedListNode *prev, _EmbeddedListNode *curr) {
+        Link::add(to_link(prev), to_link(curr));
     }
 
-    static void add(Link *prev, Link *curr) {
-        Link::add(prev, curr);
+    static void del(_EmbeddedListNode *prev, _EmbeddedListNode *curr) {
+        Link::del(to_link(prev), to_link(curr));
     }
 
-    static void del(Link *prev, Link *curr) {
-        Link::del(prev, curr);
+    static _EmbeddedListNode * to_node(Link *link) {
+        return reinterpret_cast<_EmbeddedListNode *>(link);
     }
 
-    static _EmbeddedList * to_node(Link *link) {
-        return reinterpret_cast<_EmbeddedList *>(link);
-    }
-
-    static Link * to_link(_EmbeddedList *node) {
+    static Link * to_link(_EmbeddedListNode *node) {
         return &(node->link);
     }
 };

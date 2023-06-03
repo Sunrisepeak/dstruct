@@ -10,7 +10,7 @@ namespace dstruct {
 template<typename T>
 class _DoublyLinkListIterator : public DStructIteratorTypeSpec<T, BidirectionalIterator> {
 protected:
-    using _Node  = _EmbeddedList<T, _DoublyLink>;
+    using _Node  = _EmbeddedListNode<T, _DoublyLink>;
 private:
     using __Self = _DoublyLinkListIterator;
 
@@ -53,7 +53,7 @@ template<typename T, typename Alloc = port::Alloc>
 class DoublyLinkedlist : public DStructTypeSpec<T, Alloc, _DoublyLinkListIterator> {
 
 protected:
-    using _Node      = _EmbeddedList<T, _DoublyLink>; 
+    using _Node      = _EmbeddedListNode<T, _DoublyLink>; 
     using _AllocNode = DSAlloc<_Node, Alloc>;
 
 
@@ -109,7 +109,7 @@ public: // base op
         _mHeadNode.link.prev->next = nPtr;
         _mHeadNode.link.prev = nPtr;
         */
-        _Node::add(_mHeadNode.link.prev, _Node::to_link(nPtr));
+        _Node::LinkType::add(_mHeadNode.link.prev, _Node::to_link(nPtr));
         // 4. increase size
         _mSize++;
     }
@@ -124,7 +124,7 @@ public: // base op
         //nPtr->prev->next = nPtr->next;
         //nPtr->next->prev = nPtr->prev;
         //_mHeadNode.link.prev = nPtr->prev;
-        _Node::del(lPtr->prev, lPtr);
+        _Node::LinkType::del(lPtr->prev, lPtr);
 
         // 3. get data
         _Node *nPtr = _Node::to_node(lPtr);
