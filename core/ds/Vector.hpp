@@ -19,6 +19,14 @@ public:
         _mCapacity = n;
     }
 
+    Vector(const Vector& vec) : Vector() {
+        resize(vec._mCapacity);
+        _mSize = vec._mSize;
+        for (int i = 0; i < _mSize; i++) {
+            _mC[i] = vec._mC[i];
+        }
+    }
+
     ~Vector() {
         if (_mC) {
             for (int i = 0; i < _mSize; i++) {
