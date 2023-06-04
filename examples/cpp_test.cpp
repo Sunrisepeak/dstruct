@@ -23,6 +23,34 @@ struct C {
     }
 };
 
+#include <iostream>
+
+class Parent {
+private:
+    int privateData;
+
+public:
+    Parent(int data) : privateData(data) {}
+
+    friend void FriendFunction(const Parent& obj);
+};
+
+/* ok
+void FriendFunction(const Parent& obj) {
+    std::cout << "Accessing privateData from FriendFunction: " << obj.privateData << std::endl;
+}
+*/
+
+template <typename T>
+void FriendFunction(const T& obj) {
+    //std::cout << "Accessing privateData from FriendFunction: " << obj.privateData << std::endl;
+}
+
+class Child : public Parent {
+public:
+    Child(int data) : Parent(data) {}
+};
+
 int main() {
 
     std::cout << "\n\nTesting: " << __FILE__ << std::endl;
@@ -44,5 +72,8 @@ int main() {
     for(auto& x:tmp) {
         std::cout << x.first << x.second;
     }
+// test 5: Parent friend function
+    Child child(42);
+    FriendFunction(child); //通过子类对象调用 friend 函数
     return 0;
 }

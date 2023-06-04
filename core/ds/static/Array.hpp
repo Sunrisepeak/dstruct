@@ -50,6 +50,12 @@ public: // big Five
     Array(const Array &&) = delete;
     Array & operator=(const Array &&) = delete;
 
+    ~Array() {
+        for (int i = 0; i < N; i++) {
+            destory(_mC + i);
+        }
+    }
+
 public: // base op
     size_t size() const {
         return N;

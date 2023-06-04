@@ -21,6 +21,9 @@ public:
 
     ~Vector() {
         if (_mC) {
+            for (int i = 0; i < _mSize; i++) {
+                destory(_mC + i);
+            }
             Vector::_Alloc::deallocate(_mC, _mCapacity);
         }
     }
@@ -76,14 +79,23 @@ public: // Modifiers
         T *oldC = _mC;
         _mC = Vector::_Alloc::allocate(n);
         for (int i = 0; i < _mSize; i++) {
-            construct(_mC + i, oldC[i]);
+            if (i < n)
+                construct(_mC + i, oldC[i]);
             destory(oldC + i);
         }
         Vector::_Alloc::deallocate(oldC, _mCapacity);
         _mCapacity = n;
+        if (n < _mSize)
+            _mSize = n;
     }
 
     void resize(size_t n, const T &obj) {
+        // release
+        for (int i = 0; i < _mSize; i++) {
+            destory(_mC + i);
+        }
+        Vector::_Alloc::deallocate(_mC, _mCapacity);
+        // alloc
         _mC = Vector::_Alloc::allocate(n);
         _mCapacity = _mSize = n;
         for (int i = 0; i < _mSize; i++) {

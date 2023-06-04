@@ -16,10 +16,15 @@ public: // common type
     using ReferenceType   = ValueType&;
     using DifferenceType  = size_t;
 
+protected:
+    //template<typename _Iterator>
+    //friend DifferenceType distance(const _Iterator &, const _Iterator &);
+
 public: // base op
     ReferenceType operator*() const { return *mPointer; };
     PointerType operator->() const { return mPointer; };
-    bool operator!=(const DStructIteratorTypeSpec &it) const { return mPointer != it.mPointer; }
+    virtual bool operator!=(const DStructIteratorTypeSpec &it) const { return mPointer != it.mPointer; }
+    virtual bool operator==(const DStructIteratorTypeSpec &it) const { return mPointer == it.mPointer; }
 
 protected: // member var
     PointerType mPointer;
@@ -34,17 +39,43 @@ public: // BidirectionalIterator
 public: // RandomIterator
     virtual Self operator+(const int&) const = 0;
     virtual Self operator-(const int&) const = 0;
+    virtual Self operator+=(const int&) const = 0;
+    virtual Self operator-=(const int&) const = 0;
     virtual ReferenceType operator[](int index) = 0;
     virtual ValueType operator[](int index) const = 0;
+public: // other
+    virtual bool operator<(const int&) const = 0;
+    friend DifferenceType operator-(const Self&, const Self&); // outside for your it
 */
 };
+
+template<typename RandomIteratorType>
+auto distance(const RandomIteratorType &first, const RandomIteratorType &last) -> typename RandomIteratorType::DifferenceType {
+    return last - first; // operator-(last, first);
+}
+
+/**
+ * 
+ * pre-declaration of template-friend in PrimitiveIterator
+ * 
+*/
+template <typename>
+class PrimitiveIterator;
+
+template <typename T>
+typename PrimitiveIterator<T>::DifferenceType
+operator-(const PrimitiveIterator<T>&, const PrimitiveIterator<T>&);
+
 
 //  a wrraper/demo for primitive pointer
 template <typename T>
 class PrimitiveIterator : public DStructIteratorTypeSpec<T, RandomIterator> {
-
 private:
     using __Self = PrimitiveIterator;
+    /* 1. */ // friend typename PrimitiveIterator<T>::DifferenceType operator-(const PrimitiveIterator<T>&, const PrimitiveIterator<T>&); // compiler err?
+    /* 2. */ //template <typename _T> friend typename PrimitiveIterator<_T>::DifferenceType operator-(const PrimitiveIterator<_T>&, const PrimitiveIterator<_T>&); // ok, but range issue
+    friend typename __Self::DifferenceType
+    operator-<T>(const __Self&, const __Self&); // explicity template-instance for T
 
 public:
     PrimitiveIterator() = default;
@@ -64,6 +95,16 @@ public: // RandomIterator
     typename __Self::ReferenceType operator[](int index) { return __Self::mPointer[index]; }
     typename __Self::ValueType operator[](int index) const { return __Self::mPointer[index]; };
 };
+
+
+template <typename T>
+typename PrimitiveIterator<T>::DifferenceType
+operator-(const PrimitiveIterator<T> &first, const PrimitiveIterator<T> &last) {
+    return last.mPointer - first.mPointer;
+};
+
+// instance (int) function template
+// template typename PrimitiveIterator<int>::DifferenceType operator-(const PrimitiveIterator<int>&, const PrimitiveIterator<int>&);
 
 }
 

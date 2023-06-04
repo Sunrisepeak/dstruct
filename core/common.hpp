@@ -40,6 +40,7 @@ protected:
 public: // base op
     // status
     virtual SizeType size() const = 0;
+    virtual SizeType capacity() const = 0;
     virtual bool empty() const = 0;
 
     // check

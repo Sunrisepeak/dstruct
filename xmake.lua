@@ -28,3 +28,7 @@ target("embedded_list")
 target("dstruct_double_linked_list")
     set_kind("binary")
     add_files("examples/double_linked_list.cpp")
+
+target("dstruct_deque")
+    set_kind("binary")
+    add_files("examples/deque.cpp")

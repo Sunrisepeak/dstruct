@@ -13,6 +13,10 @@ namespace dstruct {
 
     // Vector
 
+    // Deque
+    template<typename T, size_t ArrSize = 32, typename Alloc = port::Alloc>
+    using Deque = DoubleEndedQueue<T, ArrSize, Alloc>;
+
     // EmbeddedList
     using SLink = _SinglyLink;
     using DLink = _DoublyLink;

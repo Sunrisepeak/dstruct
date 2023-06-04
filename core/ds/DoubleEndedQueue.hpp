@@ -3,12 +3,10 @@
 
 #include <common.hpp>
 #include <ds/static/Array.hpp>
-#include <deque>
-
 
 namespace dstruct {
 
-template<typename T, size_t ARR_SIZE = 32, typename Alloc = port::Alloc>
+template<typename T, size_t ARR_SIZE, typename Alloc = port::Alloc>
 class DoubleEndedQueue;
 
 template<typename T, size_t ARR_SIZE>
@@ -19,6 +17,9 @@ protected:
     using _ArrMapTable   = Vector<_Array *>;
 private:
     using __Self = _DoubleEndedQueueIterator;
+
+protected: // only for DoubleEndedQueue
+    _DoubleEndedQueueIterator() = default;
 
 public:
     _DoubleEndedQueueIterator(
@@ -90,18 +91,28 @@ protected:
 
 public:
     DoubleEndedQueue() {
-        _mArrMapTable.resize(3, nullptr);
-        _mArrMapTable[1] =  _AllocArray::allocate();
-        _mFirstIt = _mEndIt = decltype(_mFirstIt)(_mArrMapTable[1].begin(), _mArrMapTable.begin() + 1);
+        _mCapacity = 3;
         _mSize = 0;
+        _mArrMapTable.resize(_mCapacity + 1, nullptr);
+        // alloc arr and fill map-table
+        for (int i = 0; i < _mCapacity - 1 /* save end-nullptr */; i++) {
+            _mArrMapTable[i] = _AllocArray::allocate();
+            construct(_mArrMapTable[i], _Array());
+        }
+        construct(_mArrMapTable[1], _Array());
+        auto midMapIt = _mArrMapTable.begin() + 1;
+        _mBegin = _mEnd = decltype(_mBegin)((*midMapIt)->begin(), midMapIt);
+        _mCapacity *= ARR_SIZE;
     }
-
-
 
 public: // base op
     // status
     typename DoubleEndedQueue::SizeType size() const {
         return _mSize;
+    }
+
+    typename DoubleEndedQueue::SizeType capacity() const {
+        return _mCapacity;
     }
 
     bool empty() const {
@@ -111,12 +122,12 @@ public: // base op
 public: // check
     typename DoubleEndedQueue::ValueType
     back() const {
-        return *(_mEndIt._mCurr);
+        return *(_mEnd._mCurr);
     }
 
     typename DoubleEndedQueue::ValueType
     front() const {
-        return *(_mFirstIt.curr);
+        return *(_mBegin.curr);
     }
 
 public: // push/pop
@@ -125,22 +136,24 @@ public: // push/pop
     }
 
     void push_back(const T &obj) {
-        if (_mEndIt._mCurrArrPtrIt == _mArrMapTable.end()) {
-            // resize
+        if (*(_mEnd._mCurrArrPtrIt) == nullptr) {
+            _resize(_mSize * 2);
         }
-        construct(&(*_mEndIt), obj);
-        _mEndIt++;
+        construct(&(*_mEnd), obj);
+        _mEnd++;
+        _mSize++;
     }
 
     void push_front(const T &obj) {
         if (
-            _mFirstIt._mCurrArrPtrIt == _mArrMapTable.begin() &&
-            _mFirstIt._mCurr == (*(_mFirstIt._mCurrArrPtrIt))->begin()
+            _mBegin._mCurrArrPtrIt == _mArrMapTable.begin() &&
+            _mBegin._mCurr == (*(_mBegin._mCurrArrPtrIt))->begin()
         ) {
-            // resize
+            _resize(_mSize * 2);
         }
-        _mFirstIt--;
-        construct(&(*_mFirstIt), obj);
+        _mBegin--;
+        construct(&(*_mBegin), obj);
+        _mSize++;
     }
 
     void pop() {
@@ -148,25 +161,47 @@ public: // push/pop
     }
 
     void pop_back() {
-        _mEndIt--;
+        _mEnd--;
         _mSize--;
-        destory(&(*(_mEndIt)));
-        if (_mEndIt._mCurr - _mFirstIt._mCurr < _mArrMapTable.size() / 3) {
-            // release
+        destory(&(*(_mEnd)));
+        if (_mSize < _mCapacity / 3) {
+            _resize(_mCapacity / 2);
         }
     }
 
     void pop_front() {
-        destory(&(*(_mFirstIt)));
-        _mFirstIt++;
+        destory(&(*(_mBegin)));
+        _mBegin++;
         _mSize--;
-        if (_mEndIt._mCurr - _mFirstIt._mCurr < _mArrMapTable.size() / 3) {
-            // release
+        if (_mSize < _mCapacity / 3) {
+            _resize(_mCapacity / 2);
         }
     }
 
-    void resize(size_t n) {
-        //
+    void resize(size_t n, const T &obj) {
+        // release
+        for (auto &arrPtr : _mArrMapTable) {
+            if (arrPtr) {
+                destory(arrPtr);
+                arrPtr = nullptr;
+            }
+        }
+        // compute size
+        size_t mapTabSize = (n / ARR_SIZE) + 2 + 1;
+        _mArrMapTable.resize(mapTabSize, nullptr);
+        // alloc arr and fill map-table
+        for (int i = 0; i < _mArrMapTable.capacity() - 1 /* save end-nullptr */; i++) {
+            _mArrMapTable[i] = _AllocArray::allocate();
+            construct(_mArrMapTable[i], _Array());
+        }
+        // init obj
+        _mBegin._mCurrArrPtrIt = _mEnd._mCurrArrPtrIt = _mArrMapTable.begin() + 1;
+        _mBegin._mCurr = _mEnd._mCurr = (*(_mBegin._mCurrArrPtrIt))->begin();
+        for (int i = 0; i < n; i++) {
+            // construct(addr, obj)
+            *(++_mEnd) = obj;
+        }
+        _mCapacity = _mSize = n;
     }
 
 /*
@@ -191,8 +226,33 @@ public: // iterator/range-for support
 protected:
     _ArrMapTable _mArrMapTable;
     //_Block _mFirst, _mEnd;
-    typename DoubleEndedQueue::Iterator _mFirstIt, _mEndIt;
-    typename DoubleEndedQueue::SizeType _mSize;
+    typename DoubleEndedQueue::IteratorType _mBegin, _mEnd;
+    typename DoubleEndedQueue::SizeType _mSize, _mCapacity;
+
+
+    void _resize(size_t n) {
+        auto oldStartIndex = distance(_mArrMapTable.begin(), _mBegin._mCurrArrPtrIt);
+        auto oldEndIndex = distance(_mArrMapTable.begin(), _mEnd._mCurrArrPtrIt);
+        _ArrMapTable old = _mArrMapTable;
+        _mArrMapTable.resize(n, nullptr);
+        size_t diff = n > old.capacity() ? n - old.capacity() : old.capacity() - n;
+        size_t startIndex = diff / 2;
+        size_t endIndex = _mArrMapTable.capacity() - diff / 2 - 1;
+        for (int i = (_mArrMapTable.capacity() - 1) - 1; i >= 0 ; i--) {
+            if (startIndex > i && i > endIndex) {
+                _mArrMapTable[i] = _AllocArray::allocate();
+                construct(_mArrMapTable[i], _Array());
+            } else {
+                if (!old.empty()) {
+                    _mArrMapTable[i] = old.back();
+                    old.pop_back();
+                }
+            }
+        }
+        _mBegin._mCurrArrPtrIt = (_mArrMapTable.begin() + startIndex) + oldStartIndex;
+        _mEnd._mCurrArrPtrIt = (_mArrMapTable.begin() + startIndex) + oldEndIndex;
+        _mCapacity = n;
+    }
 
 };
 
