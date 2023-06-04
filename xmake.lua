@@ -31,4 +31,5 @@ target("dstruct_double_linked_list")
 
 target("dstruct_deque")
     set_kind("binary")
+    add_cxxflags("-g")
     add_files("examples/deque.cpp")

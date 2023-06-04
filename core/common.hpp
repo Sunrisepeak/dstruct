@@ -87,6 +87,12 @@ T* construct(void *addr, const T& obj) {
     return new(addr) T(obj); // use T's constructor(copy/spec)
 }
 
+template<>
+int * construct<int>(void *addr, const int& obj) {
+    *(reinterpret_cast<int *>(addr)) = obj;
+    return reinterpret_cast<int *>(addr); // use T's constructor(copy/spec)
+}
+
 template<typename T>
 void destory(T *ptr) {
     ptr->~T();
