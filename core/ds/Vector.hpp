@@ -11,7 +11,7 @@ class Vector : public DStructTypeSpec<T, __Alloc> {
 public:
     Vector() :  _mSize { 0 }, _mCapacity { 0 }, _mC { nullptr } { }
 
-    Vector(const T &obj, size_t n) : Vector() {
+    Vector(size_t n, const T &obj) : Vector() {
         resize(n);
         for (int i = 0; i < n; i++)
             _mC[i] = obj;

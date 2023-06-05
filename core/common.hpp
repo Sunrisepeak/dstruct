@@ -82,6 +82,22 @@ protected:
     using _Alloc          = DSAlloc<T, Alloc>;
 };
 
+
+template<typename T>
+struct RemoveReference {
+    using type = T;
+};
+
+template<typename T>
+struct RemoveReference<T &> {
+    using type = T;
+};
+
+template <typename T>
+typename RemoveReference<T>::type&& move(T&& arg) {
+  return static_cast<typename RemoveReference<T>::type&&>(arg);
+}
+
 template<typename T>
 T* construct(void *addr, const T& obj) {
     return new(addr) T(obj); // use T's constructor(copy/spec)

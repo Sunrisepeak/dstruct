@@ -2,6 +2,7 @@
 #define __DOUBLE_ENDED_QUEUE_HPP__DSTRUCT
 
 #include <common.hpp>
+#include <algorithm.hpp>
 #include <ds/static/Array.hpp>
 
 namespace dstruct {
@@ -19,25 +20,30 @@ private:
     using __Self = _DoubleEndedQueueIterator;
 
 protected: // only for DoubleEndedQueue
-    _DoubleEndedQueueIterator() = default;
+    _DoubleEndedQueueIterator() : _mArrMapTablePtr { nullptr } { };
 
 public:
     _DoubleEndedQueueIterator(
+        size_t arrIndex,
         typename _Array::IteratorType currIt,
-        typename _ArrMapTable::IteratorType currArrIt
-    ) : _mCurrArrPtrIt { currArrIt }, _mCurr { currIt } {
+        _ArrMapTable *mapTablePtr
+    ) : _mCurrArrIndex { arrIndex }, _mCurr { currIt }, _mArrMapTablePtr(mapTablePtr) {
         __sync();
     }
+/*
+    _DoubleEndedQueueIterator(const __Self&) = default;
+    _DoubleEndedQueueIterator(__Self&&) = default;
+    __Self & operator=(const __Self&) = default;
+    __Self & operator=(__Self&&) = default;
+*/
 
 public: // ForwardIterator
     __Self& operator++() {
         static int cnt = 1;
         _mCurr++;
-        if (_mCurr == (*(_mCurrArrPtrIt))->end()) {
-            _mCurrArrPtrIt++;
-            auto arrPtr = *(_mCurrArrPtrIt);
-            if (arrPtr) { // _ArrMapTable will assign a nullptr to "end-element" (N + 1)
-                _mCurr = arrPtr->begin();
+        if (_mCurr == (*_mArrMapTablePtr)[_mCurrArrIndex]->end()) {
+            if (_mCurrArrIndex + 1 < (*_mArrMapTablePtr).capacity()) {
+                _mCurr = (*_mArrMapTablePtr)[++_mCurrArrIndex]->begin();
             }
         }
         __sync();
@@ -52,9 +58,8 @@ public: // ForwardIterator
 
 public: // BidirectionalIterator
     __Self& operator--() {
-        if (_mCurr == (*(_mCurrArrPtrIt))->begin()) {
-            _mCurrArrPtrIt--;
-            _mCurr = (*(_mCurrArrPtrIt))->end();
+        if (_mCurr == (*_mArrMapTablePtr)[_mCurrArrIndex]->begin()) {
+            _mCurr = (*_mArrMapTablePtr)[--_mCurrArrIndex]->end();
         }
         _mCurr--;
         __sync();
@@ -81,9 +86,12 @@ private:
     }
 
 protected:
-    typename _ArrMapTable::IteratorType _mCurrArrPtrIt; // point to Array
-    typename _Array::IteratorType _mCurr;               // point to Element / Note: when _mCurr changed, pls __sync
+    size_t _mCurrArrIndex;
+    typename _Array::IteratorType _mCurr;     // point to Element / Note: when _mCurr changed, pls __sync
+    _ArrMapTable *_mArrMapTablePtr;  // point to Array
 };
+
+#define MIN_MAP_TABLE_SIZE 2
  
 template<typename T, size_t ARR_SIZE, typename Alloc>
 class DoubleEndedQueue :
@@ -101,18 +109,32 @@ protected:
 */
 
 public:
-    DoubleEndedQueue() {
-        _mCapacity = 2;
-        _mSize = 0;
-        _mArrMapTable.resize(_mCapacity + 1, nullptr);
+    DoubleEndedQueue() :
+      _mSize { 0 },
+      _mCapacity { MIN_MAP_TABLE_SIZE * ARR_SIZE },
+      _mArrMapTable(MIN_MAP_TABLE_SIZE, nullptr),
+      _mBegin(),
+      _mEnd(_mBegin)
+    {
         // alloc arr and fill map-table
-        for (int i = 0; i < _mCapacity /* save end-nullptr */; i++) {
+        for (int i = 0; i < MIN_MAP_TABLE_SIZE; i++) {
             _mArrMapTable[i] = _AllocArray::allocate();
             construct(_mArrMapTable[i], _Array());
         }
-        auto midMapIt = _mArrMapTable.begin() + 1;
-        _mBegin = _mEnd = decltype(_mBegin)((*midMapIt)->begin(), midMapIt);
-        _mCapacity *= ARR_SIZE;
+        auto midMapIndex = MIN_MAP_TABLE_SIZE / 2;
+        _mBegin = _mEnd = decltype(_mBegin)(midMapIndex, _mArrMapTable[midMapIndex]->begin(), &_mArrMapTable);
+    }
+
+    ~DoubleEndedQueue() {
+        // destory element, but don't use ~_Array()
+        for (auto it = _mBegin; it != _mEnd; it++) {
+            destory(it.operator->());
+        }
+
+        // release memory
+        for (auto arrPtr : _mArrMapTable) {
+            _AllocArray::deallocate(arrPtr);
+        }
     }
 
 public: // base op
@@ -146,7 +168,7 @@ public: // push/pop
     }
 
     void push_back(const T &obj) {
-        if (*(_mEnd._mCurrArrPtrIt) == nullptr) {
+        if (_mEnd._mCurr == _mArrMapTable.back()->end()) {
             _resize(_mCapacity * 2);
         }
         construct(&(*_mEnd), obj);
@@ -155,16 +177,13 @@ public: // push/pop
     }
 
     void push_front(const T &obj) {
-        if (
-            _mBegin._mCurrArrPtrIt == _mArrMapTable.begin() &&
-            _mBegin._mCurr == (*(_mBegin._mCurrArrPtrIt))->begin()
-        ) {
+        if (_mBegin._mCurr == _mArrMapTable[0]->begin()) {
             _resize(_mCapacity * 2);
         }
         _mBegin--;
 /*
-        DSTRUCT_ASSERT(_mBegin._mCurrArrPtrIt == _mArrMapTable.begin());
-        DSTRUCT_ASSERT(*(_mBegin._mCurrArrPtrIt) == _mArrMapTable[0]);
+        DSTRUCT_ASSERT(_mBegin._mArrMapTable == _mArrMapTable.begin());
+        DSTRUCT_ASSERT(*(_mBegin._mArrMapTable) == _mArrMapTable[0]);
         auto end = ((*(_mArrMapTable.begin()))->end());
         DSTRUCT_ASSERT(_mBegin._mCurr == end - 1);
         DSTRUCT_ASSERT((_mBegin._mCurr).operator->() == end.operator->() - 1);
@@ -172,8 +191,8 @@ public: // push/pop
         DSTRUCT_ASSERT(sizeof(*_mBegin) == sizeof(int));
 */
         construct(_mBegin.operator->(), obj);
-        //auto arrPtr = *(_mBegin._mCurrArrPtrIt);
-        //(*(*(_mBegin._mCurrArrPtrIt)))[distance(_mBegin._mCurr, arrPtr->end())] = obj;
+        //auto arrPtr = *(_mBegin._mArrMapTable);
+        //(*(*(_mBegin._mArrMapTable)))[distance(_mBegin._mCurr, arrPtr->end())] = obj;
         _mSize++;
     }
 
@@ -185,7 +204,7 @@ public: // push/pop
         _mEnd--;
         _mSize--;
         destory(&(*(_mEnd)));
-        if (_mSize < _mCapacity / 3 && _mArrMapTable.capacity() > 3) {
+        if (_mSize <= _mCapacity / 3 && _mArrMapTable.capacity() > MIN_MAP_TABLE_SIZE) {
             _resize(_mCapacity / 2);
         }
     }
@@ -194,35 +213,9 @@ public: // push/pop
         destory(&(*(_mBegin)));
         _mBegin++;
         _mSize--;
-        if (_mSize < _mCapacity / 3 && _mArrMapTable.capacity() > 3) {
+        if (_mSize <= _mCapacity / 3 && _mArrMapTable.capacity() > MIN_MAP_TABLE_SIZE) {
             _resize(_mCapacity / 2);
         }
-    }
-
-    void resize(size_t n, const T &obj) {
-        // release
-        for (auto &arrPtr : _mArrMapTable) {
-            if (arrPtr) {
-                destory(arrPtr);
-                arrPtr = nullptr;
-            }
-        }
-        // compute size
-        size_t mapTabSize = (n / ARR_SIZE) + 2 + 1;
-        _mArrMapTable.resize(mapTabSize, nullptr);
-        // alloc arr and fill map-table
-        for (int i = 0; i < _mArrMapTable.capacity() - 1 /* save end-nullptr */; i++) {
-            _mArrMapTable[i] = _AllocArray::allocate();
-            construct(_mArrMapTable[i], _Array());
-        }
-        // init obj
-        _mBegin._mCurrArrPtrIt = _mEnd._mCurrArrPtrIt = _mArrMapTable.begin() + 1;
-        _mBegin._mCurr = _mEnd._mCurr = (*(_mBegin._mCurrArrPtrIt))->begin();
-        for (int i = 0; i < n; i++) {
-            // construct(addr, obj)
-            *(++_mEnd) = obj;
-        }
-        _mCapacity= _mSize = n;
     }
 
 /*
@@ -245,80 +238,57 @@ public: // iterator/range-for support
 */
 
 protected:
-    _ArrMapTable _mArrMapTable;
     //_Block _mFirst, _mEnd;
-    typename DoubleEndedQueue::IteratorType _mBegin, _mEnd;
     typename DoubleEndedQueue::SizeType _mSize, _mCapacity;
+    _ArrMapTable _mArrMapTable;
+    typename DoubleEndedQueue::IteratorType _mBegin, _mEnd;
 
-    /* request1: n % ARR_SIZE == 0 */
+    /* (temp)request1: n % ARR_SIZE == 0 */
     /* request2: _mSize < (n and _mCapacity) */
-    /* request3: arrive boundary: _mBegin._mCurrArrPtrIt == _mArrMapTable.begin() or
-                 _mEnd._mCurrArrPtrIt == _mArrMapTable.end() - 1
-    */
     void _resize(size_t n) {
 
-        bool updateEndCurrIt = false;
+        bool needUpdateEndCurrIt { false };
+        bool isExtend = _mCapacity < n;
+        size_t newMapTableSize = n / ARR_SIZE;
+        size_t oldArrStartIndex = _mBegin._mCurrArrIndex;
+        size_t oldArrEndIndex = _mEnd._mCurrArrIndex;
+        size_t newArrStartIndex = ((n - _mSize) / 2) / ARR_SIZE;
+        size_t newArrEndIndex = newArrStartIndex + (oldArrEndIndex - oldArrStartIndex);
 
-        if (n > _mCapacity) {
-            DSTRUCT_ASSERT(
-                _mBegin._mCurrArrPtrIt == _mArrMapTable.begin() ||
-                _mEnd._mCurrArrPtrIt == _mArrMapTable.end() - 1
-            );
-        }
+        _ArrMapTable oldArrMapTable = _mArrMapTable;
+        _mArrMapTable.resize(newMapTableSize, nullptr);
 
-        _mCapacity = n; // new _mCapacity
-
-        // 1. verify request
-        DSTRUCT_ASSERT(_mCapacity % ARR_SIZE == 0);
-        DSTRUCT_ASSERT(_mSize < _mCapacity);
-
-        // 2. compute used array number
-        auto oldArrNum = distance(_mEnd._mCurrArrPtrIt, _mBegin._mCurrArrPtrIt);
-        
-        // DSTRUCT_ASSERT(oldArrNum = 2);
-
-        // 3. balance: [  balance/2  [old]  balance/2  ]
-        size_t balance = /* new */ _mCapacity - _mSize;
-        size_t mapTabSize = (_mCapacity / ARR_SIZE) /*+ 2*/ + 1;
-        size_t arrStartIndex, arrEndIndex; // [arrStartIndex, arrEndIndex)
-        if (_mEnd._mCurrArrPtrIt == _mArrMapTable.end() - 1) {
-            // [  [   |///!]  !]
-            arrEndIndex = (mapTabSize - 1) - (balance / 2) / ARR_SIZE;
-            arrStartIndex = arrEndIndex - oldArrNum;
-            updateEndCurrIt = true;
-        } else { // _mBegin._mCurrArrPtrIt == _mArrMapTable.begin()
-            // [  [///|   !]  !]
-            arrStartIndex = (balance / 2) / ARR_SIZE;
-            arrEndIndex = arrStartIndex + oldArrNum;
-        }
-
-        //DSTRUCT_ASSERT(arrEndIndex == 3 && arrStartIndex == 1);
-
-        // 4. realloc
-        _mArrMapTable.pop_back(); // del nullptr
-        _ArrMapTable old = _mArrMapTable;
-        _mArrMapTable.resize(mapTabSize, nullptr);
-
-        // 5. move
-        for (int i = (mapTabSize - 1) - 1; i >= 0 ; i--) {
-            if (i < arrStartIndex || arrEndIndex <= i) {
+        // build new map table
+        for (int i = 0; i < newMapTableSize ; i++) {
+            if (i < newArrStartIndex || newArrEndIndex < i) {
                 _mArrMapTable[i] = _AllocArray::allocate();
                 construct(_mArrMapTable[i], _Array());
             } else {
-                if (!old.empty()) {
-                    _mArrMapTable[i] = old.back();
-                    old.pop_back();
-                }
+                _mArrMapTable[i] = oldArrMapTable[oldArrStartIndex + (i - newArrStartIndex)];
             }
         }
 
-        // 6. update iterator
-        _mBegin._mCurrArrPtrIt = _mArrMapTable.begin() + arrStartIndex;
-        _mEnd._mCurrArrPtrIt = _mArrMapTable.begin() + arrEndIndex;
-        if (updateEndCurrIt) {
-            _mEnd._mCurr = (*(_mEnd._mCurrArrPtrIt))->begin();
-            _mEnd.__sync();
+        // release arr in old map table
+        for (int i = 0; i < oldArrMapTable.capacity() ; i++) {
+            if (i < oldArrStartIndex || oldArrEndIndex < i) {
+                destory(oldArrMapTable[i]);
+                _AllocArray::deallocate(oldArrMapTable[i]);
+            }
         }
+
+        // update iterator
+        _mBegin._mCurrArrIndex = newArrStartIndex;
+
+        if (_mEnd._mCurr == _mArrMapTable[newArrEndIndex]->end()) {
+            newArrEndIndex++;
+            _mEnd._mCurrArrIndex = newArrEndIndex;
+            _mEnd._mCurr = _mArrMapTable[newArrEndIndex]->begin();
+            _mEnd.__sync();
+        } else {
+            _mEnd._mCurrArrIndex = newArrEndIndex;
+        }
+
+        _mCapacity = n;
     }
 
 };

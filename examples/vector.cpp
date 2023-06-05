@@ -6,7 +6,7 @@ int main() {
 
     std::cout << "\n\nTesting: " << __FILE__ << std::endl;
 
-    dstruct::Vector<int> vec(2, 10);
+    dstruct::Vector<int> vec(10, 2);
 
     for (auto v : vec) {     // 2. test const / range-for
         std::cout << v << " " << vec.size() << " " << vec.capacity() << std::endl;
