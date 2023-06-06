@@ -99,7 +99,7 @@ public: // RandomIterator
 
 template <typename T>
 typename PrimitiveIterator<T>::DifferenceType
-operator-(const PrimitiveIterator<T> &first, const PrimitiveIterator<T> &last) {
+operator-(const PrimitiveIterator<T> &last, const PrimitiveIterator<T> &first) {
     return last.mPointer - first.mPointer;
 };
 
