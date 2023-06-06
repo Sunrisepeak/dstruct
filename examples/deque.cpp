@@ -42,6 +42,13 @@ int main() {
 
     std::cout << std::endl;
 
+// random access (only-read)
+    for (int i = 0; i < deque.size(); i++) {
+        // deque[i] = 0; // only-read error
+        std::cout << "deque[" << i << "] = " << deque[i] << " / ";
+        std::cout << "deque[" << -(i + 1) << "] = " << deque[-(i + 1)] << std::endl;
+    }
+
     while (!deque.empty()) {
         deque.pop_front();
         std::cout << "pop front: " << deque.size() << " " << deque.capacity() << std::endl;

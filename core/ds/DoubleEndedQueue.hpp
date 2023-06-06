@@ -4,6 +4,7 @@
 #include <common.hpp>
 #include <algorithm.hpp>
 #include <ds/static/Array.hpp>
+#include <ds/Vector.hpp>
 
 namespace dstruct {
 
@@ -11,7 +12,7 @@ template<typename T, size_t ARR_SIZE, typename Alloc = port::Alloc>
 class DoubleEndedQueue;
 
 template<typename T, size_t ARR_SIZE>
-class _DoubleEndedQueueIterator : public DStructIteratorTypeSpec<T, BidirectionalIterator /* RandomIterator */ > {
+class _DoubleEndedQueueIterator : public DStructIteratorTypeSpec<T, RandomIterator> {
     friend class DoubleEndedQueue<T, ARR_SIZE, port::Alloc>;
     friend class _DoubleEndedQueueIterator<const T, ARR_SIZE>; // for it -> const-it
 protected:
@@ -82,13 +83,25 @@ public: // BidirectionalIterator
         --(*this);
         return oldSelf;
     }
-/*
+
 public: // RandomIterator
-    __Self operator+(const int &n) const { return __Self::mPointer + n; };
-    __Self operator-(const int &n) const { return __Self::mPointer -n; };
-    typename __Self::ReferenceType operator[](int index) { return __Self::mPointer[index]; }
-    typename __Self::ValueType operator[](int index) const { return __Self::mPointer[index]; };
-*/
+    __Self operator+(int n) const {
+        if (n < 0) {
+            return operator-(-n);
+        }
+        __Self self = *this;
+        while (n--) { self++; }
+        return self;
+    };
+
+    __Self operator-(int n) const {
+        if (n < 0) {
+            return operator+(-n);
+        }
+        __Self self = *this;
+        while (n--) { self--; }
+        return self;
+    };
 
 private:
     // update _mLNodePtr and mPointer
@@ -171,6 +184,12 @@ public: // check
     typename DoubleEndedQueue::ValueType
     front() const {
         return *(_mBegin.curr);
+    }
+
+    const T& operator[](int index) const {
+        if (index < 0)
+            return *(_mEnd + index);
+        return *(_mBegin + index);
     }
 
 public: // push/pop

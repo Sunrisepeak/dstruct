@@ -37,14 +37,14 @@ public: // BidirectionalIterator
     virtual Self& operator--() = 0;
     virtual Self operator--(int) = 0;
 public: // RandomIterator
-    virtual Self operator+(const int&) const = 0;
-    virtual Self operator-(const int&) const = 0;
-    virtual Self operator+=(const int&) const = 0;
-    virtual Self operator-=(const int&) const = 0;
-    virtual ReferenceType operator[](int index) = 0;
-    virtual ValueType operator[](int index) const = 0;
+    virtual Self operator+(int) const = 0;
+    virtual Self operator-(int) const = 0;
+    virtual Self operator+=(int) const = 0;
+    virtual Self operator-=(int) const = 0;
+//    virtual ReferenceType operator[](int index) = 0;
+//    virtual ValueType operator[](int index) const = 0;
 public: // other
-    virtual bool operator<(const int&) const = 0;
+    virtual bool operator<(int) const = 0;
     friend DifferenceType operator-(const Self&, const Self&); // outside for your it
 */
 };
@@ -92,8 +92,8 @@ public: // BidirectionalIterator
 public: // RandomIterator
     __Self operator+(const int &n) const { return __Self::mPointer + n; };
     __Self operator-(const int &n) const { return __Self::mPointer -n; };
-    typename __Self::ReferenceType operator[](int index) { return __Self::mPointer[index]; }
-    typename __Self::ValueType operator[](int index) const { return __Self::mPointer[index]; };
+//    typename __Self::ReferenceType operator[](int index) { return __Self::mPointer[index]; }
+//    typename __Self::ValueType operator[](int index) const { return __Self::mPointer[index]; };
 };
 
 
