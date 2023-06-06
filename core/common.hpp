@@ -85,17 +85,27 @@ protected:
 
 template<typename T>
 struct RemoveReference {
-    using type = T;
+    using Type = T;
 };
 
 template<typename T>
 struct RemoveReference<T &> {
-    using type = T;
+    using Type = T;
+};
+
+template<typename T>
+struct RemoveConst {
+    using Type = T;
+};
+
+template<typename T>
+struct RemoveConst<const T> {
+    using Type = T;
 };
 
 template <typename T>
-typename RemoveReference<T>::type&& move(T&& arg) {
-  return static_cast<typename RemoveReference<T>::type&&>(arg);
+typename RemoveReference<T>::Type&& move(T&& arg) {
+    return static_cast<typename RemoveReference<T>::Type&&>(arg);
 }
 
 template<typename T>

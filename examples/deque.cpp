@@ -8,6 +8,7 @@ int main() {
     std::cout << "\n\nTesting: " << __FILE__ << std::endl;
 
     dstruct::DoubleEndedQueue<int, 10> _deque; // 0. test cntor
+    dstruct::Deque<int /* Array Size Default 32 */> __deque;
     dstruct::Deque<int, 5> deque;
 
 // test dynamic resize
@@ -26,12 +27,25 @@ int main() {
 
     }
 
+//  iterator test(only read/const)
+    std::cout << "deque: ";
+
+    for (auto &val : deque) {
+        // val = 1; // only-read error
+        std::cout << " " << val;
+    }
+    std::cout << " | ";
+    for (auto it = deque.begin(); it != deque.end(); it++) {
+        // *it = 1; // only-read error
+        std::cout << " " << *it;
+    }
+
+    std::cout << std::endl;
+
     while (!deque.empty()) {
         deque.pop_front();
         std::cout << "pop front: " << deque.size() << " " << deque.capacity() << std::endl;
     }
-
-    std::cout << std::endl;
 
     return 0;
 }

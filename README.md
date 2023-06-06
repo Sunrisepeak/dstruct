@@ -21,7 +21,7 @@ an easily portable data structure template library...
 |          |          Vector           |        |
 |          |   EList(Embedded List)    |        |
 |          | DList(Doubly Linked List) |        |
-|          |                           |        |
+|          |  Deque(DoubleEndedQueue)  |        |
 
 
 

@@ -11,8 +11,9 @@ template<typename T, size_t ARR_SIZE, typename Alloc = port::Alloc>
 class DoubleEndedQueue;
 
 template<typename T, size_t ARR_SIZE>
-class _DoubleEndedQueueIterator : public DStructIteratorTypeSpec<T, RandomIterator> {
+class _DoubleEndedQueueIterator : public DStructIteratorTypeSpec<T, BidirectionalIterator /* RandomIterator */ > {
     friend class DoubleEndedQueue<T, ARR_SIZE, port::Alloc>;
+    friend class _DoubleEndedQueueIterator<const T, ARR_SIZE>; // for it -> const-it
 protected:
     using _Array         = Array<T, ARR_SIZE>;
     using _ArrMapTable   = Vector<_Array *>;
@@ -20,30 +21,40 @@ private:
     using __Self = _DoubleEndedQueueIterator;
 
 protected: // only for DoubleEndedQueue
-    _DoubleEndedQueueIterator() : _mArrMapTablePtr { nullptr } { };
+    _DoubleEndedQueueIterator() : _mArrMapTablePtr { nullptr } { }
 
 public:
     _DoubleEndedQueueIterator(
+        size_t mapIndex,
         size_t arrIndex,
-        typename _Array::IteratorType currIt,
         _ArrMapTable *mapTablePtr
-    ) : _mCurrArrIndex { arrIndex }, _mCurr { currIt }, _mArrMapTablePtr(mapTablePtr) {
+    ) : _mCurrMapIndex { mapIndex }, _mArrMapTablePtr(mapTablePtr) {
+        _mCurr = (*_mArrMapTablePtr)[mapIndex]->begin() + arrIndex;
         __sync();
     }
+
 /*
     _DoubleEndedQueueIterator(const __Self&) = default;
     _DoubleEndedQueueIterator(__Self&&) = default;
     __Self & operator=(const __Self&) = default;
     __Self & operator=(__Self&&) = default;
 */
+    // for it -> const-it
+    _DoubleEndedQueueIterator(const _DoubleEndedQueueIterator<typename RemoveConst<T>::Type, ARR_SIZE> &obj) :
+        _DoubleEndedQueueIterator() {
+            _mCurrMapIndex = obj._mCurrMapIndex,
+            _mCurr = obj._mCurr.operator->(); // get it-pointer to init const-it
+            _mArrMapTablePtr = reinterpret_cast<decltype(_mArrMapTablePtr)>(obj._mArrMapTablePtr);
+            __sync();
+        }
 
 public: // ForwardIterator
     __Self& operator++() {
         static int cnt = 1;
         _mCurr++;
-        if (_mCurr == (*_mArrMapTablePtr)[_mCurrArrIndex]->end()) {
-            if (_mCurrArrIndex + 1 < (*_mArrMapTablePtr).capacity()) {
-                _mCurr = (*_mArrMapTablePtr)[++_mCurrArrIndex]->begin();
+        if (_mCurr == (*_mArrMapTablePtr)[_mCurrMapIndex]->end()) {
+            if (_mCurrMapIndex + 1 < (*_mArrMapTablePtr).capacity()) {
+                _mCurr = (*_mArrMapTablePtr)[++_mCurrMapIndex]->begin();
             }
         }
         __sync();
@@ -58,8 +69,8 @@ public: // ForwardIterator
 
 public: // BidirectionalIterator
     __Self& operator--() {
-        if (_mCurr == (*_mArrMapTablePtr)[_mCurrArrIndex]->begin()) {
-            _mCurr = (*_mArrMapTablePtr)[--_mCurrArrIndex]->end();
+        if (_mCurr == (*_mArrMapTablePtr)[_mCurrMapIndex]->begin()) {
+            _mCurr = (*_mArrMapTablePtr)[--_mCurrMapIndex]->end();
         }
         _mCurr--;
         __sync();
@@ -86,7 +97,7 @@ private:
     }
 
 protected:
-    size_t _mCurrArrIndex;
+    size_t _mCurrMapIndex;
     typename _Array::IteratorType _mCurr;     // point to Element / Note: when _mCurr changed, pls __sync
     _ArrMapTable *_mArrMapTablePtr;  // point to Array
 };
@@ -122,7 +133,7 @@ public:
             construct(_mArrMapTable[i], _Array());
         }
         auto midMapIndex = MIN_MAP_TABLE_SIZE / 2;
-        _mBegin = _mEnd = decltype(_mBegin)(midMapIndex, _mArrMapTable[midMapIndex]->begin(), &_mArrMapTable);
+        _mBegin = _mEnd = decltype(_mBegin)(midMapIndex, 0, &_mArrMapTable);
     }
 
     ~DoubleEndedQueue() {
@@ -203,7 +214,7 @@ public: // push/pop
     void pop_back() {
         _mEnd--;
         _mSize--;
-        destory(&(*(_mEnd)));
+        destory(_mEnd.operator->());
         if (_mSize <= _mCapacity / 3 && _mArrMapTable.capacity() > MIN_MAP_TABLE_SIZE) {
             _resize(_mCapacity / 2);
         }
@@ -218,24 +229,15 @@ public: // push/pop
         }
     }
 
-/*
 public: // iterator/range-for support
-    IteratorType begin() {
 
+    typename DoubleEndedQueue::ConstIteratorType begin() const {
+        return _mBegin;
     }
 
-    ConstIteratorType begin() const {
-
+    typename DoubleEndedQueue::ConstIteratorType end() const {
+        return _mEnd;
     }
-
-    IteratorType end() {
-
-    }
-
-    ConstIteratorType end() const {
-
-    }
-*/
 
 protected:
     //_Block _mFirst, _mEnd;
@@ -250,8 +252,8 @@ protected:
         bool needUpdateEndCurrIt { false };
         bool isExtend = _mCapacity < n;
         size_t newMapTableSize = n / ARR_SIZE;
-        size_t oldArrStartIndex = _mBegin._mCurrArrIndex;
-        size_t oldArrEndIndex = _mEnd._mCurrArrIndex;
+        size_t oldArrStartIndex = _mBegin._mCurrMapIndex;
+        size_t oldArrEndIndex = _mEnd._mCurrMapIndex;
         size_t newArrStartIndex = ((n - _mSize) / 2) / ARR_SIZE;
         size_t newArrEndIndex = newArrStartIndex + (oldArrEndIndex - oldArrStartIndex);
 
@@ -271,21 +273,21 @@ protected:
         // release arr in old map table
         for (int i = 0; i < oldArrMapTable.capacity() ; i++) {
             if (i < oldArrStartIndex || oldArrEndIndex < i) {
-                destory(oldArrMapTable[i]);
+                //destory(oldArrMapTable[i]);
                 _AllocArray::deallocate(oldArrMapTable[i]);
             }
         }
 
         // update iterator
-        _mBegin._mCurrArrIndex = newArrStartIndex;
+        _mBegin._mCurrMapIndex = newArrStartIndex;
 
         if (_mEnd._mCurr == _mArrMapTable[newArrEndIndex]->end()) {
             newArrEndIndex++;
-            _mEnd._mCurrArrIndex = newArrEndIndex;
+            _mEnd._mCurrMapIndex = newArrEndIndex;
             _mEnd._mCurr = _mArrMapTable[newArrEndIndex]->begin();
             _mEnd.__sync();
         } else {
-            _mEnd._mCurrArrIndex = newArrEndIndex;
+            _mEnd._mCurrMapIndex = newArrEndIndex;
         }
 
         _mCapacity = n;

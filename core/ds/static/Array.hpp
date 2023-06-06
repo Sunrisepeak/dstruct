@@ -69,11 +69,19 @@ public: // base op
         return _mC;
     }
 
+    typename Array::ConstIteratorType cbegin() const {
+        return _mC;
+    }
+
     typename Array::IteratorType end() {
         return _mC + N;
     }
 
     typename Array::ConstIteratorType end() const {
+        return _mC + N;
+    }
+
+    typename Array::ConstIteratorType cend() const {
         return _mC + N;
     }
 
