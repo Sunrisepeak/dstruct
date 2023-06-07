@@ -96,6 +96,14 @@ public: // base op
         return _Node::to_node(_mHeadNode.link.prev)->data;
     }
 
+    T front() const {
+        return _Node::to_node(_mHeadNode.link.next)->data;
+    }
+
+    void push(const T &obj) {
+        push_back();
+    }
+
     void push_back(const T &obj) {
         // 1. alloc and construct node
         _Node *nPtr = _AllocNode::allocate();
@@ -112,6 +120,21 @@ public: // base op
         _Node::LinkType::add(_mHeadNode.link.prev, _Node::to_link(nPtr));
         // 4. increase size
         _mSize++;
+    }
+
+    void push_front(const T &obj) {
+        // 1. alloc and construct node
+        _Node *nPtr = _AllocNode::allocate();
+        _mHeadNode.data = obj; // only for contruct nPtr
+        construct(nPtr, _mHeadNode);
+        // 2. add
+        _Node::LinkType::add(&(_mHeadNode.link), _Node::to_link(nPtr));
+        // 4. increase size
+        _mSize++;
+    }
+
+    void pop() {
+        pop_back();
     }
 
     void pop_back() {
@@ -135,6 +158,17 @@ public: // base op
         _mSize--;
 
         //return data;
+    }
+
+    void pop_front() {
+        typename _Node::LinkType *lPtr = _mHeadNode.link.next;
+        _Node::LinkType::del(lPtr->prev, lPtr);
+        // 3. get data
+        _Node *nPtr = _Node::to_node(lPtr);
+        // 4. free and decrease size/len
+        destory(nPtr);
+        _AllocNode::deallocate(nPtr);
+        _mSize--;
     }
 
 public: // support it/range-for

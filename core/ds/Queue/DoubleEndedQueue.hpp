@@ -119,7 +119,7 @@ protected:
  
 template<typename T, size_t ARR_SIZE, typename Alloc>
 class DoubleEndedQueue :
-    public _DStructTypeSpec<T, Alloc, _DoubleEndedQueueIterator<T, ARR_SIZE>, _DoubleEndedQueueIterator<const T, ARR_SIZE>> {
+    public _DStructTypeSpec<T, _DoubleEndedQueueIterator<T, ARR_SIZE>, _DoubleEndedQueueIterator<const T, ARR_SIZE>, Alloc> {
 
 protected:
     using _Array      = Array<T, ARR_SIZE>;
@@ -178,12 +178,12 @@ public: // base op
 public: // check
     typename DoubleEndedQueue::ValueType
     back() const {
-        return *(_mEnd._mCurr);
+        return *(_mEnd - 1);
     }
 
     typename DoubleEndedQueue::ValueType
     front() const {
-        return *(_mBegin.curr);
+        return *(_mBegin._mCurr);
     }
 
     const T& operator[](int index) const {
@@ -266,6 +266,9 @@ protected:
 
     /* (temp)request1: n % ARR_SIZE == 0 */
     /* request2: _mSize < (n and _mCapacity) */
+    // (newCapacity - _mSize) / ARR_SIZE >= 2
+    // _mSize = oldCapacity / X
+    // newCapacity = oldCapacity / 2
     void _resize(size_t n) {
 
         bool needUpdateEndCurrIt { false };
@@ -273,8 +276,17 @@ protected:
         size_t newMapTableSize = n / ARR_SIZE;
         size_t oldArrStartIndex = _mBegin._mCurrMapIndex;
         size_t oldArrEndIndex = _mEnd._mCurrMapIndex;
+        size_t arrNum = oldArrEndIndex - oldArrStartIndex;
         size_t newArrStartIndex = ((n - _mSize) / 2) / ARR_SIZE;
-        size_t newArrEndIndex = newArrStartIndex + (oldArrEndIndex - oldArrStartIndex);
+        size_t newArrEndIndex = newArrStartIndex + arrNum;
+
+        // request: n / ARR_SIZE <= ((_mSize - 1 - 1) / ARR_SIZE + 1 + 1)
+        // n = y * oldCapacity  
+        if (!isExtend && newMapTableSize >= arrNum) {
+            // when arrNum = ((_mSize - 1 - 1) / ARR_SIZE + 1 + 1)
+            // exist newMapTableSize < arrNum
+            return;
+        }
 
         _ArrMapTable oldArrMapTable = _mArrMapTable;
         _mArrMapTable.resize(newMapTableSize, nullptr);

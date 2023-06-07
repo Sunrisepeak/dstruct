@@ -44,8 +44,9 @@ public: // base op
     virtual bool empty() const = 0;
 
     // check
-    ValueType back() const = 0;
-    ValueType front() const = 0;
+    virtual ValueType back() const = 0;
+    virtual ValueType front() const = 0;
+    virtual const ValueType & operator[](int) = 0;
 
     // push/pop
     virtual void push(const T&) = 0;
@@ -65,9 +66,9 @@ public: // base op
 
 template<
     typename T,
-    typename Alloc = port::Alloc,
     typename Iterator = PrimitiveIterator<T>,
-    typename ConstIterator = PrimitiveIterator<const T>
+    typename ConstIterator = PrimitiveIterator<const T>,
+    typename Alloc = port::Alloc
 >
 class _DStructTypeSpec {
 public:
@@ -81,6 +82,16 @@ public:
 protected:
     using _Alloc          = DSAlloc<T, Alloc>;
 };
+
+#define DSTRUCT_TYPE_SPEC_DECLARE(DStruct) \
+public: \
+    using ValueType            = typename DStruct::ValueType; \
+    using ReferenceType        = typename DStruct::ReferenceType; \
+    using PointerType          = typename DStruct::PointerType; \
+    using SizeType             = typename DStruct::SizeType; \
+    using DifferenceType       = typename DStruct::DifferenceType; \
+    using IteratorType         = typename DStruct::IteratorType; \
+    using ConstIteratorType    = typename DStruct::ConstIteratorType;
 
 
 template<typename T>

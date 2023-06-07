@@ -33,3 +33,13 @@ target("dstruct_deque")
     set_kind("binary")
     add_cxxflags("-g")
     add_files("examples/deque.cpp")
+
+target("dstruct_queue")
+    set_kind("binary")
+    add_cxxflags("-g")
+    add_files("examples/queue.cpp")
+
+target("dstruct_stack")
+    set_kind("binary")
+    add_cxxflags("-g")
+    add_files("examples/stack.cpp")

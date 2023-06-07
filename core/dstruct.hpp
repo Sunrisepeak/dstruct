@@ -4,7 +4,9 @@
 #include <ds/static/Array.hpp>
 #include <ds/static/EmbeddedList.hpp>
 #include <ds/Vector.hpp>
-#include <ds/DoubleEndedQueue.hpp>
+#include <ds/adapter/Stack.hpp>
+#include <ds/adapter/Queue.hpp>
+#include <ds/Queue/DoubleEndedQueue.hpp>
 #include <ds/LinkedList/DoublyLinkedlist.hpp>
 
 
@@ -26,6 +28,14 @@ namespace dstruct {
     // DoublyLinkedlist
     template<typename T, typename Alloc = port::Alloc>
     using DList = DoublyLinkedlist<T, Alloc>;
+
+    // Queue
+    template<typename T>
+    using Queue = adapter::Queue<T, DoubleEndedQueue<T, 32>>;
+
+    // Stack
+    template<typename T>
+    using Stack = adapter::Stack<T, Vector<T>>;
 
 };
 
