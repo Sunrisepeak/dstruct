@@ -34,6 +34,12 @@ DStruct 是一个易于移植且结构简洁的数据结构模板库
 
   > 测试用例 / Demo
 
+
+
+### 数据结构
+
+> 范型数据结构
+
 |                 DStruct                  | Status |
 | :--------------------------------------: | :----: |
 |       [Array](examples/array.cpp)        |        |
@@ -44,6 +50,18 @@ DStruct 是一个易于移植且结构简洁的数据结构模板库
 |       [Queue](examples/queue.cpp)        |        |
 |       [Stack](examples/stack.cpp)        |        |
 |                                          |        |
+
+
+
+### 算法
+
+> 范型算法
+
+|                  Algorithm                   | Status |
+| :------------------------------------------: | :----: |
+| [for_each](examples/algorithms/for_each.cpp) |        |
+|                                              |        |
+|                                              |        |
 
 
 

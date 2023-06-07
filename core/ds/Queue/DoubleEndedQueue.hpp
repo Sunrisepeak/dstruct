@@ -41,7 +41,7 @@ public:
     __Self & operator=(__Self&&) = default;
 */
     // for it -> const-it
-    _DoubleEndedQueueIterator(const _DoubleEndedQueueIterator<typename RemoveConst<T>::Type, ARR_SIZE> &obj) :
+    _DoubleEndedQueueIterator(const _DoubleEndedQueueIterator<typename types::RemoveConst<T>::Type, ARR_SIZE> &obj) :
         _DoubleEndedQueueIterator() {
             _mCurrMapIndex = obj._mCurrMapIndex,
             _mCurr = obj._mCurr.operator->(); // get it-pointer to init const-it

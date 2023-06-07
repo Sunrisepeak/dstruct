@@ -9,6 +9,7 @@
 #include <ds/Queue/DoubleEndedQueue.hpp>
 #include <ds/LinkedList/DoublyLinkedlist.hpp>
 
+#include <algorithm.hpp>
 
 namespace dstruct {
     // Array

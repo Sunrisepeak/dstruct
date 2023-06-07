@@ -4,6 +4,7 @@
 // Don't modify this file easily
 
 #include <dstruct-port.h>
+#include <types.hpp>
 #include <Iterator.hpp>
 
 namespace dstruct {
@@ -93,30 +94,9 @@ public: \
     using IteratorType         = typename DStruct::IteratorType; \
     using ConstIteratorType    = typename DStruct::ConstIteratorType;
 
-
-template<typename T>
-struct RemoveReference {
-    using Type = T;
-};
-
-template<typename T>
-struct RemoveReference<T &> {
-    using Type = T;
-};
-
-template<typename T>
-struct RemoveConst {
-    using Type = T;
-};
-
-template<typename T>
-struct RemoveConst<const T> {
-    using Type = T;
-};
-
 template <typename T>
-typename RemoveReference<T>::Type&& move(T&& arg) {
-    return static_cast<typename RemoveReference<T>::Type&&>(arg);
+typename types::RemoveReference<T>::Type&& move(T&& arg) {
+    return static_cast<typename types::RemoveReference<T>::Type&&>(arg);
 }
 
 template<typename T>

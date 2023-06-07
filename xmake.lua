@@ -43,3 +43,9 @@ target("dstruct_stack")
     set_kind("binary")
     add_cxxflags("-g")
     add_files("examples/stack.cpp")
+
+-- algorithms
+target("dstruct_for_each")
+    set_kind("binary")
+    add_cxxflags("-g")
+    add_files("examples/algorithms/for_each.cpp")
