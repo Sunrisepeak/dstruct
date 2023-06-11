@@ -1,8 +1,8 @@
 #ifndef __STACK_HPP__DSTRUCT
 #define __STACK_HPP__DSTRUCT
 
-#include <common.hpp>
-#include <ds/Vector.hpp>
+#include <core/common.hpp>
+#include <core/ds/Vector.hpp>
 
 namespace dstruct {
 

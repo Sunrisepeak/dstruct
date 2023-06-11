@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <cassert>
 
-#include <dstruct-port.h>
+#include <port/dstruct-port.h>
 
 #define __DSTRUCT_PORT_ASSERT(expr) assert(expr)
 

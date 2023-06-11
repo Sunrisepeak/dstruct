@@ -1,7 +1,7 @@
 #ifndef __ALGORITHM_HPP__DSTRUCT
 #define __ALGORITHM_HPP__DSTRUCT
 
-#include <types.hpp>
+#include <core/types.hpp>
 namespace dstruct {
 
 namespace algorithm {

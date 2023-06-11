@@ -1,10 +1,10 @@
 #ifndef __DOUBLE_ENDED_QUEUE_HPP__DSTRUCT
 #define __DOUBLE_ENDED_QUEUE_HPP__DSTRUCT
 
-#include <common.hpp>
-#include <algorithm.hpp>
-#include <ds/static/Array.hpp>
-#include <ds/Vector.hpp>
+#include <core/common.hpp>
+#include <core/algorithm.hpp>
+#include <core/ds/static/Array.hpp>
+#include <core/ds/Vector.hpp>
 
 namespace dstruct {
 

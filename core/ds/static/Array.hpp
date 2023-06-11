@@ -1,7 +1,7 @@
 #ifndef __ARRAY_HPP__DSTRUCT
 #define __ARRAY_HPP__DSTRUCT
 
-#include <common.hpp>
+#include <core/common.hpp>
 
 namespace dstruct {
 

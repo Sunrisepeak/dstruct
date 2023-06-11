@@ -3,9 +3,9 @@
 
 // Don't modify this file easily
 
-#include <dstruct-port.h>
-#include <types.hpp>
-#include <Iterator.hpp>
+#include <port/dstruct-port.h>
+#include <core/types.hpp>
+#include <core/Iterator.hpp>
 
 namespace dstruct {
 

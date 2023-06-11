@@ -1,8 +1,8 @@
 #ifndef __QUEUE_HPP__DSTRUCT
 #define __QUEUE_HPP__DSTRUCT
 
-#include <common.hpp>
-#include <ds/Queue/DoubleEndedQueue.hpp>
+#include <core/common.hpp>
+#include <core/ds/Queue/DoubleEndedQueue.hpp>
 
 namespace dstruct {
 

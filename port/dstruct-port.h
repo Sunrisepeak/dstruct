@@ -34,7 +34,7 @@ struct Alloc {
 }
 
 // interface impl
-#include <libc-dstruct-port.hpp>
+#include <port/libc/libc-dstruct-port.hpp>
 
 #ifdef __DSTRUCT_PORT_ASSERT
 #define DSTRUCT_ASSERT(expr) __DSTRUCT_PORT_ASSERT(expr)

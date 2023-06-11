@@ -1,13 +1,14 @@
 set_languages("c++11")
 
 add_includedirs(
-    "port",
-    "core"
+    "."
+    --"port",
+    --"core"
     --"core/ds",
     --"core/ds/static"
 )
 
-add_includedirs("port/libc")
+--add_includedirs("port/libc")
 
 target("dstruct_test")
     set_kind("binary")

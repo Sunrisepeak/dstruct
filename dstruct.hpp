@@ -1,15 +1,15 @@
 #ifndef __DSTRUCT_HPP__DSTRUCT
 #define __DSTRUCT_HPP__DSTRUCT
 
-#include <ds/static/Array.hpp>
-#include <ds/static/EmbeddedList.hpp>
-#include <ds/Vector.hpp>
-#include <ds/adapter/Stack.hpp>
-#include <ds/adapter/Queue.hpp>
-#include <ds/Queue/DoubleEndedQueue.hpp>
-#include <ds/LinkedList/DoublyLinkedlist.hpp>
+#include <core/ds/static/Array.hpp>
+#include <core/ds/static/EmbeddedList.hpp>
+#include <core/ds/Vector.hpp>
+#include <core/ds/adapter/Stack.hpp>
+#include <core/ds/adapter/Queue.hpp>
+#include <core/ds/Queue/DoubleEndedQueue.hpp>
+#include <core/ds/LinkedList/DoublyLinkedlist.hpp>
 
-#include <algorithm.hpp>
+#include <core/algorithm.hpp>
 
 namespace dstruct {
     // Array

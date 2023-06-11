@@ -1,9 +1,9 @@
 #ifndef __DOUBLE_LINKED_LIST_HPP__DSTRUCT
 #define __DOUBLE_LINKED_LIST_HPP__DSTRUCT
 
-#include <common.hpp>
+#include <core/common.hpp>
 
-#include <ds/static/EmbeddedList.hpp>
+#include <core/ds/static/EmbeddedList.hpp>
 
 namespace dstruct {
 

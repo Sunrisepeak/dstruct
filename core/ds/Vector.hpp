@@ -1,7 +1,7 @@
 #ifndef __VECTOR_HPP__DSTRUCT
 #define __VECTOR_HPP__DSTRUCT
 
-#include <common.hpp>
+#include <core/common.hpp>
 
 namespace dstruct {
 
