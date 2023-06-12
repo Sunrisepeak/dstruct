@@ -83,7 +83,7 @@ int main() {
 
 
 
-### 算法列表
+## 算法列表
 
 > 范型算法
 
@@ -95,7 +95,7 @@ int main() {
 
 
 
-  ### 构建和运行示例
+## 构建和运行示例
 
   ```
   curl -fsSL https://xmake.io/shget.text | bash # 安装 xmake
@@ -103,9 +103,9 @@ int main() {
   xmake r dstruct_vector # 运行 dstruct_vector 示例，更多细节请查看xmake.lua
   ```
 
-  
 
-  ## 其他
+
+## 其他
 
   - [Github](https://github.com/Sunrisepeak/DStruct)
 
