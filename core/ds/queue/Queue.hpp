@@ -2,7 +2,7 @@
 #define __QUEUE_HPP__DSTRUCT
 
 #include <core/common.hpp>
-#include <core/ds/Queue/DoubleEndedQueue.hpp>
+#include <core/ds/queue/DoubleEndedQueue.hpp>
 
 namespace dstruct {
 
@@ -10,7 +10,7 @@ namespace adapter {
 
 // DS: need support pop_front / push_back 
 template<typename T, typename DS>
-class Queue : public _DStructTypeSpec<T, typename DS::IteratorType, typename DS::ConstIteratorType> {
+class Queue : public _DStructTypeSpec<T, typename DS::ConstIteratorType, typename DS::ConstIteratorType> {
 
     DSTRUCT_TYPE_SPEC_DECLARE(DS)
 

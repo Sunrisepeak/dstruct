@@ -3,8 +3,8 @@
 
 #include <core/common.hpp>
 #include <core/algorithm.hpp>
-#include <core/ds/static/Array.hpp>
-#include <core/ds/Vector.hpp>
+#include <core/ds/array/Array.hpp>
+#include <core/ds/array/Vector.hpp>
 
 namespace dstruct {
 

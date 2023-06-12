@@ -7,6 +7,8 @@
 #include <core/types.hpp>
 #include <core/Iterator.hpp>
 
+#include <map>
+
 namespace dstruct {
 
 template<typename T, typename Alloc>
@@ -98,6 +100,21 @@ template <typename T>
 typename types::RemoveReference<T>::Type&& move(T&& arg) {
     return static_cast<typename types::RemoveReference<T>::Type&&>(arg);
 }
+
+
+template<typename T>
+struct less {
+    bool operator()(const T& a, const T& b) const {
+        return a < b;
+    }
+};
+
+template<typename T>
+struct greater {
+    bool operator()(const T& a, const T& b) const {
+        return a > b;
+    }
+};
 
 template<typename T>
 T* construct(void *addr, const T& obj) {

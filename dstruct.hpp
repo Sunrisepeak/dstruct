@@ -1,13 +1,22 @@
 #ifndef __DSTRUCT_HPP__DSTRUCT
 #define __DSTRUCT_HPP__DSTRUCT
 
-#include <core/ds/static/Array.hpp>
-#include <core/ds/static/EmbeddedList.hpp>
-#include <core/ds/Vector.hpp>
-#include <core/ds/adapter/Stack.hpp>
-#include <core/ds/adapter/Queue.hpp>
-#include <core/ds/Queue/DoubleEndedQueue.hpp>
-#include <core/ds/LinkedList/DoublyLinkedlist.hpp>
+#include <core/ds/array/Vector.hpp>
+
+// static
+#include <core/ds/array/Array.hpp>
+#include <core/ds/linked-list/EmbeddedList.hpp>
+
+// stack
+#include <core/ds/stack/Stack.hpp>
+#include <core/ds/stack/XValueStack.hpp>
+
+// queue
+#include <core/ds/queue/Queue.hpp>
+#include <core/ds/queue/DoubleEndedQueue.hpp>
+
+// linked list
+#include <core/ds/linked-list/DoublyLinkedlist.hpp>
 
 #include <core/algorithm.hpp>
 
@@ -31,12 +40,18 @@ namespace dstruct {
     using DList = DoublyLinkedlist<T, Alloc>;
 
     // Queue
-    template<typename T>
-    using Queue = adapter::Queue<T, DoubleEndedQueue<T, 32>>;
+    template<typename T, typename Alloc = port::Alloc>
+    using Queue = adapter::Queue<T, DoubleEndedQueue<T, 32, Alloc>>;
 
     // Stack
-    template<typename T>
-    using Stack = adapter::Stack<T, Vector<T>>;
+    template<typename T, typename Alloc = port::Alloc>
+    using Stack = adapter::Stack<T, Vector<T, Alloc>>;
+
+    template<typename T, typename Alloc = port::Alloc>
+    using MinStack = stack::XValueStack<T, less<T>, adapter::Stack<T, Vector<T, Alloc>> >;
+
+    template<typename T, typename Alloc = port::Alloc>
+    using MaxStack = stack::XValueStack<T, greater<T>, adapter::Stack<T, Vector<T, Alloc>> >;
 
 };
 

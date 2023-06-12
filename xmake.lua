@@ -45,6 +45,11 @@ target("dstruct_stack")
     add_cxxflags("-g")
     add_files("examples/stack.cpp")
 
+target("dstruct_xvalue_stack")
+    set_kind("binary")
+    add_cxxflags("-g")
+    add_files("examples/stack/xvalue_stack.cpp")
+
 -- algorithms
 target("dstruct_for_each")
     set_kind("binary")

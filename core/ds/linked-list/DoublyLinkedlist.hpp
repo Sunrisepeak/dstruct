@@ -3,7 +3,7 @@
 
 #include <core/common.hpp>
 
-#include <core/ds/static/EmbeddedList.hpp>
+#include <core/ds/linked-list/EmbeddedList.hpp>
 
 namespace dstruct {
 

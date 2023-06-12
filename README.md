@@ -15,45 +15,28 @@ DStruct 是一个易于移植且结构简洁的数据结构模板库
 
 ## 数据结构列表
 
-| Category |           Name            | Status |
-| :------: | :-----------------------: | ------ |
-|          |           Array           |        |
-|          |          Vector           |        |
-|          |   EList(Embedded List)    |        |
-|          | DList(Doubly Linked List) |        |
-|          |  Deque(DoubleEndedQueue)  |        |
-|          |           Queue           |        |
-|          |           Stack           |        |
-|          |                           |        |
+| 类别  |           名称            |    描述    |                      示例                      | 备注/状态 |
+| :---: | :-----------------------: | :--------: | :--------------------------------------------: | --------- |
+| Array |           Array           |  静态数组  |          [Array](examples/array.cpp)           |           |
+|       |          Vector           |  动态数组  |         [Vector](examples/vector.cpp)          |           |
+| List  |   EList(Embedded List)    | 嵌入式链表 |      [EList](examples/embedded_list.cpp)       |           |
+|       | DList(Doubly Linked List) |   双链表   |    [DList](examples/double_linked_list.cpp)    |           |
+| Queue |  Deque(DoubleEndedQueue)  |  双端队列  |          [Deque](examples/deque.cpp)           |           |
+|       |           Queue           |    队列    |          [Queue](examples/queue.cpp)           |           |
+| Stack |           Stack           |     栈     |          [Stack](examples/stack.cpp)           |           |
+|       |        XValueStack        |   最值栈   | [XValueStack](examples/stack/xvalue_stack.cpp) |           |
+|       |         MinStack          |  最小值栈  |  [MinStack](examples/stack/xvalue_stack.cpp)   |           |
+|       |         MaxStack          |  最大值栈  |  [MaxStack](examples/stack/xvalue_stack.cpp)   |           |
+|       |                           |            |                                                |           |
+|       |                           |            |                                                |           |
+|       |                           |            |                                                |           |
+|       |                           |            |                                                |           |
 
 > 注: 功能开发中, 性能暂时未测试和优化
 
 
 
-  ## 示例
-
-  > 测试用例 / Demo
-
-
-
-### 数据结构
-
-> 范型数据结构
-
-|                 DStruct                  | Status |
-| :--------------------------------------: | :----: |
-|       [Array](examples/array.cpp)        |        |
-|      [Vector](examples/vector.cpp)       |        |
-|       [Deque](examples/deque.cpp)        |        |
-|   [EList](examples/embedded_list.cpp)    |        |
-| [DList](examples/double_linked_list.cpp) |        |
-|       [Queue](examples/queue.cpp)        |        |
-|       [Stack](examples/stack.cpp)        |        |
-|                                          |        |
-
-
-
-### 算法
+### 算法列表
 
 > 范型算法
 
