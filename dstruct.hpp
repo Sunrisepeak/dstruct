@@ -1,6 +1,8 @@
 #ifndef __DSTRUCT_HPP__DSTRUCT
 #define __DSTRUCT_HPP__DSTRUCT
 
+#include <core/ds/Heap.hpp>
+
 #include <core/ds/array/Vector.hpp>
 
 // static
@@ -53,6 +55,13 @@ namespace dstruct {
     template<typename T, typename Alloc = port::Alloc>
     using MaxStack = stack::XValueStack<T, greater<T>, adapter::Stack<T, Vector<T, Alloc>> >;
 
+
+    // Heap
+    template<typename T, typename Alloc = port::Alloc>
+    using MinHeap = Heap<T, less<T>, Alloc>;
+
+    template<typename T, typename Alloc = port::Alloc>
+    using MaxHeap = Heap<T, greater<T>, Alloc>;
 };
 
 #endif

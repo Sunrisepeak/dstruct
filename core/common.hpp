@@ -37,7 +37,7 @@ public:
     using IteratorType         = Iterator<ValueType>;
     using ConstIteratorType    = Iterator<const ValueType>;
 protected:
-    using _Alloc          = DSAlloc<T, Alloc>;
+    using _Alloc               = DSAlloc<T, Alloc>;
 
 /*
 public: // base op
@@ -55,9 +55,9 @@ public: // base op
     virtual void push(const T&) = 0;
     virtual void push_back() = 0;
     virtual void push_front() = 0;
-    virtual void pop() = 0;
-    virtual void pop_back() = 0;
-    virtual void pop_front() = 0;
+    virtual T pop() = 0;
+    virtual T pop_back() = 0;
+    virtual T pop_front() = 0;
 
     // iterator/range-for support
     virtual IteratorType begin() = 0;
@@ -115,6 +115,13 @@ struct greater {
         return a > b;
     }
 };
+
+template<typename T>
+void swap(T &a, T &b) {
+    T c = dstruct::move(a);
+    a = dstruct::move(b);
+    b = dstruct::move(c);
+}
 
 template<typename T>
 T* construct(void *addr, const T& obj) {

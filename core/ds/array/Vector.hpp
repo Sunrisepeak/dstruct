@@ -27,6 +27,36 @@ public:
         }
     }
 
+    Vector & operator=(const Vector &vec) {
+        resize(vec._mCapacity);
+        _mSize = vec._mSize;
+        for (int i = 0; i < _mSize; i++) {
+            _mC[i] = vec._mC[i];
+        }
+        return *this;
+    }
+
+    Vector(Vector &&vec) : Vector() {
+        this->_mC = vec._mC;
+        this->_mSize = vec._mSize;
+        this->_mCapacity = vec._mCapacity;
+        vec._mC = vec._mSize = _mCapacity = 0;
+    }
+
+    Vector & operator=(Vector &&vec) {
+        destory(this);
+        
+        this->_mC = vec._mC;
+        this->_mSize = vec._mSize;
+        this->_mCapacity = vec._mCapacity;
+
+        // init vec
+        vec._mC = nullptr;
+        vec._mSize = _mCapacity = 0;
+        
+        return *this;
+    }
+
     ~Vector() {
         if (_mC) {
             for (int i = 0; i < _mSize; i++) {
@@ -73,14 +103,17 @@ public: // Modifiers
         if (_mSize + 1 > _mCapacity) {
             resize(2 * _mSize);
         }
-        _mC[_mSize++] = obj;
+        construct(_mC + _mSize, obj);
+        _mSize++;
     }
 
-    void pop_back() {
-        _mSize--;
+    T pop_back() {
+        T data = _mC[--_mSize];
+        destory(_mC + _mSize);
         if (_mSize < _mCapacity / 3) {
             resize(_mCapacity / 2);
         }
+        return data;
     }
 
     void resize(size_t n) {
