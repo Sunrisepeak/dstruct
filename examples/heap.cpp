@@ -29,16 +29,6 @@ int main() {
     DSTRUCT_ASSERT(minHeap.empty());
     DSTRUCT_ASSERT(minHeap.empty());
 
-// static pub
-    int arr[10] { 3, 2, 1, 5, 4, 8, 7, 9, 0, 6 };
-
-    dstruct::MinHeap<int>::sort(arr, arr + 10);
-
-    for (int i = 0; i < 10; i++) {
-        //std::cout << i << "-" << arr[i] << std::endl;
-        DSTRUCT_ASSERT(i == arr[i]);
-    }
-
     std::cout << "   pass" << std::endl;
 
     return 0;

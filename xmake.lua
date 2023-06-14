@@ -60,3 +60,8 @@ target("dstruct_for_each")
     set_kind("binary")
     add_cxxflags("-g")
     add_files("examples/algorithms/for_each.cpp")
+
+target("dstruct_heap_algo")
+    set_kind("binary")
+    add_cxxflags("-g")
+    add_files("examples/algorithms/heap_algo.cpp")

@@ -4,7 +4,7 @@ DStruct 是一个易于移植且结构简洁的数据结构模板库
 
 [**English**](README.en.md)
 
-
+> 当前状态-基础功能开发中
 
 ## 特性/目标
 
@@ -74,9 +74,9 @@ int main() {
 |       |        XValueStack        |   最值栈   | [XValueStack](examples/stack/xvalue_stack.cpp) |           |
 |       |         MinStack          |  最小值栈  |  [MinStack](examples/stack/xvalue_stack.cpp)   |           |
 |       |         MaxStack          |  最大值栈  |  [MaxStack](examples/stack/xvalue_stack.cpp)   |           |
-|       |                           |            |                                                |           |
-|       |                           |            |                                                |           |
-|       |                           |            |                                                |           |
+| Heap  |           Heap            |     堆     |           [Heap](examples/heap.cpp)            |           |
+|       |          MinHeap          |  最小值堆  |          [MinHeap](examples/heap.cpp)          |           |
+|       |          MaxHeap          |  最大值堆  |          [MaxHeap](examples/heap.cpp)          |           |
 |       |                           |            |                                                |           |
 
 > 注: 功能开发中, 性能暂时未测试和优化
@@ -87,11 +87,16 @@ int main() {
 
 > 范型算法
 
-|                  Algorithm                   | Status |
-| :------------------------------------------: | :----: |
-| [for_each](examples/algorithms/for_each.cpp) |        |
-|                                              |        |
-|                                              |        |
+| 类别     |                             算法                             | 描述   | 备注 |
+| -------- | :----------------------------------------------------------: | ------ | ---- |
+| 通用     |         [for_each](examples/algorithms/for_each.cpp)         | 遍历   |      |
+|          |                                                              |        |      |
+|          |                                                              |        |      |
+| 堆(Heap) |       [Heap::build](examples/algorithms/heap_algo.cpp)       | 堆化   |      |
+|          | [Heap::sort / MinHeap::sort / MaxHeap::sort](examples/algorithms/heap_algo.cpp) | 堆排序 |      |
+|          |                                                              |        |      |
+
+
 
 
 

@@ -95,14 +95,14 @@ public: // pub static
     static Heap build(const IteratorType &begin, const IteratorType &end) {
         Heap heap(begin, end);
         auto heapIt = heap.begin();
-        for (auto it = begin; it != end; it++) {
+        for (auto it = begin; it != end; it++, heapIt++) {
             *it = *heapIt;
         }
-        return dstruct::move(heap);
+        return heap /*todo: dstruct::move(heap)*/;
     }
 
     static void sort(const IteratorType &begin, const IteratorType &end) {
-        Heap heap = build(begin, end);
+        Heap heap(begin, end);
         for (auto it = begin; it != end; it++) {
             *it = heap.pop();
         }
