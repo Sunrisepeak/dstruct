@@ -20,6 +20,9 @@
 // linked list
 #include <core/ds/linked-list/DoublyLinkedlist.hpp>
 
+// tree
+#include <core/ds/tree/BinarySearchTree.hpp>
+
 #include <core/algorithm.hpp>
 
 namespace dstruct {
