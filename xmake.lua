@@ -55,6 +55,11 @@ target("dstruct_heap")
     add_cxxflags("-g")
     add_files("examples/heap.cpp")
 
+target("dstruct_binary_search_tree")
+    set_kind("binary")
+    add_cxxflags("-g")
+    add_files("examples/binary_search_tree.cpp")
+
 -- algorithms
 target("dstruct_for_each")
     set_kind("binary")

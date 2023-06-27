@@ -34,37 +34,43 @@ namespace dstruct {
     template<typename T, size_t ArrSize = 32, typename Alloc = port::Alloc>
     using Deque = DoubleEndedQueue<T, ArrSize, Alloc>;
 
-    // EmbeddedList
+// EmbeddedList
     using SLink = _SinglyLink;
     using DLink = _DoublyLink;
     template<typename T, typename Link = DLink>
     using EListNode = _EmbeddedListNode<T, DLink>;
 
-    // DoublyLinkedlist
+// DoublyLinkedlist
     template<typename T, typename Alloc = port::Alloc>
     using DList = DoublyLinkedlist<T, Alloc>;
 
-    // Queue
+// Queue
     template<typename T, typename Alloc = port::Alloc>
     using Queue = adapter::Queue<T, DoubleEndedQueue<T, 32, Alloc>>;
 
-    // Stack
+// Stack
     template<typename T, typename Alloc = port::Alloc>
     using Stack = adapter::Stack<T, Vector<T, Alloc>>;
 
+    //template<typename T, typename Compare, typename StackType = adapter::Stack<T, Vector<T>>>
+    //class XValueStack;
     template<typename T, typename Alloc = port::Alloc>
     using MinStack = stack::XValueStack<T, less<T>, adapter::Stack<T, Vector<T, Alloc>> >;
-
     template<typename T, typename Alloc = port::Alloc>
     using MaxStack = stack::XValueStack<T, greater<T>, adapter::Stack<T, Vector<T, Alloc>> >;
 
 
-    // Heap
+// Heap
     template<typename T, typename Alloc = port::Alloc>
     using MinHeap = Heap<T, less<T>, Alloc>;
-
     template<typename T, typename Alloc = port::Alloc>
     using MaxHeap = Heap<T, greater<T>, Alloc>;
+
+// Tree
+    //template <typename T, typename CMP, typename Alloc>
+    //class BinarySearchTree;
+    template <typename T, typename Alloc = port::Alloc>
+    using BSTree = tree::BinarySearchTree<T, less<T>, Alloc>;
 };
 
 #endif
