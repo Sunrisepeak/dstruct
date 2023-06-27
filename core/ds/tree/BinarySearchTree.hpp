@@ -20,11 +20,10 @@ public: // big five
 
     BinarySearchTree(CMP cmp = CMP()) : _mSize { 0 }, _mCmp { cmp }, _mRootPtr { nullptr }  { };
 
-    template <typename Iterator>
-    BinarySearchTree(const Iterator &begin, const Iterator &end, CMP cmp = CMP()) :
+    BinarySearchTree(const PrimitiveIterator<T> &begin, const PrimitiveIterator<T> &end, CMP cmp = CMP()) :
         BinarySearchTree(cmp) {
-        for (auto it = begin(); it != end; it++) {
-            _insert(*it);
+        for (auto it = begin; it != end; it++) {
+            insert(*it);
         }
     }
 
