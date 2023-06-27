@@ -62,22 +62,22 @@ int main() {
 
 ## 数据结构列表
 
-| 类别  |           名称            |    描述    |                      示例                      | 备注/状态 |
-| :---: | :-----------------------: | :--------: | :--------------------------------------------: | --------- |
-| Array |           Array           |  静态数组  |          [Array](examples/array.cpp)           |           |
-|       |          Vector           |  动态数组  |         [Vector](examples/vector.cpp)          |           |
-| List  |   EList(Embedded List)    | 嵌入式链表 |      [EList](examples/embedded_list.cpp)       |           |
-|       | DList(Doubly Linked List) |   双链表   |    [DList](examples/double_linked_list.cpp)    |           |
-| Queue |  Deque(DoubleEndedQueue)  |  双端队列  |          [Deque](examples/deque.cpp)           |           |
-|       |           Queue           |    队列    |          [Queue](examples/queue.cpp)           |           |
-| Stack |           Stack           |     栈     |          [Stack](examples/stack.cpp)           |           |
-|       |        XValueStack        |   最值栈   | [XValueStack](examples/stack/xvalue_stack.cpp) |           |
-|       |         MinStack          |  最小值栈  |  [MinStack](examples/stack/xvalue_stack.cpp)   |           |
-|       |         MaxStack          |  最大值栈  |  [MaxStack](examples/stack/xvalue_stack.cpp)   |           |
-| Heap  |           Heap            |     堆     |           [Heap](examples/heap.cpp)            |           |
-|       |          MinHeap          |  最小值堆  |          [MinHeap](examples/heap.cpp)          |           |
-|       |          MaxHeap          |  最大值堆  |          [MaxHeap](examples/heap.cpp)          |           |
-|       |                           |            |                                                |           |
+| 类别  |             名称              |           描述           |                             示例                             | 备注/状态 |
+| :---: | :---------------------------: | :----------------------: | :----------------------------------------------------------: | --------- |
+| Array |             Array             |         静态数组         |                 [Array](examples/array.cpp)                  |           |
+|       |            Vector             |         动态数组         |                [Vector](examples/vector.cpp)                 |           |
+| List  |     EList(Embedded List)      |        嵌入式链表        |             [EList](examples/embedded_list.cpp)              |           |
+|       |   DList(Doubly Linked List)   |          双链表          |           [DList](examples/double_linked_list.cpp)           |           |
+| Queue |    Deque(DoubleEndedQueue)    |         双端队列         |                 [Deque](examples/deque.cpp)                  |           |
+|       |             Queue             |           队列           |                 [Queue](examples/queue.cpp)                  |           |
+| Stack |             Stack             |            栈            |                 [Stack](examples/stack.cpp)                  |           |
+|       | XValueStack/MinStack/MaxStack | 最值栈/最小值栈/最大值栈 |        [XValueStack](examples/stack/xvalue_stack.cpp)        |           |
+|       |                               |                          |                                                              |           |
+|       |                               |                          |                                                              |           |
+| Heap  |     Heap/MinHeap/MaxHeap      |   堆/最小值堆/最大值堆   | [Heap](examples/heap.cpp)/[MinHeap](examples/heap.cpp)/[MaxHeap](examples/heap.cpp) |           |
+|       |                               |                          |                                                              |           |
+| Tree  |           TreeBase            |                          |                                                              |           |
+|       |            BSTree             |   二叉搜索树(默认less)   |          [BSTree](examples/binary_search_tree.cpp)           |           |
 
 > 注: 功能开发中, 性能暂时未测试和优化
 
