@@ -4,31 +4,42 @@
 
 int main() {
 
-    std::cout << "\n\nTesting: " << __FILE__ << std::endl;
+    std::cout << "\nTesting: " << __FILE__;
 
     dstruct::Vector<int> vec(10, 2);
 
-    for (auto v : vec) {     // 2. test const / range-for
-        std::cout << v << " " << vec.size() << " " << vec.capacity() << std::endl;
+    DSTRUCT_ASSERT(vec.size() == 10);
+
+    for (auto &v : vec) {     // 2. range-for
+        //std::cout << v << " " << vec.size() << " " << vec.capacity() << std::endl;
+        v = 1;
     }
 
-    std::cout << std::endl;
+    DSTRUCT_ASSERT(vec.back() == 1);
 
     decltype(vec)::ValueType val = 11;
 
     vec[0] = vec[5] = val;
 
+    DSTRUCT_ASSERT(vec[0] == 11);
+
     while (!vec.empty()) {
-        std::cout << vec.back() << " " << vec.size() << " " << vec.capacity() << std::endl;
+        //std::cout << vec.back() << " " << vec.size() << " " << vec.capacity() << std::endl;
         vec.pop_back();
     }
 
-    std::cout << std::endl;
+    DSTRUCT_ASSERT(vec.size() == 0);
 
     for (int i = 0; i < 10; i++) {
+        //std::cout << vec.back() << " " << vec.size() << " " << vec.capacity() << std::endl;
+        DSTRUCT_ASSERT(vec.size() == i);
         vec.push_back(i);
-        std::cout << vec.back() << " " << vec.size() << " " << vec.capacity() << std::endl;
+        DSTRUCT_ASSERT(vec.back() == i);
     }
+
+    DSTRUCT_ASSERT(vec.size() == 10);
+
+    std::cout << "   pass" << std::endl;
 
     return 0;
 }

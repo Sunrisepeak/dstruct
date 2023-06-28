@@ -8,7 +8,7 @@ int main() {
     std::cout << "\nTesting: " << __FILE__;
 
     dstruct::Queue<int /*, dstruct::DoubleEndedQueue<T, 32> */ > queue1;
-    dstruct::adapter::Queue<int, dstruct::DList<int>> queue2;
+    dstruct::adapter::Queue<int, dstruct::DLinkedList<int>> queue2;
 
     for (int i = 0; i < 100; i++) {
         queue1.push(i);

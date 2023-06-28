@@ -20,7 +20,7 @@ an easily portable data structure template library...
 |          |           Array           | basic function |
 |          |          Vector           | basic function |
 |          |   EList(Embedded List)    | basic function |
-|          | DList(Doubly Linked List) | basic function |
+|          | DLinkedList(Doubly Linked List) | basic function |
 |          |  Deque(DoubleEndedQueue)  | basic function |
 |          |           Queue           | basic function |
 |          |           Stack           | basic function |
@@ -38,7 +38,7 @@ an easily portable data structure template library...
 |      [Vector](examples/vector.cpp)       |        |
 |       [Deque](examples/deque.cpp)        |        |
 |   [EList](examples/embedded_list.cpp)    |        |
-| [DList](examples/double_linked_list.cpp) |        |
+| [DLinkedList](examples/double_linked_list.cpp) |        |
 |       [Queue](examples/queue.cpp)        |        |
 |       [Stack](examples/stack.cpp)        |        |
 |                                          |        |

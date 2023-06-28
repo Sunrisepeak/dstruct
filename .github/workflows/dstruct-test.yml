@@ -1,0 +1,25 @@
+name: DStruct Test CI
+
+on:
+  push:
+    branches:
+    - main
+    - dev
+  pull_request:
+    branches:
+    - main
+    - dev
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: config and install tools
+      run: wget https://xmake.io/shget.text -O - | bash
+    - name: build examples|test
+      run: xmake
+    - name: run all test
+      run: xmake r

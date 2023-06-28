@@ -7,7 +7,8 @@ int main() {
 
     std::cout << "\nTesting: " << __FILE__;
 
-    dstruct::MinHeap<int> minHeap;
+    dstruct::MinHeap<int> _minHeap;
+    dstruct::PriorityQueue<int> minHeap;
     dstruct::MaxHeap<int, dstruct::port::Alloc> _maxHeap;
     dstruct::Heap<int, dstruct::greater<int>> maxHeap;
 

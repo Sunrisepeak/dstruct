@@ -67,9 +67,11 @@ int main() {
 | Array |             Array             |         静态数组         |                 [Array](examples/array.cpp)                  |           |
 |       |            Vector             |         动态数组         |                [Vector](examples/vector.cpp)                 |           |
 | List  |     EList(Embedded List)      |        嵌入式链表        |             [EList](examples/embedded_list.cpp)              |           |
-|       |   DList(Doubly Linked List)   |          双链表          |           [DList](examples/double_linked_list.cpp)           |           |
+|       |   DLinkedList(Doubly Linked List)   |          双链表          |           [DLinkedList](examples/double_linked_list.cpp)           |           |
 | Queue |    Deque(DoubleEndedQueue)    |         双端队列         |                 [Deque](examples/deque.cpp)                  |           |
 |       |             Queue             |           队列           |                 [Queue](examples/queue.cpp)                  |           |
+|       |         PriorityQueue         |   优先队列(Heap的别名)   |                                                              |           |
+|       |                               |                          |                                                              |           |
 | Stack |             Stack             |            栈            |                 [Stack](examples/stack.cpp)                  |           |
 |       | XValueStack/MinStack/MaxStack | 最值栈/最小值栈/最大值栈 |        [XValueStack](examples/stack/xvalue_stack.cpp)        |           |
 |       |                               |                          |                                                              |           |

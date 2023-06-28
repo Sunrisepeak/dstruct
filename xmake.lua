@@ -9,11 +9,11 @@ add_includedirs(
 )
 
 --add_includedirs("port/libc")
-
+--[[
 target("dstruct_test")
     set_kind("binary")
     add_files("examples/cpp_test.cpp")
-
+--]]
 target("dstruct_array")
     set_kind("binary")
     add_files("examples/array.cpp")
