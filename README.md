@@ -78,8 +78,8 @@ int main() {
 |       |                               |                          |                                                              |           |
 | Heap  |     Heap/MinHeap/MaxHeap      |   堆/最小值堆/最大值堆   | [Heap](examples/heap.cpp)/[MinHeap](examples/heap.cpp)/[MaxHeap](examples/heap.cpp) |           |
 |       |                               |                          |                                                              |           |
-| Tree  |           TreeBase            |                          |                                                              |           |
-|       |            BSTree             |   二叉搜索树(默认less)   |          [BSTree](examples/binary_search_tree.cpp)           |           |
+| Tree  |           EBinaryTree            | 嵌入式二叉树 |                                                              |           |
+|       |            BSTree / BinarySearchTree            |   二叉搜索树(默认less)   |          [BSTree](examples/binary_search_tree.cpp)           |           |
 
 > 注: 功能开发中, 性能暂时未测试和优化
 

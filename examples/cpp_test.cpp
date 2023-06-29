@@ -75,5 +75,12 @@ int main() {
 // test 5: Parent friend function
     Child child(42);
     FriendFunction(child); //通过子类对象调用 friend 函数
+
+// test6: const T &
+{ // ok
+    int val = 5;
+    const int &data = val;
+    std::cout << &val << " -- " << &data << std::endl;
+}
     return 0;
 }

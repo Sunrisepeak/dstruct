@@ -6,13 +6,12 @@ namespace dstruct {
 
 namespace algorithm {
 
-    template<typename Iterator, typename CallBack>
-    void for_each(const Iterator &begin, const Iterator &end, CallBack cb) {
+    template<typename Iterator, typename Callback>
+    void for_each(const Iterator &begin, const Iterator &end, Callback cb) {
         for (auto it = begin; it != end; it++) {
             cb(*it);
         }
     }
-
 }
 
 }

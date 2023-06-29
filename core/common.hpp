@@ -7,8 +7,6 @@
 #include <core/types.hpp>
 #include <core/Iterator.hpp>
 
-#include <map>
-
 namespace dstruct {
 
 template<typename T, typename Alloc>

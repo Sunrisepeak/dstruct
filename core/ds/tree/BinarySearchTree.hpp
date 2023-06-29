@@ -2,18 +2,25 @@
 #define __BINARY_SEARCH_TREE_HPP__DSTRUCT
 
 #include <core/common.hpp>
-
-#include <core/ds/tree/Tree.hpp>
+#include <core/ds/tree/EmbeddedBinaryTree.hpp>
+#include <core/ds/tree/BinaryTree.hpp>
 
 namespace dstruct {
 namespace tree {
 
 // TODO: https://en.cppreference.com/w/cpp/language/operator_comparison
 template <typename T, typename CMP, typename Alloc>
-class BinarySearchTree : public DStructTypeSpec<T, Alloc> {
+class BinarySearchTree : public DStructTypeSpec<T, Alloc, _BinaryTreeIterator> {
+
+public: // type
+    enum TraversalType : uint8_t {
+        PreOrder,
+        InOrder,
+        PostOrder,
+    };
 
 protected:
-    using _Node      = BinaryTreeNode<T>; 
+    using _Node      = EmbeddedBinaryTreeNode<T>; 
     using _AllocNode = DSAlloc<_Node, Alloc>;
 
 public: // big five
@@ -29,7 +36,7 @@ public: // big five
 
     virtual ~BinarySearchTree() {
         if (_mRootPtr) {
-            postorder_traversal(&(_mRootPtr->link), [](typename _Node::LinkType *linkPtr) {
+            tree::postorder_traversal(&(_mRootPtr->link), [](typename _Node::LinkType *linkPtr) {
                 _Node *nPtr = _Node::to_node(linkPtr);
                 destory(nPtr);
                 _AllocNode::deallocate(nPtr);
@@ -61,9 +68,30 @@ public:
         // _mSize--; in _try_to_delete
     }
 
+public: // algo
+    template <typename Callback>
+    void traversal(TraversalType ttype, Callback &cb) const {
+        auto cbWrapper = [&](typename _Node::LinkType *link) {
+            typename  BinarySearchTree::ConstIteratorType::ValueType &data = _Node::to_node(link)->data;
+            cb(data);
+        };
+        auto traversal_func = _get_traversal_func<Callback>(ttype);
+        traversal_func(_Node::to_link(_mRootPtr), cbWrapper);
+    }
+
+public: // range-for and iterator
+
+    typename BinarySearchTree::ConstIteratorType begin(TraversalType itType) const {
+        return _create_iterator(_mRootPtr, itType);
+    }
+
+    typename BinarySearchTree::ConstIteratorType end(TraversalType itType) const {
+        return _create_iterator(nullptr, itType);
+    }
+
 protected:
     size_t _mSize;
-    CMP _mCmp; // TODO: https://en.cppreference.com/w/cpp/language/operator_comparison
+    CMP _mCmp;
     _Node *_mRootPtr;
 
     typename _Node::LinkType * _insert(typename _Node::LinkType *root, const T &obj) {
@@ -73,11 +101,19 @@ protected:
             construct(nPtr, _Node(obj));
             root = _Node::to_link(nPtr);
         } else {
+            bool flag = false;
+            typename _Node::LinkType *newLinkPtr = nullptr;
+
             if (_mCmp(obj, _Node::to_node(root)->data)) {
-                root->left = _insert(root->left, obj);
+                flag = root->left == nullptr;
+                root->left = newLinkPtr = _insert(root->left, obj);
             } else {
-                root->right = _insert(root->right, obj);
+                flag = root->left == nullptr;
+                root->right = newLinkPtr = _insert(root->right, obj);
             }
+
+            if (flag && newLinkPtr != nullptr)
+                newLinkPtr->parent = root;
         }
 
         return root;
@@ -116,8 +152,13 @@ protected:
             
             nPtr->data = tmpPtr->data;
             linkPtr->right = _delete(linkPtr->right, tmpPtr->data); // retry
+
+            // Note: return
             return linkPtr;
         }
+
+        if (subTree)
+            subTree->parent = linkPtr->parent;
 
         // real delete
         auto nPtr = _Node::to_node(linkPtr);
@@ -125,6 +166,39 @@ protected:
         _AllocNode::deallocate(nPtr);
         _mSize--;
         return subTree;
+    }
+
+    typename BinarySearchTree::ConstIteratorType _create_iterator(TraversalType itType, _Node *nPtr) const {
+        typename BinarySearchTree::IteratorType::NextFunc nextFunc = nullptr;
+        switch (itType) {
+            case TraversalType::PreOrder:
+                nextFunc = next_preorder;
+                break;
+            case TraversalType::InOrder:
+                nextFunc = next_inorder;
+                break;
+            case TraversalType::PostOrder:
+                nextFunc = next_postorder;
+                break;
+            default:
+                nextFunc = next_preorder;
+                break;
+        }
+        return typename BinarySearchTree::ConstIteratorType(nPtr, nextFunc);
+    }
+
+    template <typename _Callback>
+    auto _get_traversal_func(TraversalType ttype) const -> decltype(preorder_traversal<_Callback>) {
+        switch (ttype) {
+            case TraversalType::PreOrder:
+                return preorder_traversal<_Callback>;
+            case TraversalType::InOrder:
+                return inorder_traversal<_Callback>;
+            case TraversalType::PostOrder:
+                return postorder_traversal<_Callback>;
+            default:
+                return preorder_traversal<_Callback>;
+        }
     }
 
 };

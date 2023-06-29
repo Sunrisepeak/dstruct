@@ -65,8 +65,11 @@ namespace dstruct {
     using MaxHeap = Heap<T, greater<T>, Alloc>;
 
 // Tree
+
     //template <typename T, typename CMP, typename Alloc>
     //class BinarySearchTree;
+    template<typename T>
+    using EBinaryTreeNode = tree::EmbeddedBinaryTreeNode<T>;
     template <typename T, typename Alloc = port::Alloc>
     using BSTree = tree::BinarySearchTree<T, less<T>, Alloc>;
 };
