@@ -52,7 +52,7 @@ public: // big Five
 
     ~Array() {
         for (int i = 0; i < N; i++) {
-            destory(_mC + i);
+            dstruct::destory(_mC + i);
         }
     }
 

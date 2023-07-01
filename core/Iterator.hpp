@@ -50,7 +50,7 @@ public: // other
 };
 
 template<typename RandomIteratorType>
-auto distance(const RandomIteratorType &first, const RandomIteratorType &last) -> typename RandomIteratorType::DifferenceType {
+static auto distance(const RandomIteratorType &first, const RandomIteratorType &last) -> typename RandomIteratorType::DifferenceType {
     return last - first; // operator-(last, first);
 }
 
@@ -98,7 +98,7 @@ public: // RandomIterator
 
 
 template <typename T>
-typename PrimitiveIterator<T>::DifferenceType
+static typename PrimitiveIterator<T>::DifferenceType
 operator-(const PrimitiveIterator<T> &last, const PrimitiveIterator<T> &first) {
     return last.mPointer - first.mPointer;
 };

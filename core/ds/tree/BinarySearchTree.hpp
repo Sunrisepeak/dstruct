@@ -38,7 +38,7 @@ public: // big five
         if (_mRootPtr) {
             tree::postorder_traversal(&(_mRootPtr->link), [](typename _Node::LinkType *linkPtr) {
                 _Node *nPtr = _Node::to_node(linkPtr);
-                destory(nPtr);
+                dstruct::destory(nPtr);
                 _AllocNode::deallocate(nPtr);
             });
         }
@@ -98,7 +98,7 @@ protected:
 
         if (root == nullptr) {
             auto nPtr = _AllocNode::allocate();
-            construct(nPtr, _Node(obj));
+            dstruct::construct(nPtr, _Node(obj));
             root = _Node::to_link(nPtr);
         } else {
             bool flag = false;
@@ -162,7 +162,7 @@ protected:
 
         // real delete
         auto nPtr = _Node::to_node(linkPtr);
-        destory(nPtr);
+        dstruct::destory(nPtr);
         _AllocNode::deallocate(nPtr);
         _mSize--;
         return subTree;

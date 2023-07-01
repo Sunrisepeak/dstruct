@@ -143,16 +143,16 @@ public:
         // alloc arr and fill map-table
         for (int i = 0; i < MIN_MAP_TABLE_SIZE; i++) {
             _mArrMapTable[i] = _AllocArray::allocate();
-            construct(_mArrMapTable[i], _Array());
+            dstruct::construct(_mArrMapTable[i], _Array());
         }
         auto midMapIndex = MIN_MAP_TABLE_SIZE / 2;
         _mBegin = _mEnd = decltype(_mBegin)(midMapIndex, 0, &_mArrMapTable);
     }
 
     ~DoubleEndedQueue() {
-        // destory element, but don't use ~_Array()
+        // dstruct::destory element, but don't use ~_Array()
         for (auto it = _mBegin; it != _mEnd; it++) {
-            destory(it.operator->());
+            dstruct::destory(it.operator->());
         }
 
         // release memory
@@ -201,7 +201,7 @@ public: // push/pop
         if (_mEnd._mCurr == _mArrMapTable.back()->end()) {
             _resize(_mCapacity * 2);
         }
-        construct(&(*_mEnd), obj);
+        dstruct::construct(&(*_mEnd), obj);
         _mEnd++;
         _mSize++;
     }
@@ -220,7 +220,7 @@ public: // push/pop
         DSTRUCT_ASSERT((_mBegin._mCurr).operator->() == _mBegin.operator->());
         DSTRUCT_ASSERT(sizeof(*_mBegin) == sizeof(int));
 */
-        construct(_mBegin.operator->(), obj);
+        dstruct::construct(_mBegin.operator->(), obj);
         //auto arrPtr = *(_mBegin._mArrMapTable);
         //(*(*(_mBegin._mArrMapTable)))[distance(_mBegin._mCurr, arrPtr->end())] = obj;
         _mSize++;
@@ -233,14 +233,14 @@ public: // push/pop
     void pop_back() {
         _mEnd--;
         _mSize--;
-        destory(_mEnd.operator->());
+        dstruct::destory(_mEnd.operator->());
         if (_mSize <= _mCapacity / 3 && _mArrMapTable.capacity() > MIN_MAP_TABLE_SIZE) {
             _resize(_mCapacity / 2);
         }
     }
 
     void pop_front() {
-        destory(&(*(_mBegin)));
+        dstruct::destory(&(*(_mBegin)));
         _mBegin++;
         _mSize--;
         if (_mSize <= _mCapacity / 3 && _mArrMapTable.capacity() > MIN_MAP_TABLE_SIZE) {
@@ -295,7 +295,7 @@ protected:
         for (int i = 0; i < newMapTableSize ; i++) {
             if (i < newArrStartIndex || newArrEndIndex < i) {
                 _mArrMapTable[i] = _AllocArray::allocate();
-                construct(_mArrMapTable[i], _Array());
+                dstruct::construct(_mArrMapTable[i], _Array());
             } else {
                 _mArrMapTable[i] = oldArrMapTable[oldArrStartIndex + (i - newArrStartIndex)];
             }
@@ -304,7 +304,7 @@ protected:
         // release arr in old map table
         for (int i = 0; i < oldArrMapTable.capacity() ; i++) {
             if (i < oldArrStartIndex || oldArrEndIndex < i) {
-                //destory(oldArrMapTable[i]);
+                //dstruct::destory(oldArrMapTable[i]);
                 _AllocArray::deallocate(oldArrMapTable[i]);
             }
         }

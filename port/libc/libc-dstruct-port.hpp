@@ -10,14 +10,19 @@
 
 namespace dstruct {
 
-void* port::Alloc::allocate(size_t bytes) {
-    return malloc(bytes);
-}
+namespace port {
+struct Alloc {
+    static void *allocate(size_t bytes) {
+        return malloc(bytes);
+    }
 
-void port::Alloc::deallocate(void *addr, size_t bytes) {
-    free(addr);
-}
-
+    static void deallocate(void *addr, size_t bytes) {
+        free(addr);
+    }
 };
+
+}
+
+}
 
 #endif

@@ -44,7 +44,7 @@ public:
     }
 
     Vector & operator=(Vector &&vec) {
-        destory(this);
+        dstruct::destory(this);
         
         this->_mC = vec._mC;
         this->_mSize = vec._mSize;
@@ -60,7 +60,7 @@ public:
     ~Vector() {
         if (_mC) {
             for (int i = 0; i < _mSize; i++) {
-                destory(_mC + i);
+                dstruct::destory(_mC + i);
             }
             Vector::_Alloc::deallocate(_mC, _mCapacity);
         }
@@ -103,13 +103,13 @@ public: // Modifiers
         if (_mSize + 1 > _mCapacity) {
             resize(2 * _mSize);
         }
-        construct(_mC + _mSize, obj);
+        dstruct::construct(_mC + _mSize, obj);
         _mSize++;
     }
 
     T pop_back() {
         T data = _mC[--_mSize];
-        destory(_mC + _mSize);
+        dstruct::destory(_mC + _mSize);
         if (_mSize < _mCapacity / 3) {
             resize(_mCapacity / 2);
         }
@@ -121,8 +121,8 @@ public: // Modifiers
         _mC = Vector::_Alloc::allocate(n);
         for (int i = 0; i < _mSize; i++) {
             if (i < n)
-                construct(_mC + i, oldC[i]);
-            destory(oldC + i);
+                dstruct::construct(_mC + i, oldC[i]);
+            dstruct::destory(oldC + i);
         }
         Vector::_Alloc::deallocate(oldC, _mCapacity);
         _mCapacity = n;
@@ -133,14 +133,14 @@ public: // Modifiers
     void resize(size_t n, const T &obj) {
         // release
         for (int i = 0; i < _mSize; i++) {
-            destory(_mC + i);
+            dstruct::destory(_mC + i);
         }
         Vector::_Alloc::deallocate(_mC, _mCapacity);
         // alloc
         _mC = Vector::_Alloc::allocate(n);
         _mCapacity = _mSize = n;
         for (int i = 0; i < _mSize; i++) {
-            construct(_mC + i, obj);
+            dstruct::construct(_mC + i, obj);
         }
     }
 

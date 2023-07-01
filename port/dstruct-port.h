@@ -23,12 +23,14 @@ using ptr_t = size_t;
     }
 
 namespace port {
-// pls impl/port the alloc 
-struct Alloc {
+// pls impl/port the alloc
+/* 
+struct Alloc
+{
     static void *allocate(size_t bytes);
     static void deallocate(void *addr, size_t bytes);
 };
-
+*/
 }
 
 }

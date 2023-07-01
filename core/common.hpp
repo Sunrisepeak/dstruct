@@ -95,7 +95,7 @@ public: \
     using ConstIteratorType    = typename DStruct::ConstIteratorType;
 
 template <typename T>
-typename types::RemoveReference<T>::Type&& move(T&& arg) {
+static typename types::RemoveReference<T>::Type&& move(T&& arg) {
     return static_cast<typename types::RemoveReference<T>::Type&&>(arg);
 }
 
@@ -115,14 +115,14 @@ struct greater {
 };
 
 template<typename T>
-void swap(T &a, T &b) {
+static void swap(T &a, T &b) {
     T c = dstruct::move(a);
     a = dstruct::move(b);
     b = dstruct::move(c);
 }
 
 template<typename T>
-T* construct(void *addr, const T& obj) {
+static T* construct(void *addr, const T& obj) {
     return new(addr) T(obj); // use T's constructor(copy/spec)
 }
 
@@ -133,7 +133,7 @@ int * construct<int>(void *addr, const int& obj) {
 }
 
 template<typename T>
-void destory(T *ptr) {
+static void destory(T *ptr) {
     if (ptr)
         ptr->~T();
     // intPtr->~int();

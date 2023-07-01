@@ -108,7 +108,7 @@ public: // base op
         // 1. alloc and construct node
         _Node *nPtr = _AllocNode::allocate();
         _mHeadNode.data = obj; // only for contruct nPtr
-        construct(nPtr, _mHeadNode);
+        dstruct::construct(nPtr, _mHeadNode);
         /*
         // 2. nPtr point to list
         nPtr->next = &_mHeadNode;
@@ -126,7 +126,7 @@ public: // base op
         // 1. alloc and construct node
         _Node *nPtr = _AllocNode::allocate();
         _mHeadNode.data = obj; // only for contruct nPtr
-        construct(nPtr, _mHeadNode);
+        dstruct::construct(nPtr, _mHeadNode);
         // 2. add
         _Node::LinkType::add(&(_mHeadNode.link), _Node::to_link(nPtr));
         // 4. increase size
@@ -153,7 +153,7 @@ public: // base op
         _Node *nPtr = _Node::to_node(lPtr);
         typename DoublyLinkedlist::ValueType data = nPtr->data;
         // 4. free and decrease size/len
-        destory(nPtr);
+        dstruct::destory(nPtr);
         _AllocNode::deallocate(nPtr);
         _mSize--;
 
@@ -166,7 +166,7 @@ public: // base op
         // 3. get data
         _Node *nPtr = _Node::to_node(lPtr);
         // 4. free and decrease size/len
-        destory(nPtr);
+        dstruct::destory(nPtr);
         _AllocNode::deallocate(nPtr);
         _mSize--;
     }
