@@ -121,22 +121,41 @@ static void swap(T &a, T &b) {
     b = dstruct::move(c);
 }
 
+// TODO: Check placement new for primitive type(example pointer) and self-def type
+// https://en.cppreference.com/w/cpp/language/new
+// https://en.cppreference.com/w/cpp/memory/new/operator_new
 template<typename T>
 static T* construct(void *addr, const T& obj) {
-    return new(addr) T(obj); // use T's constructor(copy/spec)
+    static DStructPlacementNewFlag placementNewFlag;
+    return new(addr, &placementNewFlag) T(obj); // use T's constructor(copy/spec)
 }
+
+/*
+// partial specialization only for type, func template pls use overload
+template<typename T>
+static T ** construct(void *addr, const T *obj) {
+    T **ptr = static_cast<T **>(addr);
+    *ptr = obj;
+    return ptr;
+}
+*/
 
 template<>
 int * construct<int>(void *addr, const int& obj) {
     *(reinterpret_cast<int *>(addr)) = obj;
-    return reinterpret_cast<int *>(addr); // use T's constructor(copy/spec)
+    return reinterpret_cast<int *>(addr);
 }
 
 template<typename T>
 static void destory(T *ptr) {
+/*
+    // method1, but have a litte issue
+    static DStructPlacementNewFlag placementNewFlag;
+    delete(ptr, &placementNewFlag);
+*/
+    // method2, skip detele
     if (ptr)
         ptr->~T();
-    // intPtr->~int();
 }
 
 };

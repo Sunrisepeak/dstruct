@@ -44,4 +44,10 @@ struct Alloc
 #define DSTRUCT_ASSERT(expr) __DSTRUCT_CRASH(expr)
 #endif
 
+
+struct DStructPlacementNewFlag { };
+void * operator new(size_t sz, void *ptr, DStructPlacementNewFlag *) { return ptr; }
+// void operator delete(void *ptr, DStructPlacementNewFlag *) {  } haven't used
+
+
 #endif /* __DSTRUCT_PORT_HPP__DSTRUCT */

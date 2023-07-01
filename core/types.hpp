@@ -23,6 +23,16 @@ namespace types {
     struct RemoveConst<const T> {
         using Type = T;
     };
+
+    template<typename T>
+    struct IsPointer {
+        const static bool value = false;
+    };
+
+    template<typename T>
+    struct IsPointer<T *> {
+        const static bool value = true;
+    };
 }
 }
 
