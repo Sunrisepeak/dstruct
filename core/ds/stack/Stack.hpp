@@ -28,10 +28,9 @@ public: // base op
 
     // push/pop
     void push(const T &obj) { _mDS.push_back(obj); }
-    T pop() {
+    void pop() {
         T data = _mDS.back();
         _mDS.pop_back();
-        return dstruct::move(data);
     }
 
     // Iterator/range-for

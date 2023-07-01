@@ -53,9 +53,9 @@ public: // base op
     virtual void push(const T&) = 0;
     virtual void push_back() = 0;
     virtual void push_front() = 0;
-    virtual T pop() = 0;
-    virtual T pop_back() = 0;
-    virtual T pop_front() = 0;
+    virtual void pop() = 0;
+    virtual void pop_back() = 0;
+    virtual void pop_front() = 0;
 
     // iterator/range-for support
     virtual IteratorType begin() = 0;

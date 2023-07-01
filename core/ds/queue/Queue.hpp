@@ -30,7 +30,7 @@ public: // base op
     }
 
     // check
-    //ValueType back() const { return _mDS.back(); }
+    ValueType back() const { return _mDS.back(); }
 
     ValueType front() const {
         return _mDS.front();

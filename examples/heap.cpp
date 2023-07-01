@@ -21,8 +21,8 @@ int main() {
     }
 
     for (int i = 0; i < 10; i++) {
-        int v1 = minHeap.pop();
-        int v2 = maxHeap.pop();
+        int v1 = minHeap.top(); minHeap.pop();
+        int v2 = maxHeap.top(); maxHeap.pop();
         //std::cout << v1 << "-" << v2 << std::endl;
         DSTRUCT_ASSERT(10 - 1 - v1 == v2);
     }

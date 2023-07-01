@@ -8,10 +8,11 @@ namespace dstruct {
 template <typename T, typename __Alloc = port::Alloc>
 class Vector : public DStructTypeSpec<T, __Alloc> {
 
-public:
-    Vector() :  _mSize { 0 }, _mCapacity { 0 }, _mC { nullptr } { }
+public: // big five
+    Vector() :  _mSize { 0 }, _mCapacity { 0 }, _mC { nullptr } { resize(1); }
 
     Vector(size_t n, const T &obj) : Vector() {
+        DSTRUCT_ASSERT(n != 0);
         resize(n);
         for (int i = 0; i < n; i++)
             _mC[i] = obj;
@@ -59,11 +60,14 @@ public:
 
     ~Vector() {
         if (_mC) {
+            // don't need to destory haven't contructed area
             for (int i = 0; i < _mSize; i++) {
                 dstruct::destory(_mC + i);
             }
             Vector::_Alloc::deallocate(_mC, _mCapacity);
         }
+        _mSize = _mCapacity = 0;
+        _mC = nullptr;
     }
 
 public:
@@ -107,13 +111,12 @@ public: // Modifiers
         _mSize++;
     }
 
-    T pop_back() {
-        T data = _mC[--_mSize];
+    void pop_back() {
+        --_mSize;
         dstruct::destory(_mC + _mSize);
         if (_mSize < _mCapacity / 3) {
             resize(_mCapacity / 2);
         }
-        return data;
     }
 
     void resize(size_t n) {
@@ -124,7 +127,10 @@ public: // Modifiers
                 dstruct::construct(_mC + i, oldC[i]);
             dstruct::destory(oldC + i);
         }
-        Vector::_Alloc::deallocate(oldC, _mCapacity);
+        if (_mCapacity) {
+            DSTRUCT_ASSERT(oldC != nullptr);
+            Vector::_Alloc::deallocate(oldC, _mCapacity);
+        }
         _mCapacity = n;
         if (n < _mSize)
             _mSize = n;

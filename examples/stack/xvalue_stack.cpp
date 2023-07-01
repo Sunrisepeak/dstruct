@@ -19,8 +19,8 @@ int main() {
     }
 
     for (int i = 0; i < 100; i++) {
-        int v1 = minStack.pop();
-        int v2 = maxStack.pop();
+        int v1 = minStack.top(); minStack.pop();
+        int v2 = maxStack.top(); maxStack.pop();
         //std::cout << v1 << "-" << v2 << std::endl;
         DSTRUCT_ASSERT(100 - v1 == v2);
     }

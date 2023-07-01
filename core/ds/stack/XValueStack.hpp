@@ -33,12 +33,12 @@ public:
         _mStack.push(val);
     }
 
-    T pop() {
-        T data = _mStack.pop();
+    void pop() {
+        T data = _mStack.top(); _mStack.pop();
         if (_mXValue == data) {
-            _mXValue = _mStack.pop();
+            _mXValue = _mStack.top(); _mStack.pop();
         }
-        return dstruct::move(data);
+        // return dstruct::move(data);
     }
 
     // Iterator/range-for

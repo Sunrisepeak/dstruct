@@ -69,15 +69,15 @@ public: // base op
         _adjust_up();
     }
 
-    T pop() {
-        T data = _mHeap[1];
+    void pop() {
+        // T data = _mHeap[1];
         // TODO: undefined or Vector?
         //_mHeap[1] = _mHeap.pop_back(); // when pop_back resize, _mHeap[1] will released
         //_mHeap[1] = dstruct::move(_mHeap.back());
         _mHeap[1] = _mHeap.back();
         _mHeap.pop_back();
         _adjust_down(1);
-        return data;
+        // return data;
     }
 
 
@@ -104,7 +104,7 @@ public: // pub static
     static void sort(const IteratorType &begin, const IteratorType &end) {
         Heap heap(begin, end);
         for (auto it = begin; it != end; it++) {
-            *it = heap.pop();
+            *it = heap.top(); heap.pop();
         }
     }
 
