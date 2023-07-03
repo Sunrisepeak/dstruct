@@ -108,8 +108,26 @@ struct less {
 };
 
 template<typename T>
+struct less<T *> {
+    bool operator()(T *a, T *b) const {
+        if (b == nullptr) return false;
+        if (a == nullptr) return true;
+        return a < b;
+    }
+};
+
+template<typename T>
 struct greater {
     bool operator()(const T& a, const T& b) const {
+        return a > b;
+    }
+};
+
+template<typename T>
+struct greater<T *> {
+    bool operator()(const T *a, const T *b) const {
+        if (a == nullptr) return false;
+        if (b == nullptr) return true;
         return a > b;
     }
 };

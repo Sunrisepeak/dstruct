@@ -16,8 +16,8 @@ class _DoubleEndedQueueIterator : public DStructIteratorTypeSpec<T, RandomIterat
     friend class DoubleEndedQueue<T, ARR_SIZE, port::Alloc>;
     friend class _DoubleEndedQueueIterator<const T, ARR_SIZE>; // for it -> const-it
 protected:
-    using _Array         = Array<T, ARR_SIZE>;
-    using _ArrMapTable   = Vector<_Array *>;
+    using _Array         = dstruct::Array<T, ARR_SIZE>;
+    using _ArrMapTable   = dstruct::Vector<_Array *>;
 private:
     using __Self = _DoubleEndedQueueIterator;
 
@@ -311,14 +311,18 @@ protected:
 
         // update iterator
         _mBegin._mCurrMapIndex = newArrStartIndex;
+        _mEnd._mCurrMapIndex = newArrEndIndex;
 
+        // boundary check
         if (_mEnd._mCurr == _mArrMapTable[newArrEndIndex]->end()) {
-            newArrEndIndex++;
-            _mEnd._mCurrMapIndex = newArrEndIndex;
-            _mEnd._mCurr = _mArrMapTable[newArrEndIndex]->begin();
+            _mEnd._mCurrMapIndex++;
+            _mEnd._mCurr = _mArrMapTable[_mEnd._mCurrMapIndex]->begin();
             _mEnd.__sync();
-        } else {
-            _mEnd._mCurrMapIndex = newArrEndIndex;
+
+            // only if old_mEnd == _mBegin
+            if (_mBegin._mCurr == _mArrMapTable[newArrEndIndex]->end()) {
+                _mBegin = _mEnd;
+            }
         }
 
         _mCapacity = n;

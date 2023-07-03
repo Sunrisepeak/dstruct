@@ -63,6 +63,7 @@ public:
     }
 
     void erase(const T &obj) {
+        if (_mSize == 0) return; // TODO: better method?
         auto newRootPtr = _delete(_Node::to_link(_mRootPtr), obj);
         _mRootPtr = _Node::to_node(newRootPtr);
         // _mSize--; in _try_to_delete
