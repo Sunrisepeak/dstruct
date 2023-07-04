@@ -9,7 +9,7 @@ template <typename T, typename __Alloc = port::Alloc>
 class Vector : public DStructTypeSpec<T, __Alloc> {
 
 public: // big five
-    Vector() :  _mSize { 0 }, _mCapacity { 0 }, _mC { nullptr } { resize(1); }
+    Vector() :  _mSize { 0 }, _mCapacity { 0 }, _mC { nullptr } { }
 
     Vector(size_t n, const T &obj) : Vector() {
         DSTRUCT_ASSERT(n != 0);
@@ -105,13 +105,17 @@ public: // Modifiers
 
     void push_back(const T &obj) {
         if (_mSize + 1 > _mCapacity) {
-            resize(2 * _mSize);
+            if (_mSize)
+                resize(2 * _mSize);
+            else
+                resize(2);
         }
         dstruct::construct(_mC + _mSize, obj);
         _mSize++;
     }
 
     void pop_back() {
+        DSTRUCT_ASSERT(_mSize > 0);
         --_mSize;
         dstruct::destory(_mC + _mSize);
         if (_mSize < _mCapacity / 3) {
