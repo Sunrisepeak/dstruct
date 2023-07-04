@@ -10,7 +10,7 @@ namespace tree {
 
 template <typename T>
 class _BinaryTreeIterator : public DStructIteratorTypeSpec<T> {
-
+    friend class _BinaryTreeIterator<const T>; // for const-it -> it
 private:
     using __Self = _BinaryTreeIterator;
 protected:
@@ -18,32 +18,36 @@ protected:
 public:
     using NextFunc = typename _Node::LinkType * (*)(typename _Node::LinkType *);
 
-public:
-    _BinaryTreeIterator(_Node *nPtr, NextFunc *next) :
-        _mTreeNodePtr { nPtr }, _mNext { next } { }
+public: // bigfive
+    _BinaryTreeIterator(typename _Node::LinkType * link, NextFunc nextFunc) :
+        _mTreeNodeLink { link }, _mNextFunc { nextFunc } { __sync(); }
+
+    // from it convert to const-it
+    _BinaryTreeIterator(const _BinaryTreeIterator<typename types::RemoveConst<T>::Type> &obj)
+        : _BinaryTreeIterator(obj._mTreeNodeLink, obj._mNextFunc) { __sync(); }
 
 public: // ForwardIterator
     __Self& operator++() {
-        _mNext(_Node::to_link(_mTreeNodePtr));
+        _mTreeNodeLink = _mNextFunc(_mTreeNodeLink);
         __sync();
         return *this;
     }
 
     __Self operator++(int) {
         __Self old = *this;
-        _mNext(_Node::to_link(_mTreeNodePtr));
+        _mTreeNodeLink = _mNextFunc(_mTreeNodeLink);
         __sync();
         return old;
     }
 
 private:
     void __sync() {
-        __Self::_mPointer = &(_mTreeNodePtr->data);
+        __Self::_mPointer = &(_Node::to_node(_mTreeNodeLink)->data);
     }
 
 protected:
-    _Node *_mTreeNodePtr;
-    NextFunc *_mNext;
+    typename _Node::LinkType *_mTreeNodeLink;
+    NextFunc _mNextFunc;
 };
 
 /*

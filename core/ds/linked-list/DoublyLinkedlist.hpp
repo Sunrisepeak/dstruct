@@ -40,10 +40,10 @@ public: // BidirectionalIterator
         return oldPtr;
     };
 private:
-    // update _mLNodePtr and mPointer
+    // update _mLNodePtr and _mPointer
     void __sync(typename _Node::LinkType *ptr) {
         _mLNodePtr = _Node::to_node(ptr);
-        __Self::mPointer = &(_mLNodePtr->data);
+        __Self::_mPointer = &(_mLNodePtr->data);
     }
 protected:
     _Node *_mLNodePtr;

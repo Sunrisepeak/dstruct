@@ -30,7 +30,7 @@ public: // big five
     BinarySearchTree(const PrimitiveIterator<T> &begin, const PrimitiveIterator<T> &end, CMP cmp = CMP()) :
         BinarySearchTree(cmp) {
         for (auto it = begin; it != end; it++) {
-            insert(*it);
+            push(*it);
         }
     }
 
@@ -55,39 +55,83 @@ public:
         return _mSize;
     }
 
-    // push/pop
-    void insert(const T &obj) {
-        auto newRootPtr = _insert(_Node::to_link(_mRootPtr), obj);
-        _mRootPtr = _Node::to_node(newRootPtr);
-        _mSize++;
+    typename BinarySearchTree::ConstIteratorType
+    find(const T &obj) const {
+        auto target = _find_or_insert(_Node::to_link(_mRootPtr));
+        return _create_iterator(target, TraversalType::InOrder);
     }
 
-    void erase(const T &obj) {
+    // push/pop
+    void push(const T &obj) {
+        auto tree = _find_or_insert(_Node::to_link(_mRootPtr), obj, true);
+        if (_mRootPtr == nullptr)
+            _update_root(tree);
+        //_mSize++; // in _find_or_insert
+    }
+
+    void pop(const T &obj) {
         if (_mSize == 0) return; // TODO: better method?
-        auto newRootPtr = _delete(_Node::to_link(_mRootPtr), obj);
-        _mRootPtr = _Node::to_node(newRootPtr);
+        auto root = _delete(_Node::to_link(_mRootPtr), obj);
+        if (_mRootPtr != _Node::to_node(root)) {
+            _update_root(root);
+        }
         // _mSize--; in _try_to_delete
+    }
+
+    typename BinarySearchTree::ConstIteratorType
+    erase(typename BinarySearchTree::ConstIteratorType &it, TraversalType ttype = TraversalType::InOrder) {
+
+        auto target = _Node::data_to_link(it.operator->());
+        auto tree = _try_to_delete(target);
+        auto parent = target->parent;
+
+        if (parent == nullptr && target != tree) { // target is root node
+            _update_root(tree);
+            return _create_iterator(_mRootPtr, ttype);
+        }
+
+        if (parent->left == target) {
+            parent->left = tree;
+        } else {
+            parent->right = tree;
+        }
+
+        return ++(_create_iterator(_Node::to_node(target->parent), ttype));
     }
 
 public: // algo
     template <typename Callback>
-    void traversal(TraversalType ttype, Callback &cb) const {
+    void traversal(Callback cb, TraversalType ttype = TraversalType::InOrder) const {
+
         auto cbWrapper = [&](typename _Node::LinkType *link) {
             typename  BinarySearchTree::ConstIteratorType::ValueType &data = _Node::to_node(link)->data;
             cb(data);
         };
-        auto traversal_func = _get_traversal_func<Callback>(ttype);
-        traversal_func(_Node::to_link(_mRootPtr), cbWrapper);
+
+        switch (ttype) {
+            case TraversalType::PreOrder:
+                return  tree::preorder_traversal(_begin(ttype), cbWrapper);
+            case TraversalType::InOrder:
+                return  tree::inorder_traversal(_begin(ttype), cbWrapper);
+            case TraversalType::PostOrder:
+                return  tree::postorder_traversal(_begin(ttype), cbWrapper);
+            default: {
+                DSTRUCT_ASSERT(false);
+            }
+                
+        }
+
+        return  tree::preorder_traversal(_begin(ttype), cbWrapper);
     }
 
 public: // range-for and iterator
 
-    typename BinarySearchTree::ConstIteratorType begin(TraversalType itType) const {
-        return _create_iterator(_mRootPtr, itType);
+    typename BinarySearchTree::ConstIteratorType begin(TraversalType ttype = TraversalType::InOrder) const {
+        return _create_iterator(_begin(ttype), ttype);
     }
 
-    typename BinarySearchTree::ConstIteratorType end(TraversalType itType) const {
-        return _create_iterator(nullptr, itType);
+    typename BinarySearchTree::ConstIteratorType end(TraversalType ttype = TraversalType::InOrder) const {
+        return _create_iterator(nullptr, ttype);
     }
 
 protected:
@@ -95,29 +139,68 @@ protected:
     CMP _mCmp;
     _Node *_mRootPtr;
 
-    typename _Node::LinkType * _insert(typename _Node::LinkType *root, const T &obj) {
+    void _update_root(typename _Node::LinkType *root) {
+        _mRootPtr = _Node::to_node(root);
+        if (_mRootPtr != nullptr) {
+            _mRootPtr->link.parent = _Node::to_link(_mRootPtr);
+        }
+    }
 
-        if (root == nullptr) {
-            auto nPtr = _AllocNode::allocate();
-            dstruct::construct(nPtr, _Node(obj));
-            root = _Node::to_link(nPtr);
-        } else {
-            bool flag = false;
-            typename _Node::LinkType *newLinkPtr = nullptr;
-
-            if (_mCmp(obj, _Node::to_node(root)->data)) {
-                flag = root->left == nullptr;
-                root->left = newLinkPtr = _insert(root->left, obj);
-            } else {
-                flag = root->left == nullptr;
-                root->right = newLinkPtr = _insert(root->right, obj);
+    typename _Node::LinkType * _begin(TraversalType ttype = TraversalType::InOrder) const {
+        auto first = _Node::to_link(_mRootPtr);
+        if (ttype != TraversalType::PreOrder) {
+            while (first->left != nullptr) {
+                DSTRUCT_ASSERT(first->left->parent == first);
+                first = first->left;
+                static int i = 0;
+                DSTRUCT_ASSERT(++i < 10);
             }
+        }
+        return first;
+    }
 
-            if (flag && newLinkPtr != nullptr)
-                newLinkPtr->parent = root;
+    typename _Node::LinkType * _find_or_insert(typename _Node::LinkType *root, const T &obj, bool insertFlag = false) {
+        typename _Node::LinkType * target = root;
+        typename _Node::LinkType * parent = nullptr;
+
+        while (target != nullptr) { // find
+            parent = target;
+            if (_mCmp(obj, _Node::to_node(target)->data)) {
+                target = target->left;
+            } else if (_mCmp(_Node::to_node(target)->data, obj)) {
+                target = target->right;
+            } else {
+                // TODO: pls check your cmp, a < b, b < a, but a != b
+                break;
+            }
         }
 
-        return root;
+        if (!insertFlag) return target;
+
+        // create node
+        auto nodePtr = _AllocNode::allocate();
+        auto newNodeLink = _Node::to_link(nodePtr);
+        dstruct::construct(nodePtr, _Node(obj));
+
+        _mSize++;
+        
+        if (parent != nullptr) { // nodePtr isn't root
+            newNodeLink->parent = parent;
+            decltype(parent) subTree = nullptr; // for readability
+            if (_mCmp(obj, _Node::to_node(parent)->data)) {
+                subTree = parent->left;
+                parent->left = newNodeLink;
+                newNodeLink->left = subTree;
+            } else {
+                subTree = parent->right;
+                parent->right = newNodeLink;
+                newNodeLink->right = subTree;
+            }
+
+            if (subTree) subTree->parent = newNodeLink;
+        }
+
+        return newNodeLink;
     }
 
     typename _Node::LinkType * _delete(typename _Node::LinkType *root, const T &obj) {
@@ -169,7 +252,7 @@ protected:
         return subTree;
     }
 
-    typename BinarySearchTree::ConstIteratorType _create_iterator(TraversalType itType, _Node *nPtr) const {
+    typename BinarySearchTree::ConstIteratorType _create_iterator(typename _Node::LinkType *link, TraversalType itType) const {
         typename BinarySearchTree::IteratorType::NextFunc nextFunc = nullptr;
         switch (itType) {
             case TraversalType::PreOrder:
@@ -185,21 +268,7 @@ protected:
                 nextFunc = next_preorder;
                 break;
         }
-        return typename BinarySearchTree::ConstIteratorType(nPtr, nextFunc);
-    }
-
-    template <typename _Callback>
-    auto _get_traversal_func(TraversalType ttype) const -> decltype(preorder_traversal<_Callback>) {
-        switch (ttype) {
-            case TraversalType::PreOrder:
-                return preorder_traversal<_Callback>;
-            case TraversalType::InOrder:
-                return inorder_traversal<_Callback>;
-            case TraversalType::PostOrder:
-                return postorder_traversal<_Callback>;
-            default:
-                return preorder_traversal<_Callback>;
-        }
+        return typename BinarySearchTree::IteratorType(link, nextFunc);
     }
 
 };

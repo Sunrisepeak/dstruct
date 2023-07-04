@@ -21,13 +21,13 @@ protected:
     //friend DifferenceType distance(const _Iterator &, const _Iterator &);
 
 public: // base op
-    ReferenceType operator*() const { return *mPointer; };
-    PointerType operator->() const { return mPointer; };
-    virtual bool operator!=(const DStructIteratorTypeSpec &it) const { return mPointer != it.mPointer; }
-    virtual bool operator==(const DStructIteratorTypeSpec &it) const { return mPointer == it.mPointer; }
+    ReferenceType operator*() const { return *_mPointer; };
+    PointerType operator->() const { return _mPointer; };
+    virtual bool operator!=(const DStructIteratorTypeSpec &it) const { return _mPointer != it._mPointer; }
+    virtual bool operator==(const DStructIteratorTypeSpec &it) const { return _mPointer == it._mPointer; }
 
 protected: // member var
-    PointerType mPointer;
+    PointerType _mPointer;
 
 /* pls: according to your dstruct impl them
 public: // ForwardIterator
@@ -80,27 +80,27 @@ private:
 public:
     PrimitiveIterator() = default;
     PrimitiveIterator(T *ptr) : PrimitiveIterator() {
-        __Self::mPointer = ptr;
+        __Self::_mPointer = ptr;
     }
 
 public: // ForwardIterator
-    __Self& operator++() { __Self::mPointer++; return *this; };
-    __Self operator++(int) { return __Self::mPointer++; };
+    __Self& operator++() { __Self::_mPointer++; return *this; };
+    __Self operator++(int) { return __Self::_mPointer++; };
 public: // BidirectionalIterator
-    __Self& operator--() { __Self::mPointer--; return *this; };
-    __Self operator--(int) { return __Self::mPointer--; };
+    __Self& operator--() { __Self::_mPointer--; return *this; };
+    __Self operator--(int) { return __Self::_mPointer--; };
 public: // RandomIterator
-    __Self operator+(const int &n) const { return __Self::mPointer + n; };
-    __Self operator-(const int &n) const { return __Self::mPointer -n; };
-//    typename __Self::ReferenceType operator[](int index) { return __Self::mPointer[index]; }
-//    typename __Self::ValueType operator[](int index) const { return __Self::mPointer[index]; };
+    __Self operator+(const int &n) const { return __Self::_mPointer + n; };
+    __Self operator-(const int &n) const { return __Self::_mPointer -n; };
+//    typename __Self::ReferenceType operator[](int index) { return __Self::_mPointer[index]; }
+//    typename __Self::ValueType operator[](int index) const { return __Self::_mPointer[index]; };
 };
 
 
 template <typename T>
 static typename PrimitiveIterator<T>::DifferenceType
 operator-(const PrimitiveIterator<T> &last, const PrimitiveIterator<T> &first) {
-    return last.mPointer - first.mPointer;
+    return last._mPointer - first._mPointer;
 };
 
 // instance (int) function template

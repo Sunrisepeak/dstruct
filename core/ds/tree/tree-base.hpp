@@ -12,9 +12,10 @@ struct TreeNode {
     T data;
 
     using LinkType = Link;
-
-    TreeNode() : link { 0 } { }
+    // big five
+    TreeNode() : link {} {  }
     TreeNode(const T &_data) : TreeNode() { data = _data; }
+    TreeNode(const TreeNode &tNode) { data = tNode.data; link = tNode.link;  }
 
     static TreeNode * to_node(Link *link) {
         return reinterpret_cast<TreeNode *>(link);
@@ -22,6 +23,10 @@ struct TreeNode {
 
     static Link * to_link(TreeNode *node) {
         return &(node->link);
+    }
+
+    static Link * data_to_link(T *data) {
+        return static_cast<Link *>(static_cast<void *>(data) - sizeof(Link));
     }
 };
 

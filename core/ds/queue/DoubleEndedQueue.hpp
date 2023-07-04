@@ -104,9 +104,9 @@ public: // RandomIterator
     };
 
 private:
-    // update _mLNodePtr and mPointer
+    // update _mLNodePtr and _mPointer
     void __sync() {
-        __Self::mPointer = _mCurr.operator->();
+        __Self::_mPointer = _mCurr.operator->();
     }
 
 protected:
