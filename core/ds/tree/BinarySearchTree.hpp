@@ -151,7 +151,8 @@ public: // static pub api
 
     static typename _Node::LinkType * _find_or_insert(
         typename _Node::LinkType *root,
-        const T &obj, CMP &cmp = CMP(),
+        const T &obj,
+        CMP cmp = CMP(),
         bool insertFlag = false
     ) {
         typename _Node::LinkType * target = root;
