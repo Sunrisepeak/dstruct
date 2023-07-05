@@ -50,7 +50,7 @@ protected:
 };
 
 template<typename T, typename Alloc = port::Alloc>
-class DoublyLinkedlist : public DStructTypeSpec<T, Alloc, _DoublyLinkListIterator> {
+class DoublyLinkedList : public DStructTypeSpec<T, Alloc, _DoublyLinkListIterator> {
 
 protected:
     using _Node      = _EmbeddedListNode<T, _DoublyLink>; 
@@ -58,19 +58,19 @@ protected:
 
 
 public: // big five
-    DoublyLinkedlist() {
+    DoublyLinkedList() {
         //_mHeadNode.link.next = _mHeadNode.link.prev = &_mHeadNode.link;
         _Node::init(&_mHeadNode);
         _mSize = 0;
     }
 
-    DoublyLinkedlist(const T &obj, size_t n) : DoublyLinkedlist() {
+    DoublyLinkedList(const T &obj, size_t n) : DoublyLinkedList() {
         for (int i = 0; i < n; i++) {
             push_back(obj);
         }
     }
 
-    ~DoublyLinkedlist() {
+    ~DoublyLinkedList() {
         while (!empty()) {
             pop_back();
         }
@@ -87,7 +87,7 @@ public: // base op
         return false;
     }
 
-    typename DoublyLinkedlist::SizeType size() const {
+    typename DoublyLinkedList::SizeType size() const {
         return _mSize;
     }
 
@@ -151,7 +151,7 @@ public: // base op
 
         // 3. get data
         _Node *nPtr = _Node::to_node(lPtr);
-        typename DoublyLinkedlist::ValueType data = nPtr->data;
+        typename DoublyLinkedList::ValueType data = nPtr->data;
         // 4. free and decrease size/len
         dstruct::destory(nPtr);
         _AllocNode::deallocate(nPtr);
@@ -173,32 +173,32 @@ public: // base op
 
 public: // support it/range-for
 
-    typename DoublyLinkedlist::IteratorType
+    typename DoublyLinkedList::IteratorType
     begin() {
         _Node * node = _Node::to_node(_mHeadNode.link.next);
-        return typename DoublyLinkedlist::IteratorType(node);
+        return typename DoublyLinkedList::IteratorType(node);
     }
 
-    typename DoublyLinkedlist::ConstIteratorType
+    typename DoublyLinkedList::ConstIteratorType
     begin() const {
         _Node * node = _Node::to_node(_mHeadNode.link.next);
-        return typename DoublyLinkedlist::ConstIteratorType(node);
+        return typename DoublyLinkedList::ConstIteratorType(node);
     }
 
-    typename DoublyLinkedlist::IteratorType
+    typename DoublyLinkedList::IteratorType
     end() {
-        return typename DoublyLinkedlist::IteratorType(&_mHeadNode);
+        return typename DoublyLinkedList::IteratorType(&_mHeadNode);
     }
 
-    typename DoublyLinkedlist::ConstIteratorType
+    typename DoublyLinkedList::ConstIteratorType
     end() const {
-        typename DoublyLinkedlist::ConstIteratorType(&_mHeadNode);
+        typename DoublyLinkedList::ConstIteratorType(&_mHeadNode);
     }
 
 
 protected:
     _Node _mHeadNode;
-    typename DoublyLinkedlist::SizeType _mSize;
+    typename DoublyLinkedList::SizeType _mSize;
 };
 
 }

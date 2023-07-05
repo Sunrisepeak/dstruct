@@ -73,7 +73,7 @@ int main() {
 | :---: | :---------------------------: | :----------------------: | :----------------------------------------------------------: | --------- |
 | Array |             Array             |         静态数组         |                 [Array](examples/array.cpp)                  |           |
 |       |            Vector             |         动态数组         |                [Vector](examples/vector.cpp)                 |           |
-| List  |     EList(Embedded List)      |        嵌入式链表        |             [EList](examples/embedded_list.cpp)              |           |
+| List  |     Embedded List      |        嵌入式链表        |             [EList](examples/embedded_list.cpp)              |           |
 |       |   DLinkedList(Doubly Linked List)   |          双链表          |           [DLinkedList](examples/double_linked_list.cpp)           |           |
 | Queue |    Deque(DoubleEndedQueue)    |         双端队列         |                 [Deque](examples/deque.cpp)                  |           |
 |       |             Queue             |           队列           |                 [Queue](examples/queue.cpp)                  |           |
@@ -96,14 +96,16 @@ int main() {
 
 > 范型算法
 
-| 类别     |                             算法                             | 描述   | 备注 |
-| -------- | :----------------------------------------------------------: | ------ | ---- |
-| 通用     |         [for_each](examples/algorithms/for_each.cpp)         | 遍历   |      |
-|          |                                                              |        |      |
-|          |                                                              |        |      |
-| 堆(Heap) |       [Heap::build](examples/algorithms/heap_algo.cpp)       | 堆化   |      |
-|          | [Heap::sort / MinHeap::sort / MaxHeap::sort](examples/algorithms/heap_algo.cpp) | 堆排序 |      |
-|          |                                                              |        |      |
+| 类别     |                             算法                             | 描述                       | 备注 |
+| -------- | :----------------------------------------------------------: | -------------------------- | ---- |
+| 通用     |         [for_each](examples/algorithms/for_each.cpp)         | 遍历                       |      |
+|          |                                                              |                            |      |
+|          |                                                              |                            |      |
+| 堆(Heap) |       [Heap::build](examples/algorithms/heap_algo.cpp)       | 堆化                       |      |
+|          | [Heap::sort / MinHeap::sort / MaxHeap::sort](examples/algorithms/heap_algo.cpp) | 堆排序                     |      |
+|          |                                                              |                            |      |
+| 树(Tree) |      binary tree traversal(preorder/inorder/postorder)       | 二叉树遍历(前序/中序/后序) |      |
+|          |     [BSTree::traversal](examples/binary_search_tree.cpp)     | 二叉搜索树遍历             |      |
 
 
 

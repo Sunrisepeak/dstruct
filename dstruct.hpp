@@ -18,7 +18,7 @@
 #include <core/ds/queue/DoubleEndedQueue.hpp>
 
 // linked list
-#include <core/ds/linked-list/DoublyLinkedlist.hpp>
+#include <core/ds/linked-list/DoublyLinkedList.hpp>
 
 // tree
 #include <core/ds/tree/BinarySearchTree.hpp>
@@ -34,9 +34,9 @@ namespace dstruct {
     template<typename T, typename Link = _DoublyLink>
     using EListNode = _EmbeddedListNode<T, Link>;
 
-// DoublyLinkedlist
+// DoublyLinkedList
     template<typename T, typename Alloc = port::Alloc>
-    using DLinkedList = DoublyLinkedlist<T, Alloc>;
+    using DLinkedList = DoublyLinkedList<T, Alloc>;
 
 // Queue
     template<typename T, typename Alloc = port::Alloc>

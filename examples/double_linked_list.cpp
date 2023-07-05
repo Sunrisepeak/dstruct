@@ -6,7 +6,7 @@ int main() {
 
     std::cout << "\nTesting: " << __FILE__;
 
-    dstruct::DoublyLinkedlist<int> list(2, 10);
+    dstruct::DoublyLinkedList<int> list(2, 10);
     dstruct::DLinkedList<double> list2(1.1, 2);
 
     DSTRUCT_ASSERT(list2.size() == 2);
