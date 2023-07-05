@@ -102,10 +102,10 @@ int main() {
 |          |                                                              |                            |      |
 |          |                                                              |                            |      |
 | 堆(Heap) |       [Heap::build](examples/algorithms/heap_algo.cpp)       | 堆化                       |      |
-|          | [Heap::sort / MinHeap::sort / MaxHeap::sort](examples/algorithms/heap_algo.cpp) | 堆排序                     |      |
+|          | [Heap::sort / MinHeap::sort / MaxHeap::sort](examples/algorithms/heap_algo.cpp#L31) | 堆排序                     |      |
 |          |                                                              |                            |      |
 | 树(Tree) |      binary tree traversal(preorder/inorder/postorder)       | 二叉树遍历(前序/中序/后序) |      |
-|          |     [BSTree::traversal](examples/binary_search_tree.cpp)     | 二叉搜索树遍历             |      |
+|          |     [BSTree::traversal](examples/binary_search_tree.cpp#L35)     | 二叉搜索树遍历             |      |
 
 
 

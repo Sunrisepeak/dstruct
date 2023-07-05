@@ -25,8 +25,9 @@ struct TreeNode {
         return &(node->link);
     }
 
-    static Link * data_to_link(T *data) {
-        return static_cast<Link *>(static_cast<void *>(data) - sizeof(Link));
+    static Link * data_to_link(const T *data) {
+        // TODO: (void *) verify/test
+        return static_cast<Link *>((void *)(data) - sizeof(Link));
     }
 };
 

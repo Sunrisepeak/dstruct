@@ -17,8 +17,15 @@ int main() {
         }
 
         for (int i = 0; i < 10; i++) {
-            bst.pop(i);
+            //bst.pop(i);
             bst.pop(100 - i);
+        }
+
+        auto it = bst.begin();
+        for (int i = 0; it != bst.end(); i++) {
+            //std::cout << i << ": " << *it << std::endl;
+            DSTRUCT_ASSERT(i == *it);
+            it = bst.erase(it);
         }
 
         DSTRUCT_ASSERT(bst.empty());
@@ -30,14 +37,13 @@ int main() {
         dstruct::BSTree<int> bst(arr, arr + sizeof(arr) / sizeof(int));
         DSTRUCT_ASSERT(bst.size() == sizeof(arr) / sizeof(int));
         
-        auto it = bst.begin();
-        for (int i = 1; i <= 5; i++, it++) {
-            //std::cout << i << ": " << *it << std::endl;
-            DSTRUCT_ASSERT(i == *it);
-        }
-        
-        int sum { 0 };
-        bst.traversal([&](int val) { sum += val; }, decltype(bst)::TraversalType::PreOrder);
+        int sum { 0 }, check { 1 };
+        bst.traversal(
+            [&](int val) {
+                sum += val;
+            },
+            decltype(bst)::TraversalType::PreOrder
+        );
         DSTRUCT_ASSERT(sum == 1 + 2 + 3 + 4 + 5);
     }
 

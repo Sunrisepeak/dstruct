@@ -74,7 +74,7 @@ static _BinaryTreeLink * next_preorder(_BinaryTreeLink *link) {
     }
 
     // 如果没有左右子节点，则返回第一个有右子节点的祖先节点的右子节点
-    while (!(link->parent == nullptr || link->parent == link)) {
+    while (link->parent != nullptr) {
         if (link->parent->right != nullptr && link->parent->right != link) {
             return link->parent->right;
         }
@@ -107,9 +107,10 @@ static _BinaryTreeLink * next_inorder(_BinaryTreeLink *link) {
     }
 
     // 如果没有右子节点，则返回第一个左子节点的祖先节点
-    while (!(link->parent == nullptr || link->parent == link) && link->parent->left != link) {
+    while (link->parent != nullptr && link->parent->left != link) {
         link = link->parent;
     }
+
     return link->parent;
 }
 
@@ -141,8 +142,8 @@ static _BinaryTreeLink * next_postorder(_BinaryTreeLink *link) {
     }
 
     // 如果该节点没有右子节点，则返回第一个左子节点的祖先节点
-    // !(link->parent == nullptr || link->parent == link) : root check
-    while (!(link->parent == nullptr || link->parent == link) && link->parent->right == link) {
+    // link->parent != nullptr : root check
+    while (link->parent != nullptr && link->parent->right == link) {
         link = link->parent;
     }
     return link->parent;

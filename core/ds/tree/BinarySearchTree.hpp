@@ -57,16 +57,16 @@ public:
 
     typename BinarySearchTree::ConstIteratorType
     find(const T &obj) const {
-        auto target = _find_or_insert(_Node::to_link(_mRootPtr));
+        auto target = _find_or_insert(_Node::to_link(_mRootPtr), obj, _mCmp, false);
         return _create_iterator(target, TraversalType::InOrder);
     }
 
     // push/pop
     void push(const T &obj) {
-        auto tree = _find_or_insert(_Node::to_link(_mRootPtr), obj, true);
+        auto tree = _find_or_insert(_Node::to_link(_mRootPtr), obj, _mCmp, true);
         if (_mRootPtr == nullptr)
             _update_root(tree);
-        //_mSize++; // in _find_or_insert
+        _mSize++;
     }
 
     void pop(const T &obj) {
@@ -79,24 +79,27 @@ public:
     }
 
     typename BinarySearchTree::ConstIteratorType
-    erase(typename BinarySearchTree::ConstIteratorType &it, TraversalType ttype = TraversalType::InOrder) {
+    erase(typename BinarySearchTree::ConstIteratorType it) {
 
         auto target = _Node::data_to_link(it.operator->());
-        auto tree = _try_to_delete(target);
         auto parent = target->parent;
+        auto next = it; it++; // get next node
 
-        if (parent == nullptr && target != tree) { // target is root node
-            _update_root(tree);
-            return _create_iterator(_mRootPtr, ttype);
+        auto tree = _try_to_delete(target);
+
+        if (target != tree) { // deleted directly
+            next = it;
+
+            if (parent == nullptr) { _update_root(tree); return next; } // is root
+
+            if (parent->left == target) {
+                parent->left = tree;
+            } else {
+                parent->right = tree;
+            }
         }
 
-        if (parent->left == target) {
-            parent->left = tree;
-        } else {
-            parent->right = tree;
-        }
-
-        return ++(_create_iterator(_Node::to_node(target->parent), ttype));
+        return next;
     }
 
 public: // algo
@@ -110,64 +113,55 @@ public: // algo
 
         switch (ttype) {
             case TraversalType::PreOrder:
-                return  tree::preorder_traversal(_begin(ttype), cbWrapper);
+                return  tree::preorder_traversal(_begin(_Node::to_link(_mRootPtr), ttype), cbWrapper);
             case TraversalType::InOrder:
-                return  tree::inorder_traversal(_begin(ttype), cbWrapper);
+                return  tree::inorder_traversal(_begin(_Node::to_link(_mRootPtr), ttype), cbWrapper);
             case TraversalType::PostOrder:
-                return  tree::postorder_traversal(_begin(ttype), cbWrapper);
+                return  tree::postorder_traversal(_begin(_Node::to_link(_mRootPtr), ttype), cbWrapper);
             default: {
                 DSTRUCT_ASSERT(false);
             }
-                
         }
 
-        return  tree::preorder_traversal(_begin(ttype), cbWrapper);
+        return  tree::preorder_traversal(_begin(_Node::to_link(_mRootPtr), ttype), cbWrapper);
     }
 
 public: // range-for and iterator
 
     typename BinarySearchTree::ConstIteratorType begin(TraversalType ttype = TraversalType::InOrder) const {
-        return _create_iterator(_begin(ttype), ttype);
+        return _create_iterator(_begin(_Node::to_link(_mRootPtr), ttype), ttype);
     }
 
     typename BinarySearchTree::ConstIteratorType end(TraversalType ttype = TraversalType::InOrder) const {
         return _create_iterator(nullptr, ttype);
     }
 
-protected:
-    size_t _mSize;
-    CMP _mCmp;
-    _Node *_mRootPtr;
+public: // static pub api
 
-    void _update_root(typename _Node::LinkType *root) {
-        _mRootPtr = _Node::to_node(root);
-        if (_mRootPtr != nullptr) {
-            _mRootPtr->link.parent = _Node::to_link(_mRootPtr);
-        }
-    }
-
-    typename _Node::LinkType * _begin(TraversalType ttype = TraversalType::InOrder) const {
-        auto first = _Node::to_link(_mRootPtr);
+    static typename _Node::LinkType * _begin(typename _Node::LinkType *root, TraversalType ttype = TraversalType::InOrder) {
+        auto first = root;
         if (ttype != TraversalType::PreOrder) {
             while (first->left != nullptr) {
                 DSTRUCT_ASSERT(first->left->parent == first);
                 first = first->left;
-                static int i = 0;
-                DSTRUCT_ASSERT(++i < 10);
             }
         }
         return first;
     }
 
-    typename _Node::LinkType * _find_or_insert(typename _Node::LinkType *root, const T &obj, bool insertFlag = false) {
+    static typename _Node::LinkType * _find_or_insert(
+        typename _Node::LinkType *root,
+        const T &obj, CMP &cmp = CMP(),
+        bool insertFlag = false
+    ) {
         typename _Node::LinkType * target = root;
         typename _Node::LinkType * parent = nullptr;
 
         while (target != nullptr) { // find
             parent = target;
-            if (_mCmp(obj, _Node::to_node(target)->data)) {
+            if (cmp(obj, _Node::to_node(target)->data)) {
                 target = target->left;
-            } else if (_mCmp(_Node::to_node(target)->data, obj)) {
+            } else if (cmp(_Node::to_node(target)->data, obj)) {
                 target = target->right;
             } else {
                 // TODO: pls check your cmp, a < b, b < a, but a != b
@@ -182,12 +176,10 @@ protected:
         auto newNodeLink = _Node::to_link(nodePtr);
         dstruct::construct(nodePtr, _Node(obj));
 
-        _mSize++;
-        
         if (parent != nullptr) { // nodePtr isn't root
             newNodeLink->parent = parent;
             decltype(parent) subTree = nullptr; // for readability
-            if (_mCmp(obj, _Node::to_node(parent)->data)) {
+            if (cmp(obj, _Node::to_node(parent)->data)) {
                 subTree = parent->left;
                 parent->left = newNodeLink;
                 newNodeLink->left = subTree;
@@ -201,6 +193,18 @@ protected:
         }
 
         return newNodeLink;
+    }
+
+protected:
+    size_t _mSize;
+    CMP _mCmp;
+    _Node *_mRootPtr;
+
+    void _update_root(typename _Node::LinkType *root) {
+        _mRootPtr = _Node::to_node(root);
+        if (_mRootPtr != nullptr) {
+            _mRootPtr->link.parent = nullptr;
+        }
     }
 
     typename _Node::LinkType * _delete(typename _Node::LinkType *root, const T &obj) {
