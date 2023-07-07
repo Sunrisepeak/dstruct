@@ -37,8 +37,8 @@ public: // big Five
 public: // base op
     size_t empty() const { return N == 0; }
     size_t size() const { return N; }
-    T back() const { return _mC[0]; }
-    T front() const { return _mC[N - 1]; }
+    T back() const { return _mC[N - 1]; }
+    T front() const { return _mC[0]; }
 
 public: // operator
 

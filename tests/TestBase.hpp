@@ -4,18 +4,29 @@
 //#include <iostream>
 #include <dstruct.hpp>
 
+#define ENABLE_LOG 0
+#define TEST_LOG(...) \
+if (ENABLE_LOG) { \
+    printf ("\033[32mDStruct LOG [I]: \t%s:  ", __func__); \
+    printf ("%s \033[0m\n", __VA_ARGS__); \
+}
+
 namespace test {
 
-class Destory {
+struct Destory {
 public:
     Destory() : __mCnt { 1 } {
-        //std::cout << "Destory:" << this << std::endl;
+        TEST_LOG("Destory");
+    }
+
+    Destory(const Destory &des) : __mCnt { des.__mCnt } {
+        TEST_LOG("Copy Destory");
     }
 
     ~Destory() {
         __mCnt--;
         DSTRUCT_ASSERT(__mCnt == 0);
-        //std::cout << "~Destory:" << this << std::endl;
+        TEST_LOG("~Destory");
     }
 private:
     int __mCnt;
@@ -24,9 +35,20 @@ private:
 template <typename DStruct>
 void test_destory() {
     DStruct ds;
-    for(int i = 0; i < 100; i++) {
-        ds.push(Destory());
+    Destory des;
+    int testNums = 10;
+
+    for(int i = 0; i < testNums; i++) {
+        DSTRUCT_ASSERT(ds.size() == i);
+        ds.push(des);
     }
+
+    for(int i = testNums; i > 0; i--) {
+        DSTRUCT_ASSERT(ds.size() == i);
+        ds.pop();
+    }
+
+    DSTRUCT_ASSERT(ds.empty());
 }
 
 void test_arr_destory() {

@@ -38,18 +38,17 @@ protected:
     using _Alloc               = DSAlloc<T, Alloc>;
 
 /*
-public: // base op
-    // status
+public: // Capacity
     virtual SizeType size() const = 0;
     virtual SizeType capacity() const = 0;
     virtual bool empty() const = 0;
 
+public: // Access
     // check
     virtual ValueType back() const = 0;
     virtual ValueType front() const = 0;
-    virtual const ValueType & operator[](int) = 0;
 
-    // push/pop
+public: // Modifiers
     virtual void push(const T&) = 0;
     virtual void push_back() = 0;
     virtual void push_front() = 0;
@@ -57,7 +56,11 @@ public: // base op
     virtual void pop_back() = 0;
     virtual void pop_front() = 0;
 
-    // iterator/range-for support
+public: // operator
+    virtual const ValueType & operator[](int) = 0;
+    virtual ValueType operator[](int) const = 0;
+
+public: // iterator/range-for support
     virtual IteratorType begin() = 0;
     virtual ConstIteratorType begin() const = 0;
     virtual IteratorType end() = 0;

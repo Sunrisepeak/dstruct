@@ -20,14 +20,7 @@ public: // big five
         _mCapacity = n;
     }
 
-    Vector(const Vector& vec) : Vector() {
-        resize(vec._mCapacity);
-        _mSize = vec._mSize;
-        for (int i = 0; i < _mSize; i++) {
-            _mC[i] = vec._mC[i];
-        }
-    }
-
+    Vector(const Vector& vec) : Vector() { *this = vec; }
     Vector & operator=(const Vector &vec) {
         resize(vec._mCapacity);
         _mSize = vec._mSize;
@@ -37,13 +30,7 @@ public: // big five
         return *this;
     }
 
-    Vector(Vector &&vec) : Vector() {
-        this->_mC = vec._mC;
-        this->_mSize = vec._mSize;
-        this->_mCapacity = vec._mCapacity;
-        vec._mC = vec._mSize = _mCapacity = 0;
-    }
-
+    Vector(Vector &&vec) : Vector() { *this = dstruct::move(vec); }
     Vector & operator=(Vector &&vec) {
         dstruct::destory(this);
         
@@ -70,39 +57,17 @@ public: // big five
         _mC = nullptr;
     }
 
-public:
+public: // Capacity
+    bool empty() const { return _mSize == 0; }
+    size_t size() const { return _mSize; }
+    size_t capacity() const { return _mCapacity; }
 
-    T & operator[](int index) {
-        if (index < 0)
-            index = _mSize + index;
-        return _mC[index];
-    }
-
-    T operator[](int index) const {
-        if (index < 0)
-            index = _mSize + index;
-        return _mC[index];
-    }
-public:
-
-    bool empty() const {
-        return _mSize == 0;
-    }
-
-    size_t size() const {
-        return _mSize;
-    }
-
-    size_t capacity() const {
-        return _mCapacity;
-    }
-
-    T back() const {
-        return _mC[_mSize - 1];
-    }
+public: // Access
+    T back() const { return _mC[_mSize - 1]; }
+    T front() const { return _mC[0]; }
 
 public: // Modifiers
-
+    void push(const T &obj) { push_back(obj); }
     void push_back(const T &obj) {
         if (_mSize + 1 > _mCapacity) {
             if (_mSize)
@@ -114,6 +79,7 @@ public: // Modifiers
         _mSize++;
     }
 
+    void pop() { pop_back(); }
     void pop_back() {
         DSTRUCT_ASSERT(_mSize > 0);
         --_mSize;
@@ -154,25 +120,28 @@ public: // Modifiers
         }
     }
 
-public: // other
-    typename Vector::IteratorType begin() {
-        return _mC;
+public: // operator
+    T & operator[](int index) {
+        if (index < 0)
+            index = _mSize + index;
+        DSTRUCT_ASSERT(index < static_cast<int>(_mSize));
+        return _mC[index];
     }
 
-    typename Vector::ConstIteratorType begin() const {
-        return _mC;
+    T operator[](int index) const {
+        if (index < 0)
+            index = _mSize + index;
+        DSTRUCT_ASSERT(index < static_cast<int>(_mSize));
+        return _mC[index];
     }
 
-    typename Vector::IteratorType end() {
-        return _mC + _mSize;
-    }
+public: // iterator
+    typename Vector::IteratorType begin() { return _mC; }
+    typename Vector::ConstIteratorType begin() const { return _mC; }
+    typename Vector::IteratorType end() { return _mC + _mSize; }
+    typename Vector::ConstIteratorType end() const { return _mC + _mSize; }
 
-    typename Vector::ConstIteratorType end() const {
-        return _mC + _mSize;
-    }
-
-protected:
-
+protected: // data member
     size_t _mSize, _mCapacity;
     T *_mC;
 };
