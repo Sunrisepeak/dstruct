@@ -14,12 +14,6 @@ DStruct 是一个易于移植且结构简洁的数据结构模板库
 - 现代 C++ / 泛型结构，包含多样丰富的数据结构
 
 
-## 应用示例
-- [**DSVisual**：](https://github.com/Sunrisepeak/DSVisual) 数据结构可视化组件库
-
-![](https://github.com/Sunrisepeak/DSVisual/blob/main/docs/imgs/dsvisual_begin_2023-07-03_18-12.png)
-
-
 ---
 
 ## 使用DStruct
@@ -119,6 +113,11 @@ int main() {
   xmake r dstruct_vector # 运行 dstruct_vector 示例，更多细节请查看xmake.lua
   ```
 
+## 谁在用?
+
+- [**DSVisual**：](https://github.com/Sunrisepeak/DSVisual) 数据结构可视化组件库
+
+![](https://github.com/Sunrisepeak/DSVisual/blob/main/docs/imgs/dsvisual_effect.readme.png)
 
 
 ## 其他
