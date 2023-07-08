@@ -26,7 +26,7 @@ public: // big Five
         return *this;
     }
 
-    Array(Array &&arr) { *this = std::move(arr); };
+    Array(Array &&arr) { *this = dstruct::move(arr); };
     Array & operator=(Array &&arr) {
         for (size_t i = 0; i < N; i++) _mC[i] = dstruct::move(arr._mC[i]);
         return *this;

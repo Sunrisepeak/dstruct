@@ -63,7 +63,7 @@ public: // Capacity
     size_t capacity() const { return _mCapacity; }
 
 public: // Access
-    T back() const { return _mC[_mSize - 1]; }
+    T back() const {  DSTRUCT_ASSERT(_mSize > 0); return _mC[_mSize - 1]; }
     T front() const { return _mC[0]; }
 
 public: // Modifiers
