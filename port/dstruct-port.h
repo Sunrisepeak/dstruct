@@ -46,7 +46,7 @@ struct Alloc
 
 
 struct DStructPlacementNewFlag { };
-void * operator new(size_t sz, void *ptr, DStructPlacementNewFlag *) { return ptr; }
+inline void * operator new(size_t sz, void *ptr, DStructPlacementNewFlag *) { return ptr; }
 // void operator delete(void *ptr, DStructPlacementNewFlag *) {  } haven't used
 
 

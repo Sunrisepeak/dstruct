@@ -25,7 +25,8 @@ public: // big five
         resize(vec._mCapacity);
         _mSize = vec._mSize;
         for (int i = 0; i < _mSize; i++) {
-            _mC[i] = vec._mC[i];
+            //_mC[i] = vec._mC[i]; have some clas haven't operator=
+            dstruct::construct(_mC + i, vec._mC[i]);
         }
         return *this;
     }
@@ -33,15 +34,15 @@ public: // big five
     Vector(Vector &&vec) : Vector() { *this = dstruct::move(vec); }
     Vector & operator=(Vector &&vec) {
         dstruct::destory(this);
-        
+
         this->_mC = vec._mC;
         this->_mSize = vec._mSize;
         this->_mCapacity = vec._mCapacity;
 
         // init vec
         vec._mC = nullptr;
-        vec._mSize = _mCapacity = 0;
-        
+        vec._mSize = vec._mCapacity = 0;
+
         return *this;
     }
 
@@ -91,7 +92,8 @@ public: // Modifiers
 
     void resize(size_t n) {
         T *oldC = _mC;
-        _mC = Vector::_Alloc::allocate(n);
+        if (n == 0) _mC = nullptr;
+        else _mC = Vector::_Alloc::allocate(n);
         for (int i = 0; i < _mSize; i++) {
             if (i < n)
                 dstruct::construct(_mC + i, oldC[i]);
