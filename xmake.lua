@@ -1,4 +1,4 @@
-set_languages("c++11")
+set_languages("c99", "cxx11")
 
 add_includedirs(
     ".",
