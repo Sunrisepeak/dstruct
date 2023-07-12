@@ -28,7 +28,8 @@ int main() {
     for (auto it = intESList->link.next; it != IntESList::to_link(intESList); it = it->next) {
         auto node = IntESList::to_node(it);
         //std::cout << "--->" << node->data << std::endl;
-        DSTRUCT_ASSERT(node->data == data--);
+        DSTRUCT_ASSERT(node->data == data);
+        data--;
     }
 
     // del element

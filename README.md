@@ -30,14 +30,12 @@ git clone git@github.com:Sunrisepeak/DStruct.git
 
 ### 2. 引用项目的dstruct.hpp接口文件
 
-> 相对路径/绝对路径 或者 把本地DStruct项目的根目录设置为include索引目录 直接使用
+> 添加DStruct项目的根目录到include索引目录 `-IyourPath/DStruct`
 
 ```cpp
 #include <iostream>
 
 #include "dstruct.hpp"
-// or 
-// #include "yourLocalPath/DStruct/dstruct.hpp"
 
 int main() {
 
