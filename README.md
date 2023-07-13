@@ -117,6 +117,9 @@ int main() {
 
 ![](https://github.com/Sunrisepeak/DSVisual/blob/main/docs/imgs/dsvisual_effect.readme.png)
 
+- [**KHistory**：](https://github.com/Sunrisepeak/KHistory) 跨平台的按键检测/历史记录工具
+
+![](https://github.com/Sunrisepeak/KHistory/blob/main/docs/imgs/khistory-gamepad.demo.gif)
 
 ## 其他
 
