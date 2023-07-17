@@ -15,7 +15,7 @@ public: // big five
         DSTRUCT_ASSERT(n != 0);
         resize(n);
         for (int i = 0; i < n; i++)
-            _mC[i] = obj;
+             dstruct::construct(_mC + i, obj);
         _mSize = n;
         _mCapacity = n;
     }
