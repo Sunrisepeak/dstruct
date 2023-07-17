@@ -15,38 +15,38 @@ private:
     using __Self = _DoublyLinkListIterator;
 
 public: // big five
-    _DoublyLinkListIterator(_Node *ptr) {
-        __sync(_Node::to_link(ptr));
+    _DoublyLinkListIterator(typename _Node::LinkType *linkPtr) {
+        __sync(linkPtr);
     }
 
 public: // ForwardIterator
     __Self& operator++() { 
-        __sync(_mLNodePtr->link.next);
+        __sync(_mLinkPtr->next);
         return *this;
     };
     __Self operator++(int) {
-        _Node *oldPtr = _mLNodePtr;
-        __sync(_mLNodePtr->link.next);
-        return oldPtr;
+        auto oldLinkPtr = _mLinkPtr;
+        __sync(_mLinkPtr->next);
+        return oldLinkPtr;
     };
 public: // BidirectionalIterator
     __Self& operator--() {
-        __sync(_mLNodePtr->link.prev);
+        __sync(_mLinkPtr->prev);
         return *this;
     };
     __Self operator--(int) {
-        _Node *oldPtr = _mLNodePtr;
-        __sync(_mLNodePtr->link.prev);
-        return oldPtr;
+        auto oldLinkPtr = _mLinkPtr;
+        __sync(_mLinkPtr->prev);
+        return oldLinkPtr;
     };
 private:
-    // update _mLNodePtr and _mPointer
+    // update _mLinkPtr and _mPointer
     void __sync(typename _Node::LinkType *ptr) {
-        _mLNodePtr = _Node::to_node(ptr);
-        __Self::_mPointer = &(_mLNodePtr->data);
+        _mLinkPtr = ptr;
+        __Self::_mPointer = &(_Node::to_node(_mLinkPtr)->data);
     }
 protected:
-    _Node *_mLNodePtr;
+    typename _Node::LinkType *_mLinkPtr;
 };
 
 template<typename T, typename Alloc = port::Alloc>
@@ -175,24 +175,22 @@ public: // support it/range-for
 
     typename DoublyLinkedList::IteratorType
     begin() {
-        _Node * node = _Node::to_node(_mHeadNode.link.next);
-        return typename DoublyLinkedList::IteratorType(node);
+        return typename DoublyLinkedList::IteratorType(_mHeadNode.link.next);
     }
 
     typename DoublyLinkedList::ConstIteratorType
     begin() const {
-        _Node * node = _Node::to_node(_mHeadNode.link.next);
-        return typename DoublyLinkedList::ConstIteratorType(node);
+        return typename DoublyLinkedList::ConstIteratorType(_mHeadNode.link.next);
     }
 
     typename DoublyLinkedList::IteratorType
     end() {
-        return typename DoublyLinkedList::IteratorType(&_mHeadNode);
+        return typename DoublyLinkedList::IteratorType((_mHeadNode.link.next)->prev);
     }
 
     typename DoublyLinkedList::ConstIteratorType
-    end() const {
-        typename DoublyLinkedList::ConstIteratorType(&_mHeadNode);
+    end() const { // headNode-link
+        return typename DoublyLinkedList::ConstIteratorType((_mHeadNode.link.next)->prev);
     }
 
 

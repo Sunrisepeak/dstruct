@@ -11,10 +11,8 @@ int main() {
 
     DSTRUCT_ASSERT(list2.size() == 2);
 
-    for (auto &v : list) {     // range-for
-        //std::cout << v << " " << list.size() << std::endl;
-        v = 3;
-    }
+    for (auto &v : list) { v = 3; }
+    for (auto v: list) { /* const iterator */ }
 
     DSTRUCT_ASSERT(list.back() == 3);
 
