@@ -22,35 +22,35 @@ target("dstruct_test")
 
 target("dstruct_array")
     set_kind("binary")
-    add_files("examples/array.cpp")
+    add_files("examples/array/array.cpp")
 
 target("dstruct_vector")
     set_kind("binary")
-    add_files("examples/vector.cpp")
+    add_files("examples/array/vector.cpp")
 
 target("embedded_list")
     set_kind("binary")
-    add_files("examples/embedded_list.cpp")
+    add_files("examples/linked-list/embedded_list.cpp")
 
 target("dstruct_single_linked_list")
     set_kind("binary")
-    add_files("examples/single_linked_list.cpp")
+    add_files("examples/linked-list/single_linked_list.cpp")
 
 target("dstruct_double_linked_list")
     set_kind("binary")
-    add_files("examples/double_linked_list.cpp")
-
-target("dstruct_deque")
-    set_kind("binary")
-    add_files("examples/deque.cpp")
+    add_files("examples/linked-list/double_linked_list.cpp")
 
 target("dstruct_queue")
     set_kind("binary")
-    add_files("examples/queue.cpp")
+    add_files("examples/queue/queue.cpp")
+
+target("dstruct_deque")
+    set_kind("binary")
+    add_files("examples/queue/deque.cpp")
 
 target("dstruct_stack")
     set_kind("binary")
-    add_files("examples/stack.cpp")
+    add_files("examples/stack/stack.cpp")
 
 target("dstruct_xvalue_stack")
     set_kind("binary")
