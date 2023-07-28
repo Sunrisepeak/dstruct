@@ -1,0 +1,140 @@
+#ifndef __SINGLE_LINKED_LIST_HPP__DSTRUCT
+#define __SINGLE_LINKED_LIST_HPP__DSTRUCT
+
+#include <core/common.hpp>
+#include <core/ds/linked-list/EmbeddedList.hpp>
+#include <core/ds/linked-list/LinkedList.hpp>
+
+namespace dstruct {
+
+template<typename T>
+class _SinglyLinkListIterator : public DStructIteratorTypeSpec<T> {
+public:
+    using _Node  = _EmbeddedListNode<T, _SinglyLink>;
+private:
+    using __Self = _SinglyLinkListIterator;
+public: // big five
+    _SinglyLinkListIterator(typename _Node::LinkType *linkPtr) {
+        __sync(linkPtr);
+    }
+public: // ForwardIterator
+    __Self& operator++() { 
+        __sync(_mLinkPtr->next);
+        return *this;
+    };
+    __Self operator++(int) {
+        auto oldLinkPtr = _mLinkPtr;
+        __sync(_mLinkPtr->next);
+        return oldLinkPtr;
+    };
+private:
+    // update _mLinkPtr and _mPointer
+    void __sync(typename _Node::LinkType *ptr) {
+        _mLinkPtr = ptr;
+        __Self::_mPointer = &(_Node::to_node(_mLinkPtr)->data);
+    }
+protected:
+    typename _Node::LinkType *_mLinkPtr;
+};
+
+template<typename T, typename Alloc = port::Alloc>
+class SinglyLinkedList : public _LinkedList<T, _SinglyLinkListIterator, Alloc> {
+protected:
+    using _LinkedList = _LinkedList<T, _SinglyLinkListIterator, Alloc>;
+    using typename _LinkedList::_Node;
+    using typename _LinkedList::_AllocNode;
+    using _LinkedList::_mHeadNode;
+    using _LinkedList::_mSize;
+
+public: // big five
+    SinglyLinkedList() : _LinkedList(), _mTailNodePtr { &_mHeadNode } { }
+    SinglyLinkedList(size_t n, const T &obj) : SinglyLinkedList() { while (n--) push_back(obj); }
+    // copy
+    SinglyLinkedList(const SinglyLinkedList &list) : SinglyLinkedList() { *this = list; }
+    SinglyLinkedList & operator=(const SinglyLinkedList &list) {
+        // clear
+        while (!_LinkedList::empty()) _LinkedList::pop_front();
+        _mTailNodePtr = &_mHeadNode;
+        // copy
+        if (list._mSize != 0) {
+            auto linkPtr =  list._mHeadNode.link.next;
+            auto nextLinkPtr = linkPtr->next;
+            auto nodePtr = _Node::to_node(linkPtr);
+            while (nextLinkPtr != &(list._mHeadNode.link)) {
+                push_back(nodePtr->data);
+                linkPtr = nextLinkPtr;
+                nextLinkPtr = nextLinkPtr->next;
+                auto nodePtr = _Node::to_node(linkPtr);
+            }
+            push_back(nodePtr->data);
+            _mTailNodePtr = nodePtr;
+        }
+        return *this;
+    }
+    // move
+    SinglyLinkedList(SinglyLinkedList &&list) : SinglyLinkedList() { *this = dstruct::move(list); }
+    SinglyLinkedList & operator=(SinglyLinkedList &&list) {
+        // move list
+        _LinkedList::operator=(dstruct::move(list));
+        _mTailNodePtr = list._mTailNodePtr;
+        _mTailNodePtr->link.next = _Node::to_link(&_mHeadNode);
+        // reset
+        list._mTailNodePtr = &(list._mHeadNode);
+        return *this;
+    }
+
+    ~SinglyLinkedList() = default;
+
+public:
+    T back() const {
+        DSTRUCT_ASSERT(_mSize > 0);
+        return _mTailNodePtr->data;
+    }
+
+    void push_back(const T &obj) {
+        // 1. alloc and construct node
+        _Node *nPtr = _AllocNode::allocate();
+        this->_mHeadNode.data = obj; // only for contruct nPtr
+        dstruct::construct(nPtr, this->_mHeadNode);
+        // 2. add to list
+        _Node::LinkType::add(_Node::to_link(_mTailNodePtr), _Node::to_link(nPtr));
+        // 3. increase size
+        _mSize++;
+        // 4. update _mTailNodePtr
+        _mTailNodePtr = nPtr;
+    }
+
+    void push_front(const T &obj) {
+        _LinkedList::push_front(obj);
+        if (_mSize == 1)
+            _mTailNodePtr = _Node::to_node(_mHeadNode.link.next);
+    }
+
+    void pop_front() {
+        _LinkedList::pop_front();
+        if (_mSize == 0)
+            _mTailNodePtr = &_mHeadNode;
+    }
+
+public: // low efficient
+    void _pop_back() {
+        DSTRUCT_ASSERT(_mSize > 0);
+        auto link = _Node::to_link(&_mHeadNode);
+        while (link->next != _Node::to_link(_mTailNodePtr)) {
+            link = link->next;
+        }
+        //free and decrease size/len
+        dstruct::destory(_mTailNodePtr);
+        _AllocNode::deallocate(_mTailNodePtr);
+        this->_mSize--;
+        // update _mTailNodePtr and link
+        _mTailNodePtr = _Node::to_node(link);
+        _mTailNodePtr->link.next = _Node::to_link(&_mHeadNode);
+    }
+
+protected:
+    _Node *_mTailNodePtr;
+};
+
+}
+#endif

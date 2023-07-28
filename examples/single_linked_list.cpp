@@ -6,33 +6,31 @@ int main() {
 
     std::cout << "\nTesting: " << __FILE__;
 
-    dstruct::DoublyLinkedList<int> list(10, 2);
-    dstruct::DLinkedList<double> list2(2, 1.1);
+    dstruct::SinglyLinkedList<int> list(10, 2);
+    dstruct::SLinkedList<double> list2(2, 1.1);
 
     DSTRUCT_ASSERT(list2.size() == 2);
 
     for (auto &v : list) { v = 3; }
-    for (auto v: list) { /* const iterator */ }
+    for (auto v : list) { /* const iterator */ }
 
-    DSTRUCT_ASSERT(list.back() == 3);
+    list._pop_back(); // Note: it is a low efficient method
 
     while (!list.empty()) {
-        //std::cout << list.back() << " " << list.size() << std::endl;
-        list.pop_back();
+        list.pop_front();
     }
 
     DSTRUCT_ASSERT(list.size() == 0);
 
     for (int i = 0; i < 10; i++) {
-        list.push_back(i);
-        DSTRUCT_ASSERT(list.back() == i);
-        //std::cout << list.back() << " " << list.size() << std::endl;
+        list.push(i);
+        DSTRUCT_ASSERT(list.front() == i);
     }
 
     DSTRUCT_ASSERT(list.size() == 10);
 
     {   // test move
-        dstruct::DoublyLinkedList<int> list(10, 3);
+        dstruct::SinglyLinkedList<int> list(10, 3);
         
         DSTRUCT_ASSERT(list.size() == 10);
 
