@@ -61,24 +61,25 @@ int main() {
 
 ## 数据结构列表
 
-| 类别  |             名称              |           描述           |                             示例                             | 备注/状态 |
+| 类别  |             名称/具体实现              |           描述           |                             示例                             | 备注/状态 |
 | :---: | :---------------------------: | :----------------------: | :----------------------------------------------------------: | --------- |
-| Array |             Array             |         静态数组         |                 [Array](examples/array.cpp)                  |           |
-|       |            Vector             |         动态数组         |                [Vector](examples/vector.cpp)                 |           |
-| List  |     Embedded List      |        嵌入式链表        |             [EList](examples/embedded_list.cpp)              |           |
-|       |   DLinkedList(Doubly Linked List)   |          双链表          |           [DLinkedList](examples/double_linked_list.cpp)           |           |
-| Queue |    Deque(DoubleEndedQueue)    |         双端队列         |                 [Deque](examples/deque.cpp)                  |           |
-|       |             Queue             |           队列           |                 [Queue](examples/queue.cpp)                  |           |
-|       |         PriorityQueue         |   优先队列(Heap的别名)   |                                                              |           |
+| Array |             [Array](core/ds/array/Array.hpp)             |         静态数组         |                 [Array](examples/array/array.cpp)                  |           |
+|       |            [Vector](core/ds/array/Vector.hpp)             |         动态数组         |                [Vector](examples/array/vector.cpp)                 |           |
+| List  |     [Embedded List](core/ds/linked-list/EmbeddedList.hpp)      |        嵌入式链表        |             [EList](examples/linked-list/embedded_list.cpp)              |           |
+|       |   [SLinkedList(Singly Linked List)](core/ds/linked-list/SinglyLinkedList.hpp)   |          单链表          |           [SLinkedList](examples/linked-list/single_linked_list.cpp)           |           |
+|       |   [DLinkedList(Doubly Linked List)](core/ds/linked-list/DoublyLinkedList.hpp)   |          双链表          |           [DLinkedList](examples/linked-list/double_linked_list.cpp)           |           |
+| Queue |             [Queue(adapter)](core/ds/queue/Queue.hpp)             |           队列适配器           |                 [Queue](examples/queue/queue.cpp)                  |           |
+|       |    [Deque(DoubleEndedQueue)](core/ds/queue/DoubleEndedQueue.hpp)    |         双端队列         |                 [Deque](examples/queue/deque.cpp)                  |           |
+|       |         PriorityQueue         |   优先队列(Heap的别名)   |    [PriorityQueue](examples/heap.cpp)   |           |
 |       |                               |                          |                                                              |           |
-| Stack |             Stack             |            栈            |                 [Stack](examples/stack.cpp)                  |           |
-|       | XValueStack/MinStack/MaxStack | 最值栈/最小值栈/最大值栈 |        [XValueStack](examples/stack/xvalue_stack.cpp)        |           |
+| Stack |             [Stack(adapter)](core/ds/stack/Stack.hpp)             |            栈适配器            |                 [Stack](examples/stack/stack.cpp)                  |           |
+|       | [XValueStack/MinStack/MaxStack](core/ds/stack/XValueStack.hpp) | 最值栈/最小值栈/最大值栈 |        [XValueStack](examples/stack/xvalue_stack.cpp)        |           |
 |       |                               |                          |                                                              |           |
 |       |                               |                          |                                                              |           |
-| Heap  |     Heap/MinHeap/MaxHeap      |   堆/最小值堆/最大值堆   | [Heap](examples/heap.cpp)/[MinHeap](examples/heap.cpp)/[MaxHeap](examples/heap.cpp) |           |
+| Heap  |     [Heap/MinHeap/MaxHeap](core/ds/Heap.hpp)      |   堆/最小值堆/最大值堆   | [Heap / MinHeap/ MaxHeap](examples/heap.cpp) |           |
 |       |                               |                          |                                                              |           |
-| Tree  |           EBinaryTree            | 嵌入式二叉树 |                                                              |           |
-|       |            BSTree / BinarySearchTree            |   二叉搜索树(默认less)   |          [BSTree](examples/binary_search_tree.cpp)           |           |
+| Tree  |           [EBinaryTree](core/ds/tree/EmbeddedBinaryTree.hpp)            | 嵌入式二叉树 |                                                              |           |
+|       |            [BSTree / BinarySearchTree](core/ds/tree/BinarySearchTree.hpp)            |   二叉搜索树(默认less)   |          [BSTree](examples/binary_search_tree.cpp)           |           |
 
 > 注: 功能开发中, 性能暂时未测试和优化
 
