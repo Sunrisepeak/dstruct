@@ -40,20 +40,20 @@ protected:
 template<typename T, typename Alloc = port::Alloc>
 class SinglyLinkedList : public _LinkedList<T, _SinglyLinkListIterator, Alloc> {
 protected:
-    using _LinkedList = _LinkedList<T, _SinglyLinkListIterator, Alloc>;
-    using typename _LinkedList::_Node;
-    using typename _LinkedList::_AllocNode;
-    using _LinkedList::_mHeadNode;
-    using _LinkedList::_mSize;
+    using _List = _LinkedList<T, _SinglyLinkListIterator, Alloc>;
+    using typename _List::_Node;
+    using typename _List::_AllocNode;
+    using _List::_mHeadNode;
+    using _List::_mSize;
 
 public: // big five
-    SinglyLinkedList() : _LinkedList(), _mTailNodePtr { &_mHeadNode } { }
+    SinglyLinkedList() : _List(), _mTailNodePtr { &_mHeadNode } { }
     SinglyLinkedList(size_t n, const T &obj) : SinglyLinkedList() { while (n--) push_back(obj); }
     // copy
     SinglyLinkedList(const SinglyLinkedList &list) : SinglyLinkedList() { *this = list; }
     SinglyLinkedList & operator=(const SinglyLinkedList &list) {
         // clear
-        while (!_LinkedList::empty()) _LinkedList::pop_front();
+        while (!_List::empty()) _List::pop_front();
         _mTailNodePtr = &_mHeadNode;
         // copy
         if (list._mSize != 0) {
@@ -75,7 +75,7 @@ public: // big five
     SinglyLinkedList(SinglyLinkedList &&list) : SinglyLinkedList() { *this = dstruct::move(list); }
     SinglyLinkedList & operator=(SinglyLinkedList &&list) {
         // move list
-        _LinkedList::operator=(dstruct::move(list));
+        _List::operator=(dstruct::move(list));
         _mTailNodePtr = list._mTailNodePtr;
         _mTailNodePtr->link.next = _Node::to_link(&_mHeadNode);
         // reset
@@ -105,13 +105,13 @@ public:
     }
 
     void push_front(const T &obj) {
-        _LinkedList::push_front(obj);
+        _List::push_front(obj);
         if (_mSize == 1)
             _mTailNodePtr = _Node::to_node(_mHeadNode.link.next);
     }
 
     void pop_front() {
-        _LinkedList::pop_front();
+        _List::pop_front();
         if (_mSize == 0)
             _mTailNodePtr = &_mHeadNode;
     }

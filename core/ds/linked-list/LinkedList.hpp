@@ -32,7 +32,7 @@ public: // big five
     // copy/move-action impl in subclass
     _LinkedList(const _LinkedList &list) = delete;
     _LinkedList & operator=(const _LinkedList &list) = delete;
-    _LinkedList(_LinkedList &&list) = delete;
+    _LinkedList(_LinkedList &&list) : _LinkedList() { *this = dstruct::move(list); }
     _LinkedList & operator=(_LinkedList &&list) {
         // 1.clear
         while (!_LinkedList::empty()) pop_front();

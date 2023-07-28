@@ -53,20 +53,20 @@ template<typename T, typename Alloc = port::Alloc>
 class DoublyLinkedList : public _LinkedList<T, _DoublyLinkListIterator, Alloc> {
 
 protected:
-    using _LinkedList = _LinkedList<T, _DoublyLinkListIterator, Alloc>;
-    using typename _LinkedList::_Node;
-    using typename _LinkedList::_AllocNode;
-    using _LinkedList::_mSize;
-    using _LinkedList::_mHeadNode;
+    using _List = _LinkedList<T, _DoublyLinkListIterator, Alloc>;
+    using typename _List::_Node;
+    using typename _List::_AllocNode;
+    using _List::_mSize;
+    using _List::_mHeadNode;
 
 public: // big five
-    // use _LinkedList to complete
+    // use _List to complete
     DoublyLinkedList() = default;
     DoublyLinkedList(size_t n, const T &obj) : DoublyLinkedList() { while(n--) push_back(obj); }
 
     DoublyLinkedList(const DoublyLinkedList &list) : DoublyLinkedList() { *this = list; }
     DoublyLinkedList & operator=(const DoublyLinkedList &list) {
-        while (!_LinkedList::empty()) pop_back(); // clear
+        while (!_List::empty()) pop_back(); // clear
         // copy
         for (auto it = list.begin(); it != list.end(); it++) {
             push_back(*it);
@@ -77,7 +77,7 @@ public: // big five
     DoublyLinkedList(DoublyLinkedList &&list) : DoublyLinkedList() { *this = dstruct::move(list); }
     DoublyLinkedList & operator=(DoublyLinkedList &&list) {
         // move list data
-        _LinkedList::operator=(dstruct::move(list));
+        _List::operator=(dstruct::move(list));
         // update link
         auto headLinkPtr = _Node::to_link(&_mHeadNode);
         _mHeadNode.link.prev->next = headLinkPtr;
