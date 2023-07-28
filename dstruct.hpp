@@ -18,6 +18,7 @@
 #include <core/ds/queue/DoubleEndedQueue.hpp>
 
 // linked list
+#include <core/ds/linked-list/SinglyLinkedList.hpp>
 #include <core/ds/linked-list/DoublyLinkedList.hpp>
 
 // tree
@@ -33,6 +34,10 @@ namespace dstruct {
 // EmbeddedList
     template<typename T, typename Link = _DoublyLink>
     using EListNode = _EmbeddedListNode<T, Link>;
+
+// SinglyLinkedList
+    template<typename T, typename Alloc = port::Alloc>
+    using SLinkedList = SinglyLinkedList<T, Alloc>;
 
 // DoublyLinkedList
     template<typename T, typename Alloc = port::Alloc>

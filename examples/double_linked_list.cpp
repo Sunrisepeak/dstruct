@@ -6,8 +6,8 @@ int main() {
 
     std::cout << "\nTesting: " << __FILE__;
 
-    dstruct::DoublyLinkedList<int> list(2, 10);
-    dstruct::DLinkedList<double> list2(1.1, 2);
+    dstruct::DoublyLinkedList<int> list(10, 2);
+    dstruct::DLinkedList<double> list2(2, 1.1);
 
     DSTRUCT_ASSERT(list2.size() == 2);
 
@@ -30,6 +30,30 @@ int main() {
     }
 
     DSTRUCT_ASSERT(list.size() == 10);
+
+    {   // test move
+        dstruct::DoublyLinkedList<int> list(10, 3);
+        
+        DSTRUCT_ASSERT(list.size() == 10);
+
+        decltype(list) tmpList = dstruct::move(list);
+        
+        int cnt = 0;
+        for (auto v : tmpList) { cnt++; /* const iterator */ if (cnt == 11) break; }
+        DSTRUCT_ASSERT(tmpList.size() == cnt);
+
+        DSTRUCT_ASSERT(list.empty());
+
+        // test copy
+        list = tmpList;
+        auto it1 = list.begin();
+        auto it2 = tmpList.begin();
+        for (int i = 0; i < 10; i++, it1++, it2++) {
+            DSTRUCT_ASSERT(*it1 == *it2);
+            DSTRUCT_ASSERT(*it1 == 3);
+            DSTRUCT_ASSERT(it1.operator->() != it2.operator->());
+        }
+    }
 
     std::cout << "   pass" << std::endl;
 

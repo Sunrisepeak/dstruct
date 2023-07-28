@@ -27,7 +27,8 @@ public: // op
 };
 
 struct _DoublyLink {
-    struct _DoublyLink *prev, *next;
+    struct _DoublyLink *next;
+    struct _DoublyLink *prev;
 
 public: // op
     static void init(_DoublyLink *link) {

@@ -32,6 +32,10 @@ target("embedded_list")
     set_kind("binary")
     add_files("examples/embedded_list.cpp")
 
+target("dstruct_single_linked_list")
+    set_kind("binary")
+    add_files("examples/single_linked_list.cpp")
+
 target("dstruct_double_linked_list")
     set_kind("binary")
     add_files("examples/double_linked_list.cpp")
