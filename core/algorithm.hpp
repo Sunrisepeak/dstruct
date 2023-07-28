@@ -16,7 +16,7 @@ namespace algorithm {
     template<typename Iterator, typename T>
     static Iterator find(const Iterator &begin, const Iterator &end, T obj) {
         for (auto it = begin; it != end; it++) {
-            if (*it = obj) {
+            if (*it == obj) {
                 return it;
             }
         }

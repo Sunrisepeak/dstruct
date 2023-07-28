@@ -23,7 +23,7 @@ struct DSAlloc {
 template<
     typename T,
     typename Alloc = port::Alloc,
-    template<typename> typename Iterator = PrimitiveIterator
+    template<typename> class Iterator = PrimitiveIterator
 >
 class DStructTypeSpec {
 public:

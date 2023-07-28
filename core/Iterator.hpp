@@ -63,7 +63,7 @@ template <typename>
 class PrimitiveIterator;
 
 template <typename T>
-typename PrimitiveIterator<T>::DifferenceType
+static typename PrimitiveIterator<T>::DifferenceType
 operator-(const PrimitiveIterator<T>&, const PrimitiveIterator<T>&);
 
 
@@ -91,7 +91,7 @@ public: // BidirectionalIterator
     __Self operator--(int) { return __Self::_mPointer--; };
 public: // RandomIterator
     __Self operator+(const int &n) const { return __Self::_mPointer + n; };
-    __Self operator-(const int &n) const { return __Self::_mPointer -n; };
+    __Self operator-(const int &n) const { return __Self::_mPointer - n; };
 //    typename __Self::ReferenceType operator[](int index) { return __Self::_mPointer[index]; }
 //    typename __Self::ValueType operator[](int index) const { return __Self::_mPointer[index]; };
 };
