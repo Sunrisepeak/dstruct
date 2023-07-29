@@ -10,7 +10,8 @@ template<typename T, template<typename> class LinkedListIterator, typename Alloc
 class _LinkedList : public DStructTypeSpec<T, Alloc, LinkedListIterator> {
 
 protected:
-    using _Node      = typename _LinkedList::IteratorType::_Node; 
+    //using _Node     = typename _LinkedList::IteratorType::_Node;
+    using _Node      = typename LinkedListIterator<T>::_Node;
     using _AllocNode = DSAlloc<_Node, Alloc>;
 /*
     // use void link to support doubly/singly link
