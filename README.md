@@ -56,30 +56,27 @@ int main() {
 ```
 
 
-
-
-
 ## 数据结构列表
 
 | 类别  |             名称/具体实现              |           描述           |                             示例                             | 备注/状态 |
 | :---: | :---------------------------: | :----------------------: | :----------------------------------------------------------: | --------- |
-| Array |             [Array](core/ds/array/Array.hpp)             |         静态数组         |                 [Array](examples/array/array.cpp)                  |           |
-|       |            [Vector](core/ds/array/Vector.hpp)             |         动态数组         |                [Vector](examples/array/vector.cpp)                 |           |
-| List  |     [Embedded List](core/ds/linked-list/EmbeddedList.hpp)      |        嵌入式链表        |             [EList](examples/linked-list/embedded_list.cpp)              |           |
-|       |   [SLinkedList(Singly Linked List)](core/ds/linked-list/SinglyLinkedList.hpp)   |          单链表          |           [SLinkedList](examples/linked-list/single_linked_list.cpp)           |           |
-|       |   [DLinkedList(Doubly Linked List)](core/ds/linked-list/DoublyLinkedList.hpp)   |          双链表          |           [DLinkedList](examples/linked-list/double_linked_list.cpp)           |           |
-| Queue |             [Queue(adapter)](core/ds/queue/Queue.hpp)             |           队列适配器           |                 [Queue](examples/queue/queue.cpp)                  |           |
-|       |    [Deque(DoubleEndedQueue)](core/ds/queue/DoubleEndedQueue.hpp)    |         双端队列         |                 [Deque](examples/queue/deque.cpp)                  |           |
-|       |         PriorityQueue         |   优先队列(Heap的别名)   |    [PriorityQueue](examples/heap.cpp)   |           |
+| Array |             [Array](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/array/Array.hpp)             |         静态数组         |                 [Array](https://github.com/Sunrisepeak/DStruct/tree/main/examples/array/array.cpp)                  |           |
+|       |            [Vector](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/array/Vector.hpp)             |         动态数组         |                [Vector](https://github.com/Sunrisepeak/DStruct/tree/main/examples/array/vector.cpp)                 |           |
+| List  |     [Embedded List](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/linked-list/EmbeddedList.hpp)      |        嵌入式链表        |             [EList](https://github.com/Sunrisepeak/DStruct/tree/main/examples/linked-list/embedded_list.cpp)              |           |
+|       |   [SLinkedList(Singly Linked List)](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/linked-list/SinglyLinkedList.hpp)   |          单链表          |           [SLinkedList](https://github.com/Sunrisepeak/DStruct/tree/main/examples/linked-list/single_linked_list.cpp)           |           |
+|       |   [DLinkedList(Doubly Linked List)](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/linked-list/DoublyLinkedList.hpp)   |          双链表          |           [DLinkedList](https://github.com/Sunrisepeak/DStruct/tree/main/examples/linked-list/double_linked_list.cpp)           |           |
+| Queue |             [Queue(adapter)](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/queue/Queue.hpp)             |           队列适配器           |                 [Queue](https://github.com/Sunrisepeak/DStruct/tree/main/examples/queue/queue.cpp)                  |           |
+|       |    [Deque(DoubleEndedQueue)](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/queue/DoubleEndedQueue.hpp)    |         双端队列         |                 [Deque](https://github.com/Sunrisepeak/DStruct/tree/main/examples/queue/deque.cpp)                  |           |
+|       |         PriorityQueue         |   优先队列(Heap的别名)   |    [PriorityQueue](https://github.com/Sunrisepeak/DStruct/tree/main/examples/heap.cpp)   |           |
 |       |                               |                          |                                                              |           |
-| Stack |             [Stack(adapter)](core/ds/stack/Stack.hpp)             |            栈适配器            |                 [Stack](examples/stack/stack.cpp)                  |           |
-|       | [XValueStack/MinStack/MaxStack](core/ds/stack/XValueStack.hpp) | 最值栈/最小值栈/最大值栈 |        [XValueStack](examples/stack/xvalue_stack.cpp)        |           |
+| Stack |             [Stack(adapter)](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/stack/Stack.hpp)             |            栈适配器            |                 [Stack](https://github.com/Sunrisepeak/DStruct/tree/main/examples/stack/stack.cpp)                  |           |
+|       | [XValueStack/MinStack/MaxStack](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/stack/XValueStack.hpp) | 最值栈/最小值栈/最大值栈 |        [XValueStack](https://github.com/Sunrisepeak/DStruct/tree/main/examples/stack/xvalue_stack.cpp)        |           |
 |       |                               |                          |                                                              |           |
 |       |                               |                          |                                                              |           |
-| Heap  |     [Heap/MinHeap/MaxHeap](core/ds/Heap.hpp)      |   堆/最小值堆/最大值堆   | [Heap / MinHeap/ MaxHeap](examples/heap.cpp) |           |
+| Heap  |     [Heap/MinHeap/MaxHeap](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/Heap.hpp)      |   堆/最小值堆/最大值堆   | [Heap / MinHeap/ MaxHeap](https://github.com/Sunrisepeak/DStruct/tree/main/examples/heap.cpp) |           |
 |       |                               |                          |                                                              |           |
-| Tree  |           [EBinaryTree](core/ds/tree/EmbeddedBinaryTree.hpp)            | 嵌入式二叉树 |                                                              |           |
-|       |            [BSTree / BinarySearchTree](core/ds/tree/BinarySearchTree.hpp)            |   二叉搜索树(默认less)   |          [BSTree](examples/binary_search_tree.cpp)           |           |
+| Tree  |           [EBinaryTree](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/tree/EmbeddedBinaryTree.hpp)            | 嵌入式二叉树 |                                                              |           |
+|       |            [BSTree / BinarySearchTree](https://github.com/Sunrisepeak/DStruct/tree/main/core/ds/tree/BinarySearchTree.hpp)            |   二叉搜索树(默认less)   |          [BSTree](https://github.com/Sunrisepeak/DStruct/tree/main/examples/binary_search_tree.cpp)           |           |
 
 > 注: 功能开发中, 性能暂时未测试和优化
 
@@ -91,14 +88,14 @@ int main() {
 
 | 类别     |                             算法                             | 描述                       | 备注 |
 | -------- | :----------------------------------------------------------: | -------------------------- | ---- |
-| 通用     |         [for_each](examples/algorithms/for_each.cpp)         | 遍历                       |      |
+| 通用     |         [for_each](https://github.com/Sunrisepeak/DStruct/tree/main/examples/algorithms/for_each.cpp)         | 遍历                       |      |
 |          |                                                              |                            |      |
 |          |                                                              |                            |      |
-| 堆(Heap) |       [Heap::build](examples/algorithms/heap_algo.cpp)       | 堆化                       |      |
-|          | [Heap::sort / MinHeap::sort / MaxHeap::sort](examples/algorithms/heap_algo.cpp#L31) | 堆排序                     |      |
+| 堆(Heap) |       [Heap::build](https://github.com/Sunrisepeak/DStruct/tree/main/examples/algorithms/heap_algo.cpp)       | 堆化                       |      |
+|          | [Heap::sort / MinHeap::sort / MaxHeap::sort](https://github.com/Sunrisepeak/DStruct/tree/main/examples/algorithms/heap_algo.cpp#L31) | 堆排序                     |      |
 |          |                                                              |                            |      |
 | 树(Tree) |      binary tree traversal(preorder/inorder/postorder)       | 二叉树遍历(前序/中序/后序) |      |
-|          |     [BSTree::traversal](examples/binary_search_tree.cpp#L35)     | 二叉搜索树遍历             |      |
+|          |     [BSTree::traversal](https://github.com/Sunrisepeak/DStruct/tree/main/examples/binary_search_tree.cpp#L35)     | 二叉搜索树遍历             |      |
 
 
 
@@ -124,5 +121,6 @@ int main() {
 
 ## 其他
 
-  - [Github](https://github.com/Sunrisepeak/DStruct)
+  - [Github](https://github.com/Sunrisepeak)
+  - [项目主页](https://github.com/Sunrisepeak/DStruct)
 
