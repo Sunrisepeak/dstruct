@@ -7,8 +7,9 @@
 #define ENABLE_LOG 0
 #define TEST_LOG(...) \
 if (ENABLE_LOG) { \
-    printf ("\033[32mDStruct LOG [I]: \t%s:  ", __func__); \
-    printf ("%s \033[0m\n", __VA_ARGS__); \
+    printf("\033[32mDStruct LOG [I]: \t%s:  ", __func__); \
+    printf(__VA_ARGS__); \
+    printf("\033[0m\n"); \
 }
 
 namespace test {
@@ -33,7 +34,7 @@ private:
 };
 
 template <typename DStruct>
-void test_destory() {
+static void test_destory() {
     DStruct ds;
     Destory des;
     int testNums = 10;
@@ -51,7 +52,7 @@ void test_destory() {
     DSTRUCT_ASSERT(ds.empty());
 }
 
-void test_arr_destory() {
+static void test_arr_destory() {
 
     { // test auto
         dstruct::Array<Destory, 10> ds1;
@@ -70,6 +71,66 @@ void test_arr_destory() {
     }
 
     //std::cout << std::endl;
+}
+
+static void test_sma_allocator() {
+    using MyMemAlloc = dstruct::StaticMemAllocator<1024, 1024>; // define a 1024byte static allocator
+
+// allocate/release memory - test
+
+    int memSize = 1024;
+    dstruct::Array<void *, 8> memArr;
+    for (int i = 0; i < memArr.size(); i++) {
+        memArr[i] = MyMemAlloc::allocate(memSize /= 2);
+        if (i > 0) {
+            TEST_LOG("%p %p", memArr[i - 1], memArr[i]);
+            DSTRUCT_ASSERT(memArr[i - 1] + memSize * 2 == memArr[i]);
+        }
+    }
+
+    // release all memory
+    memSize = 1024;
+    for (int i = 0; i < memArr.size(); i++) {
+        MyMemAlloc::deallocate(memArr[i], memSize /= 2);
+    }
+
+// memory merge - test1
+
+    // try to alloc a 1024byte mem-block, it should get a nullptr(alloc failed)
+    // exist memory fragment
+    auto *mem1024 = MyMemAlloc::allocate(1024);
+    if (mem1024 == nullptr) {
+        MyMemAlloc::memory_merge();
+    }
+ 
+    DSTRUCT_ASSERT(mem1024 == nullptr);
+    
+    MEM_VERIFY(mem1024 = MyMemAlloc::allocate(1024)); // ok - only debug
+
+    DSTRUCT_ASSERT(MyMemAlloc::deallocate(mem1024, 1024) == true);
+
+// memory merge - test2
+    {   //    list-index    0  3   7   63   1   31   15   0
+        int memAllocSeq[8] {8, 32, 64, 512, 16, 256, 128, 8};
+
+        for (int i = 0; i < memArr.size(); i++) {
+            memArr[i] = MyMemAlloc::allocate(memAllocSeq[i]);
+            if (i > 0) {
+                TEST_LOG("%p %p", memArr[i - 1], memArr[i]);
+                DSTRUCT_ASSERT(memArr[i - 1] + memAllocSeq[i - 1] == memArr[i]);
+            }
+        }
+
+        for (int i = 0; i < memArr.size(); i++) {
+            MyMemAlloc::deallocate(memArr[i], memAllocSeq[i]);
+        }
+
+        DSTRUCT_ASSERT(MyMemAlloc::max_free_mblock_size() == 512);
+        TEST_LOG(" max_free_mblock_size - %d", MyMemAlloc::max_free_mblock_size());
+        MyMemAlloc::memory_merge();
+        TEST_LOG(" max_free_mblock_size - %d", MyMemAlloc::max_free_mblock_size());
+        DSTRUCT_ASSERT(MyMemAlloc::max_free_mblock_size() == 1024);
+    }
 }
 
 }

@@ -72,3 +72,8 @@ target("dstruct_for_each")
 target("dstruct_heap_algo")
     set_kind("binary")
     add_files("examples/algorithms/heap_algo.cpp")
+
+-- other
+target("dstruct_static_mem_allocator")
+    set_kind("binary")
+    add_files("examples/static_mem_allocator.cpp")
