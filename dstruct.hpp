@@ -26,6 +26,9 @@
 
 #include <core/algorithm.hpp>
 
+// other
+#include <core/StaticMemAllocator.hpp>
+
 namespace dstruct {
     // Array
 
