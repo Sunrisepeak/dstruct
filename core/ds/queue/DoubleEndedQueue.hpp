@@ -8,10 +8,10 @@
 
 namespace dstruct {
 
-template<typename T, size_t ARR_SIZE, typename Alloc = port::Alloc>
+template <typename T, size_t ARR_SIZE, typename Alloc = port::Alloc>
 class DoubleEndedQueue;
 
-template<typename T, size_t ARR_SIZE>
+template <typename T, size_t ARR_SIZE>
 class _DoubleEndedQueueIterator : public DStructIteratorTypeSpec<T, RandomIterator> {
     friend class DoubleEndedQueue<T, ARR_SIZE, port::Alloc>;
     friend class _DoubleEndedQueueIterator<const T, ARR_SIZE>; // for it -> const-it
@@ -117,7 +117,7 @@ protected:
 
 #define MIN_MAP_TABLE_SIZE 2
  
-template<typename T, size_t ARR_SIZE, typename Alloc>
+template <typename T, size_t ARR_SIZE, typename Alloc>
 class DoubleEndedQueue :
     public _DStructTypeSpec<T, _DoubleEndedQueueIterator<T, ARR_SIZE>, _DoubleEndedQueueIterator<const T, ARR_SIZE>, Alloc> {
 

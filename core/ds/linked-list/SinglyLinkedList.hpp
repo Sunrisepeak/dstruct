@@ -7,7 +7,7 @@
 
 namespace dstruct {
 
-template<typename T>
+template <typename T>
 class _SinglyLinkListIterator : public DStructIteratorTypeSpec<T> {
 public:
     using _Node  = _EmbeddedListNode<T, _SinglyLink>;
@@ -37,7 +37,7 @@ protected:
     typename _Node::LinkType *_mLinkPtr;
 };
 
-template<typename T, typename Alloc = port::Alloc>
+template <typename T, typename Alloc = port::Alloc>
 class SinglyLinkedList : public _LinkedList<T, _SinglyLinkListIterator, Alloc> {
 protected:
     using _List = _LinkedList<T, _SinglyLinkListIterator, Alloc>;

@@ -7,7 +7,7 @@
 
 namespace dstruct {
 
-template<typename T>
+template <typename T>
 class _DoublyLinkListIterator : public DStructIteratorTypeSpec<T, BidirectionalIterator> {
 public:
     using _Node  = _EmbeddedListNode<T, _DoublyLink>;
@@ -49,7 +49,7 @@ protected:
     typename _Node::LinkType *_mLinkPtr;
 };
 
-template<typename T, typename Alloc = port::Alloc>
+template <typename T, typename Alloc = port::Alloc>
 class DoublyLinkedList : public _LinkedList<T, _DoublyLinkListIterator, Alloc> {
 
 protected:

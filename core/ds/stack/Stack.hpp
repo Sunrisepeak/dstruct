@@ -9,7 +9,7 @@ namespace dstruct {
 namespace adapter {
 
 // DS: need support pop_back / push_back / back
-template<typename T, typename DS>
+template <typename T, typename DS>
 class Stack : public _DStructTypeSpec<T, typename DS::ConstIteratorType, typename DS::ConstIteratorType> {
 
     DSTRUCT_TYPE_SPEC_DECLARE(DS)

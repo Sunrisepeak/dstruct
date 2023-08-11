@@ -9,7 +9,7 @@
 
 namespace dstruct {
 
-template<typename T, typename Alloc>
+template <typename T, typename Alloc>
 struct DSAlloc {
     static T *allocate(size_t n = 1) {
         return static_cast<T *>(Alloc::allocate(n * sizeof(T)));
@@ -20,10 +20,10 @@ struct DSAlloc {
     }
 };
 
-template<
+template <
     typename T,
     typename Alloc = port::Alloc,
-    template<typename> class Iterator = PrimitiveIterator
+    template <typename> class Iterator = PrimitiveIterator
 >
 class DStructTypeSpec {
 public:
@@ -68,7 +68,7 @@ public: // iterator/range-for support
 */
 };
 
-template<
+template <
     typename T,
     typename Iterator = PrimitiveIterator<T>,
     typename ConstIterator = PrimitiveIterator<const T>,
@@ -103,14 +103,14 @@ static typename types::RemoveReference<T>::Type&& move(T&& arg) {
 }
 
 
-template<typename T>
+template <typename T>
 struct less {
     bool operator()(const T& a, const T& b) const {
         return a < b;
     }
 };
 
-template<typename T>
+template <typename T>
 struct less<T *> {
     bool operator()(T *a, T *b) const {
         if (b == nullptr) return false;
@@ -119,14 +119,14 @@ struct less<T *> {
     }
 };
 
-template<typename T>
+template <typename T>
 struct greater {
     bool operator()(const T& a, const T& b) const {
         return a > b;
     }
 };
 
-template<typename T>
+template <typename T>
 struct greater<T *> {
     bool operator()(const T *a, const T *b) const {
         if (a == nullptr) return false;
@@ -135,7 +135,7 @@ struct greater<T *> {
     }
 };
 
-template<typename T>
+template <typename T>
 static void swap(T &a, T &b) {
     T c = dstruct::move(a);
     a = dstruct::move(b);
@@ -145,7 +145,7 @@ static void swap(T &a, T &b) {
 // TODO: Check placement new for primitive type(example pointer) and self-def type
 // https://en.cppreference.com/w/cpp/language/new
 // https://en.cppreference.com/w/cpp/memory/new/operator_new
-template<typename T>
+template <typename T>
 static T* construct(void *addr, const T& obj) {
     static DStructPlacementNewFlag placementNewFlag;
     return new(addr, &placementNewFlag) T(obj); // use T's constructor(copy/spec)
@@ -153,7 +153,7 @@ static T* construct(void *addr, const T& obj) {
 
 /*
 // partial specialization only for type, func template pls use overload
-template<typename T>
+template <typename T>
 static T ** construct(void *addr, const T *obj) {
     T **ptr = static_cast<T **>(addr);
     *ptr = obj;
@@ -161,13 +161,13 @@ static T ** construct(void *addr, const T *obj) {
 }
 */
 
-template<>
+template <>
 int * construct<int>(void *addr, const int& obj) {
     *(reinterpret_cast<int *>(addr)) = obj;
     return reinterpret_cast<int *>(addr);
 }
 
-template<typename T>
+template <typename T>
 static void destory(T *ptr) {
 /*
     // method1, but have a litte issue

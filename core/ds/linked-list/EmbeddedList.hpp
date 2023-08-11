@@ -55,7 +55,7 @@ public: // op
     }
 };
 
-template<typename T, typename Link = _DoublyLink>
+template <typename T, typename Link = _DoublyLink>
 struct _EmbeddedListNode /* Node */ {
     Link link;
     T data;
