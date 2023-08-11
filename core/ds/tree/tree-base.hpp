@@ -6,7 +6,7 @@ namespace dstruct {
 namespace tree {
 
 
-template<typename T, typename Link>
+template <typename T, typename Link>
 struct TreeNode {
     Link link;
     T data;

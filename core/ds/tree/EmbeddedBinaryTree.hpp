@@ -153,7 +153,7 @@ static void postorder_traversal(_BinaryTreeLink *root, Callback cb) {
     }
 }
 
-template<typename T>
+template <typename T>
 using EmbeddedBinaryTreeNode = TreeNode<T, _BinaryTreeLink>;
 
 }

@@ -7,7 +7,7 @@ struct ForwardIterator { };
 struct BidirectionalIterator { };
 struct RandomIterator { };
 
-template<typename T, typename Category = ForwardIterator>
+template <typename T, typename Category = ForwardIterator>
 class DStructIteratorTypeSpec {
 public: // common type
     using CategoryType    = Category;
@@ -17,7 +17,7 @@ public: // common type
     using DifferenceType  = size_t;
 
 protected:
-    //template<typename _Iterator>
+    //template <typename _Iterator>
     //friend DifferenceType distance(const _Iterator &, const _Iterator &);
 
 public: // base op
@@ -49,7 +49,7 @@ public: // other
 */
 };
 
-template<typename RandomIteratorType>
+template <typename RandomIteratorType>
 static auto distance(const RandomIteratorType &first, const RandomIteratorType &last) -> typename RandomIteratorType::DifferenceType {
     return last - first; // operator-(last, first);
 }

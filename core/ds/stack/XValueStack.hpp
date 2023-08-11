@@ -9,7 +9,7 @@ namespace dstruct {
 
 namespace stack {
 
-template<typename T, typename Compare, typename StackType = adapter::Stack<T, Vector<T>>>
+template <typename T, typename Compare, typename StackType = adapter::Stack<T, Vector<T>>>
 class XValueStack {
 
     DSTRUCT_TYPE_SPEC_DECLARE(StackType)
