@@ -34,20 +34,49 @@ public:
         __sync();
     }
 
-/*
-    _DoubleEndedQueueIterator(const __Self&) = default;
-    _DoubleEndedQueueIterator(__Self&&) = default;
-    __Self & operator=(const __Self&) = default;
-    __Self & operator=(__Self&&) = default;
-*/
+
+    _DoubleEndedQueueIterator(const __Self &it) { *this = it; }
+    __Self & operator=(const __Self &it) {
+        // copy
+        _mCurrMapIndex = it._mCurrMapIndex;
+        _mCurr = it._mCurr;
+        _mArrMapTablePtr = it._mArrMapTablePtr;
+
+        __sync();
+
+        return *this;
+    }
+
+    _DoubleEndedQueueIterator(__Self &&it) { *this = dstruct::move(it); }
+    __Self & operator=(__Self &&it) {
+        // move
+        _mCurrMapIndex = it._mCurrMapIndex;
+        _mCurr = it._mCurr;
+        _mArrMapTablePtr = it._mArrMapTablePtr;
+
+        // reset
+        it._mCurrMapIndex = 0;
+        it._mCurr = nullptr;
+        it._mArrMapTablePtr = nullptr;
+
+        __sync();
+
+        return *this;
+    }
+
     // for it -> const-it
-    _DoubleEndedQueueIterator(const _DoubleEndedQueueIterator<typename types::RemoveConst<T>::Type, ARR_SIZE> &obj) :
-        _DoubleEndedQueueIterator() {
+    _DoubleEndedQueueIterator(
+        const _DoubleEndedQueueIterator<typename types::RemoveConst<T>::Type, ARR_SIZE> &obj,
+        bool _unsedFlag // constructor dispatch flag
+    ) : _DoubleEndedQueueIterator() {
+
+            _unsedFlag;
+
             _mCurrMapIndex = obj._mCurrMapIndex,
             _mCurr = obj._mCurr.operator->(); // get it-pointer to init const-it
             _mArrMapTablePtr = reinterpret_cast<decltype(_mArrMapTablePtr)>(obj._mArrMapTablePtr);
             __sync();
-        }
+    }
 
 public: // ForwardIterator
     __Self& operator++() {
@@ -149,6 +178,38 @@ public:
         _mBegin = _mEnd = decltype(_mBegin)(midMapIndex, 0, &_mArrMapTable);
     }
 
+    DoubleEndedQueue(const DoubleEndedQueue &deq) { *this = deq; }
+    DoubleEndedQueue & operator=(const DoubleEndedQueue &deq) {
+        // release element
+        while (!empty()) this->pop(); // TODO: optimize
+
+        for (auto &obj : deq) { // TODO: optimize
+            this->push_back(obj);
+        }
+
+        return *this;
+    }
+
+    DoubleEndedQueue(DoubleEndedQueue &&deq) { *this = dstruct::move(deq); }
+    DoubleEndedQueue & operator=(DoubleEndedQueue &&deq) {
+        // release element
+        while (!empty()) this->pop(); // TODO: optimize
+        // release memory
+        for (auto arrPtr : _mArrMapTable) _AllocArray::deallocate(arrPtr);
+
+        // move
+        _mSize = deq._mSize;
+        _mCapacity = deq._mCapacity;
+        _mArrMapTable = dstruct::move(deq._mArrMapTable);
+        _mBegin = dstruct::move(deq._mBegin);
+        _mEnd = dstruct::move(deq._mEnd);
+
+        // reset deq
+        deq._mSize = deq._mCapacity = 0;
+
+        return *this;
+    }
+
     ~DoubleEndedQueue() {
         // dstruct::destory element, but don't use ~_Array()
         for (auto it = _mBegin; it != _mEnd; it++) {
@@ -186,7 +247,7 @@ public: // check
         return *(_mBegin._mCurr);
     }
 
-    const T& operator[](int index) const {
+    const T & operator[](int index) const {
         if (index < 0)
             return *(_mEnd + index);
         return *(_mBegin + index);
@@ -251,11 +312,11 @@ public: // push/pop
 public: // iterator/range-for support
 
     typename DoubleEndedQueue::ConstIteratorType begin() const {
-        return _mBegin;
+        return typename DoubleEndedQueue::ConstIteratorType(_mBegin, true);
     }
 
     typename DoubleEndedQueue::ConstIteratorType end() const {
-        return _mEnd;
+        return typename DoubleEndedQueue::ConstIteratorType(_mEnd, true);
     }
 
 protected:

@@ -16,6 +16,11 @@ class Queue : public _DStructTypeSpec<T, typename DS::ConstIteratorType, typenam
 
 public:
     Queue() = default;
+    Queue(const Queue &) = default;
+    Queue & operator=(const Queue &) = default;
+    Queue(Queue &&) = default;
+    Queue & operator=(Queue &&) = default;
+    ~Queue() = default;
 
 public: // base op
     // status
