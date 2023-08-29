@@ -78,7 +78,7 @@ public: // big five
     DoublyLinkedList & operator=(DoublyLinkedList &&list) {
         // move list data
         _List::operator=(dstruct::move(list));
-        // update link
+        // update link: first-data and last-data point to new headNode
         auto headLinkPtr = _Node::to_link(&_mHeadNode);
         _mHeadNode.link.prev->next = headLinkPtr;
         _mHeadNode.link.next->prev = headLinkPtr;
