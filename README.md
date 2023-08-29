@@ -30,7 +30,6 @@ DStruct 是一个易于移植且结构简洁的数据结构模板库
 
 ```cpp
 #include <iostream>
-
 #include "dstruct.hpp"
 
 int main() {
