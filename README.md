@@ -34,11 +34,14 @@ DStruct 是一个易于移植且结构简洁的数据结构模板库
 
 int main() {
     dstruct::Array<int, 10> arr(2);
+
     decltype(arr)::ValueType val = 6;
     arr[0] = arr[-1] = val;
+
     for (int i = 0; i < arr.size(); i++) {
         std::cout << arr[-(i + 1)] << " : " << arr[i] << std::endl;
     }
+
     return 0;
 }
 ```
@@ -58,10 +61,8 @@ int main() {
         sVec.push_back(i);
     }
 
-    int i = 0;
-    for (auto v : sVec) {
+    for (auto v : sVec)
         DSTRUCT_ASSERT(v == i++);
-    }
 
     while (!sVec.empty()) {
         sVec.pop_back();
