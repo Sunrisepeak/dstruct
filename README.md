@@ -2,58 +2,80 @@
 
 DStruct 是一个易于移植且结构简洁的数据结构模板库
 
-[**English**](README.en.md)
-
-> 当前状态-基础功能开发中
-
-## 特性/目标
-
-- 易于移植，不依赖标准库(std)和其它三方库（只需要实现 dstruct-port.h）
-- 易于使用（数据结构和算法分离设计，统一接口，std标准库风格）
-- 易于学习/定制和改进（结构简洁且只有头文件）
-- 现代 C++ / 泛型结构，包含多样丰富的数据结构
-
+| [特性](#特性) - [用法](#用法) -  [数据结构列表](#数据结构列表) - [算法列表](#算法列表) - [谁在用?](#谁在用) - [其他](#其他) - [ English](README.en.md) |
+| ------------------------------------------------------------ |
+| 设计思想 - 接口文档 - 静态内存分配器(SMA) - 移植介绍 - 相关视频 |
 
 ---
 
-## 使用DStruct
+## 特性
 
-> **默认dstruct-port.h 是由libc实现的, 如果是嵌入式设备或其他情况, 可自行实现dstruct-port.h**
+- 易于移植，不依赖标准库(std)和其它三方库
+- 易于使用（数据结构和算法分离设计，统一接口，std标准库风格）
+- 易于学习/定制和改进（结构简洁且只有头文件）
+- 提供静态数据结构和自定义数据结构分配器功能
+- 支持裸机/小内存设备, 提供简单的静态内存管理/分配器SMA
+- 现代 C++ / 泛型结构，包含多样丰富的数据结构
 
-### 1. 下载源码
 
-> 下载源码到(你的项目或其他选定的)本地目录
+## 用法
 
-```
-git clone git@github.com:Sunrisepeak/DStruct.git
-```
+### 1. 源码及配置
 
-### 2. 引用项目的dstruct.hpp接口文件
+- 下载源码到本地
+- 添加DStruct库的根目录到你的include的路径
+- 自定义分配器&实现dstruct-port.h接口 - **可选**
 
-> 添加DStruct项目的根目录到include索引目录 `-IyourPath/DStruct`
+### 2. 代码用例 - 动态内存
 
 ```cpp
 #include <iostream>
-
 #include "dstruct.hpp"
 
 int main() {
-
-    std::cout << "\n\nTesting: " << __FILE__ << std::endl;
-
-    dstruct::Array<int, 10> arr(2); // 0. test cntor
+    dstruct::Array<int, 10> arr(2);
 
     decltype(arr)::ValueType val = 6;
+    arr[0] = arr[-1] = val;
 
-    arr[0] = arr[-1] = val;         // 1. test subscript access & assignment
-
-    for (int i = 0; i < arr.size(); i++) { // 3.  positive / negative subscript access
+    for (int i = 0; i < arr.size(); i++) {
         std::cout << arr[-(i + 1)] << " : " << arr[i] << std::endl;
     }
 
     return 0;
 }
 ```
+
+### 3. 代码用例 - 静态内存
+
+> 使用静态内存SMA, 支持无内存管理环境(如: 裸机)
+
+```cpp
+#include <dstruct.hpp>
+
+int main() {
+    //dstruct::Vector<int> dVec;
+    dstruct::smemory::Vector<int> sVec;
+
+    for (int i = 0; i < 10; i++) {
+        sVec.push_back(i);
+    }
+
+    for (auto v : sVec)
+        DSTRUCT_ASSERT(v == i++);
+
+    while (!sVec.empty()) {
+        sVec.pop_back();
+    }
+
+    return 0;
+}
+```
+
+
+
+**注: 静态数据结构定义在`dstruct::smemory`空间里, 其他接口及用法同动态内存支持的数据结构一样**
+
 
 
 ## 数据结构列表
@@ -99,15 +121,6 @@ int main() {
 
 
 
-
-
-## 构建和运行示例
-
-  ```
-  curl -fsSL https://xmake.io/shget.text | bash # 安装 xmake
-  xmake   # 编译/构建
-  xmake r dstruct_vector # 运行 dstruct_vector 示例，更多细节请查看xmake.lua
-  ```
 
 ## 谁在用?
 

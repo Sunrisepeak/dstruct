@@ -1,3 +1,12 @@
+// Use of this source code is governed by Apache-2.0 License
+// that can be found in the License file.
+//
+// Copyright (C) 2023 - present  Sunrisepeak
+//
+// Author: Sunrisepeak (speakshen@163.com)
+// ProjectLinks: https://github.com/Sunrisepeak/DStruct
+//
+
 #ifndef __BINARY_TREE_HPP__DSTRUCT
 #define __BINARY_TREE_HPP__DSTRUCT
 
@@ -20,33 +29,64 @@ public:
 
 public: // bigfive
     _BinaryTreeIterator(typename _Node::LinkType * link, NextFunc nextFunc) :
-        _mTreeNodeLink { link }, _mNextFunc { nextFunc } { __sync(); }
+        _mTreeNodeLinkPtr { link }, _mNextFunc { nextFunc } { __sync(); }
+
+    _BinaryTreeIterator(const _BinaryTreeIterator &it) { *this = it; }
+    _BinaryTreeIterator & operator=(const _BinaryTreeIterator &it) {
+        _mTreeNodeLinkPtr = it._mTreeNodeLinkPtr;
+        _mNextFunc = it._mNextFunc;
+        __sync();
+        return *this;
+    }
+
+    _BinaryTreeIterator(_BinaryTreeIterator &&it) { *this = dstruct::move(it); }
+    _BinaryTreeIterator & operator=(_BinaryTreeIterator &&it) {
+        _mTreeNodeLinkPtr = it._mTreeNodeLinkPtr;
+        _mNextFunc = it._mNextFunc;
+
+        // reset
+        it._mTreeNodeLinkPtr = nullptr;
+        it._mNextFunc = nullptr;
+ 
+        __sync();
+
+        return *this;
+    }
+
+    ~_BinaryTreeIterator() {
+        _mTreeNodeLinkPtr = nullptr;
+        _mNextFunc = nullptr;
+    }
 
     // from it convert to const-it
-    _BinaryTreeIterator(const _BinaryTreeIterator<typename types::RemoveConst<T>::Type> &obj)
-        : _BinaryTreeIterator(obj._mTreeNodeLink, obj._mNextFunc) { __sync(); }
+    _BinaryTreeIterator(
+        const _BinaryTreeIterator<typename types::RemoveConst<T>::Type> &obj,
+        bool __unused
+    ) : _BinaryTreeIterator(obj._mTreeNodeLinkPtr, obj._mNextFunc) {
+        //__sync();
+    }
 
 public: // ForwardIterator
     __Self& operator++() {
-        _mTreeNodeLink = _mNextFunc(_mTreeNodeLink);
+        _mTreeNodeLinkPtr = _mNextFunc(_mTreeNodeLinkPtr);
         __sync();
         return *this;
     }
 
     __Self operator++(int) {
         __Self old = *this;
-        _mTreeNodeLink = _mNextFunc(_mTreeNodeLink);
+        _mTreeNodeLinkPtr = _mNextFunc(_mTreeNodeLinkPtr);
         __sync();
         return old;
     }
 
 private:
     void __sync() {
-        __Self::_mPointer = &(_Node::to_node(_mTreeNodeLink)->data);
+        __Self::_mPointer = &(_Node::to_node(_mTreeNodeLinkPtr)->data);
     }
 
 protected:
-    typename _Node::LinkType *_mTreeNodeLink;
+    typename _Node::LinkType *_mTreeNodeLinkPtr;
     NextFunc _mNextFunc;
 };
 

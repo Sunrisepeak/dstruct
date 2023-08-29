@@ -1,3 +1,12 @@
+// Use of this source code is governed by Apache-2.0 License
+// that can be found in the License file.
+//
+// Copyright (C) 2023 - present  Sunrisepeak
+//
+// Author: Sunrisepeak (speakshen@163.com)
+// ProjectLinks: https://github.com/Sunrisepeak/DStruct
+//
+
 #ifndef __DOUBLE_LINKED_LIST_HPP__DSTRUCT
 #define __DOUBLE_LINKED_LIST_HPP__DSTRUCT
 
@@ -78,7 +87,7 @@ public: // big five
     DoublyLinkedList & operator=(DoublyLinkedList &&list) {
         // move list data
         _List::operator=(dstruct::move(list));
-        // update link
+        // update link: first-data and last-data point to new headNode
         auto headLinkPtr = _Node::to_link(&_mHeadNode);
         _mHeadNode.link.prev->next = headLinkPtr;
         _mHeadNode.link.next->prev = headLinkPtr;

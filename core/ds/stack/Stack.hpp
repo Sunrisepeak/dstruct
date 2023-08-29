@@ -1,3 +1,12 @@
+// Use of this source code is governed by Apache-2.0 License
+// that can be found in the License file.
+//
+// Copyright (C) 2023 - present  Sunrisepeak
+//
+// Author: Sunrisepeak (speakshen@163.com)
+// ProjectLinks: https://github.com/Sunrisepeak/DStruct
+//
+
 #ifndef __STACK_HPP__DSTRUCT
 #define __STACK_HPP__DSTRUCT
 
@@ -16,6 +25,11 @@ class Stack : public _DStructTypeSpec<T, typename DS::ConstIteratorType, typenam
 
 public:
     Stack() = default;
+    Stack(const Stack &) = default;
+    Stack & operator=(const Stack &) = default;
+    Stack(Stack &&) = default;
+    Stack & operator=(Stack &&) = default;
+    ~Stack() = default;
 
 public: // base op
     // status

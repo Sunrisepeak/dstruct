@@ -64,6 +64,10 @@ target("dstruct_binary_search_tree")
     set_kind("binary")
     add_files("examples/binary_search_tree.cpp")
 
+target("dstruct_smemory_vector")
+    set_kind("binary")
+    add_files("examples/smemory_vector.cpp")
+
 -- algorithms
 target("dstruct_for_each")
     set_kind("binary")

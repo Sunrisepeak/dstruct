@@ -1,3 +1,12 @@
+// Use of this source code is governed by Apache-2.0 License
+// that can be found in the License file.
+//
+// Copyright (C) 2023 - present  Sunrisepeak
+//
+// Author: Sunrisepeak (speakshen@163.com)
+// ProjectLinks: https://github.com/Sunrisepeak/DStruct
+//
+
 #ifndef __HEAP_HPP__DSTRUCT
 #define __HEAP_HPP__DSTRUCT
 
@@ -32,11 +41,22 @@ public:
         }
     }
 
-    Heap(Heap &&hep) {
+    Heap(const Heap &hep) { *this = hep; }
+    Heap & operator=(const Heap &hep) {
+        _mCmp = hep._mCmp;
+        _mHeap = hep._mHeap;
+        return *this;
+    }
+
+    Heap(Heap &&hep) { *this = dstruct::move(hep); }
+    Heap & operator=(Heap &&hep) {
         this->_mCmp = hep._mCmp;
         this->_mHeap = dstruct::move(hep._mHeap);
         hep._mHeap.resize(1, this->_mHeap[0]);
+        return *this;
     }
+
+    ~Heap() = default;
 
 public: // base op
     // status
