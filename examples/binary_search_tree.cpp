@@ -33,7 +33,6 @@ int main() {
         auto it = bst.begin();
         for (int i = 0; it != bst.end(); i++) {
             //std::cout << i << ": " << *it << std::endl;
-            std::cout << bst.size() << std::endl;
             DSTRUCT_ASSERT(i == *it);
             it = bst.erase(it);
         }
