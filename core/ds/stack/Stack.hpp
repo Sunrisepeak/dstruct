@@ -16,6 +16,11 @@ class Stack : public _DStructTypeSpec<T, typename DS::ConstIteratorType, typenam
 
 public:
     Stack() = default;
+    Stack(const Stack &) = default;
+    Stack & operator=(const Stack &) = default;
+    Stack(Stack &&) = default;
+    Stack & operator=(Stack &&) = default;
+    ~Stack() = default;
 
 public: // base op
     // status
