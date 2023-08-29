@@ -90,7 +90,10 @@ public:
         if (target != tree) { // deleted directly
             next = it;
 
-            if (parent == nullptr) { _update_root(tree); return next; } // is root
+            if (parent == nullptr) { // is root
+                _update_root(tree);
+                return next;
+            }
 
             if (parent->left == target) {
                 parent->left = tree;
@@ -129,11 +132,17 @@ public: // algo
 public: // range-for and iterator
 
     typename BinarySearchTree::ConstIteratorType begin(TraversalType ttype = TraversalType::InOrder) const {
-        return _create_iterator(_begin(_Node::to_link(_mRootPtr), ttype), ttype);
+        return typename BinarySearchTree::ConstIteratorType(
+            _create_iterator(_begin(_Node::to_link(_mRootPtr), ttype), ttype),
+            true
+        );
     }
 
     typename BinarySearchTree::ConstIteratorType end(TraversalType ttype = TraversalType::InOrder) const {
-        return _create_iterator(nullptr, ttype);
+        return typename BinarySearchTree::ConstIteratorType(
+            _create_iterator(nullptr, ttype),
+            true
+        );
     }
 
 public: // static pub api
@@ -257,7 +266,7 @@ protected:
         return subTree;
     }
 
-    typename BinarySearchTree::ConstIteratorType _create_iterator(typename _Node::LinkType *link, TraversalType itType) const {
+    typename BinarySearchTree::IteratorType _create_iterator(typename _Node::LinkType *link, TraversalType itType) const {
         typename BinarySearchTree::IteratorType::NextFunc nextFunc = nullptr;
         switch (itType) {
             case TraversalType::PreOrder:
