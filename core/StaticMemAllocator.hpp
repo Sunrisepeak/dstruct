@@ -15,8 +15,9 @@
 
 namespace dstruct {
 
-#define MEM_ALIGN 8
-#define MEM_VERIFY(expr) DSTRUCT_ASSERT((expr) != nullptr)
+#define SMA_MEM_ALIGN 8
+#define SMA_MEM_VERIFY(expr) DSTRUCT_ASSERT((expr) != nullptr)
+#define SMA_POINTER_CMP(p1, p2) (reinterpret_cast<char *>(p1) == reinterpret_cast<char *>(p2))
 
 template <int MEMORY_SIZE, int MAX_BLOCK_SIZE = 128>
 struct StaticMemAllocator {
@@ -50,8 +51,8 @@ public: // mem-alloc interface
 
 public: // mem-manager interface
 
-    constexpr static int MEM_ALIGN_ROUND_UP(int bytes) {
-        return (((bytes) + MEM_ALIGN - 1) & ~(MEM_ALIGN - 1));
+    constexpr static int SMA_MEM_ALIGN_ROUND_UP(int bytes) {
+        return (((bytes) + SMA_MEM_ALIGN - 1) & ~(SMA_MEM_ALIGN - 1));
     }
 
     static int free_mem_size() {
@@ -62,7 +63,7 @@ public: // mem-manager interface
         int listIndex = _Instance()._mFreeMemList.size() - 1;
         while (listIndex >= 0 && _Instance()._mFreeMemList[listIndex].next == nullptr)
             listIndex--;
-        return (listIndex + 1) * MEM_ALIGN;
+        return (listIndex + 1) * SMA_MEM_ALIGN;
     }
 
     static void memory_merge() {
@@ -72,7 +73,7 @@ public: // mem-manager interface
 protected:
     int _mFreeMemSize;
     char _mMemoryPool[MEMORY_SIZE];
-    dstruct::Array<__Link, MAX_BLOCK_SIZE / MEM_ALIGN> _mFreeMemList;
+    dstruct::Array<__Link, MAX_BLOCK_SIZE / SMA_MEM_ALIGN> _mFreeMemList;
 
     static StaticMemAllocator & _Instance() {
         static StaticMemAllocator sma; // create & manage static memory area
@@ -80,7 +81,7 @@ protected:
     }
 
     constexpr int _TO_INDEX(int bytes) {
-        return MEM_ALIGN_ROUND_UP(bytes) / MEM_ALIGN - 1;
+        return SMA_MEM_ALIGN_ROUND_UP(bytes) / SMA_MEM_ALIGN - 1;
     }
 
     void * _allocate(int bytes) {
@@ -102,13 +103,13 @@ protected:
 
         // check and insert memory fragment to list
         int memFragmentListIndex = freeMemListIndex - _TO_INDEX(bytes) - 1;
-        void *memFragmentAddr = static_cast<void *>(memPtr) + MEM_ALIGN_ROUND_UP(bytes);
+        void *memFragmentAddr = reinterpret_cast<char *>(memPtr) + SMA_MEM_ALIGN_ROUND_UP(bytes);
         if (memFragmentListIndex >= 0) {
             _insert_mem_block_to_list(memFragmentAddr, memFragmentListIndex);
         }
 
         //printf("allocate:\t%p %03d - %p %03d\n", memPtr, freeMemListIndex, memFragmentAddr, memFragmentListIndex);
-        _mFreeMemSize -= MEM_ALIGN_ROUND_UP(bytes);
+        _mFreeMemSize -= SMA_MEM_ALIGN_ROUND_UP(bytes);
 
         return memPtr;
     }
@@ -116,7 +117,7 @@ protected:
     bool _deallocate(void *addr, int bytes) {
         if (bytes <= 0 || bytes > MAX_BLOCK_SIZE || addr == nullptr) return false;
         _insert_mem_block_to_list(addr, _TO_INDEX(bytes));
-        _mFreeMemSize += MEM_ALIGN_ROUND_UP(bytes);
+        _mFreeMemSize += SMA_MEM_ALIGN_ROUND_UP(bytes);
         //printf("deallocate:\t%p %03d\n", addr, _TO_INDEX(bytes));
         return true;
     }
@@ -131,7 +132,7 @@ protected:
             __Link *secondMemBlockPtr = nullptr;
             while (firstMemBlockPtr) {
                 secondMemBlockPtr = firstMemBlockPtr->next;
-                if (static_cast<void *>(firstMemBlockPtr) + (i + 1) * MEM_ALIGN == secondMemBlockPtr) {
+                if (SMA_POINTER_CMP(reinterpret_cast<char *>(firstMemBlockPtr) + (i + 1) * SMA_MEM_ALIGN, secondMemBlockPtr)) {
                     // merge firstMemBlockPtr and secondMemBlockPtr
                     firstMemLinkPtr->next = secondMemBlockPtr->next; // delete first/secondMemBlockPtr from list[i]
                     int listIndex = i * 2 + 1;
@@ -149,10 +150,10 @@ protected:
                               xDown              -->   |     |
                                                        +-----+
                             */
-                            void *addrUP = static_cast<void *>(firstMemBlockPtr) - (j + 1) * MEM_ALIGN;
-                            void *addrDown = static_cast<void *>(firstMemBlockPtr) + (i + 1) * MEM_ALIGN;
+                            void *addrUP = reinterpret_cast<char *>(firstMemBlockPtr) - (j + 1) * SMA_MEM_ALIGN;
+                            void *addrDown = reinterpret_cast<char *>(firstMemBlockPtr) + (i + 1) * SMA_MEM_ALIGN;
 
-                            if (addrUP == secondMemBlockPtr || addrDown == secondMemBlockPtr) { // check merge-able
+                            if (SMA_POINTER_CMP(addrUP, secondMemBlockPtr) || SMA_POINTER_CMP(addrDown, secondMemBlockPtr)) { // check merge-able
                                 firstMemLinkPtr->next = firstMemBlockPtr->next; // delete firstMemBlock from list[i]
                                 secondMemLinkPtr->next = secondMemBlockPtr->next; // delete secondMemBlock from list[j]
                                 //printf("memory_merge: [%p, %p], from list %d %d\n", firstMemBlockPtr, secondMemBlockPtr, i, j);
@@ -193,7 +194,7 @@ protected:
             //     list1 -> index is 15
             //     list2 -> index is 0
             _insert_mem_block_to_list(addr, _mFreeMemList.size() - 1); // list1
-            _insert_mem_block_to_list(addr + MAX_BLOCK_SIZE, ListIndex - _mFreeMemList.size() - 1); // list2
+            _insert_mem_block_to_list(reinterpret_cast<char *>(addr) + MAX_BLOCK_SIZE, ListIndex - _mFreeMemList.size() - 1); // list2
         }
     }
 };

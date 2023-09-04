@@ -33,7 +33,7 @@ int main() {
     vec.push_back(4);
 
     //std::cout << MySMA_1M::free_mem_size() << std::endl;
-    DSTRUCT_ASSERT(MySMA_1M::free_mem_size() == MEM_1M_BYTE - MySMA_1M::MEM_ALIGN_ROUND_UP(vec.capacity() * sizeof(int)));
+    DSTRUCT_ASSERT(MySMA_1M::free_mem_size() == MEM_1M_BYTE - MySMA_1M::SMA_MEM_ALIGN_ROUND_UP(vec.capacity() * sizeof(int)));
 
     std::cout << "   pass" << std::endl;
 
