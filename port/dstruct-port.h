@@ -27,7 +27,7 @@ using ptr_t = size_t;
 
 
 #define __DSTRUCT_CRASH(expr) \
-    if (!(expr)) { \
+    if (expr) { \
         *(static_cast<volatile char *>(0)) = 'E'; \
     }
 
@@ -50,12 +50,12 @@ struct Alloc
 #ifdef __DSTRUCT_PORT_ASSERT
 #define DSTRUCT_ASSERT(expr) __DSTRUCT_PORT_ASSERT(expr)
 #else
-#define DSTRUCT_ASSERT(expr) __DSTRUCT_CRASH(expr)
+#define DSTRUCT_ASSERT(expr) __DSTRUCT_CRASH(!(expr))
 #endif
 
 
 struct DStructPlacementNewFlag { };
-inline void * operator new(size_t sz, void *ptr, DStructPlacementNewFlag *) { return ptr; }
+inline void * operator new(size_t sz, void *ptr, DStructPlacementNewFlag *) noexcept { return ptr; }
 // void operator delete(void *ptr, DStructPlacementNewFlag *) {  } haven't used
 
 
