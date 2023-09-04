@@ -81,7 +81,11 @@ protected:
     }
 
     constexpr int _TO_INDEX(int bytes) {
+<<<<<<< HEAD
         return MEM_ALIGN_ROUND_UP(bytes) / SMA_MEM_ALIGN - 1;
+=======
+        return SMA_MEM_ALIGN_ROUND_UP(bytes) / SMA_MEM_ALIGN - 1;
+>>>>>>> b42f19acc52fba1e7c46db8a7fe287088701eb65
     }
 
     void * _allocate(int bytes) {
@@ -103,13 +107,17 @@ protected:
 
         // check and insert memory fragment to list
         int memFragmentListIndex = freeMemListIndex - _TO_INDEX(bytes) - 1;
+<<<<<<< HEAD
         void *memFragmentAddr = reinterpret_cast<char *>(memPtr) + MEM_ALIGN_ROUND_UP(bytes);
+=======
+        void *memFragmentAddr = reinterpret_cast<char *>(memPtr) + SMA_MEM_ALIGN_ROUND_UP(bytes);
+>>>>>>> b42f19acc52fba1e7c46db8a7fe287088701eb65
         if (memFragmentListIndex >= 0) {
             _insert_mem_block_to_list(memFragmentAddr, memFragmentListIndex);
         }
 
         //printf("allocate:\t%p %03d - %p %03d\n", memPtr, freeMemListIndex, memFragmentAddr, memFragmentListIndex);
-        _mFreeMemSize -= MEM_ALIGN_ROUND_UP(bytes);
+        _mFreeMemSize -= SMA_MEM_ALIGN_ROUND_UP(bytes);
 
         return memPtr;
     }
@@ -117,7 +125,7 @@ protected:
     bool _deallocate(void *addr, int bytes) {
         if (bytes <= 0 || bytes > MAX_BLOCK_SIZE || addr == nullptr) return false;
         _insert_mem_block_to_list(addr, _TO_INDEX(bytes));
-        _mFreeMemSize += MEM_ALIGN_ROUND_UP(bytes);
+        _mFreeMemSize += SMA_MEM_ALIGN_ROUND_UP(bytes);
         //printf("deallocate:\t%p %03d\n", addr, _TO_INDEX(bytes));
         return true;
     }
