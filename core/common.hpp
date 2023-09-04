@@ -155,8 +155,9 @@ static void swap(T &a, T &b) {
 // https://en.cppreference.com/w/cpp/language/new
 // https://en.cppreference.com/w/cpp/memory/new/operator_new
 template <typename T>
-static T* construct(void *addr, const T& obj) {
+static T* construct(void *addr, const T& obj) noexcept {
     static DStructPlacementNewFlag placementNewFlag;
+    __DSTRUCT_CRASH(addr == nullptr);
     return new(addr, &placementNewFlag) T(obj); // use T's constructor(copy/spec)
 }
 
@@ -171,21 +172,22 @@ static T ** construct(void *addr, const T *obj) {
 */
 
 template <>
-int * construct<int>(void *addr, const int& obj) {
+int * construct<int>(void *addr, const int& obj) noexcept {
+    __DSTRUCT_CRASH(addr == nullptr);
     *(reinterpret_cast<int *>(addr)) = obj;
     return reinterpret_cast<int *>(addr);
 }
 
 template <typename T>
-static void destory(T *ptr) {
+static void destory(T *addr) noexcept {
 /*
     // method1, but have a litte issue
     static DStructPlacementNewFlag placementNewFlag;
     delete(ptr, &placementNewFlag);
 */
     // method2, skip detele
-    if (ptr)
-        ptr->~T();
+    __DSTRUCT_CRASH(addr == nullptr); // addr is nullptr, trigger crash
+    addr->~T();
 }
 
 };

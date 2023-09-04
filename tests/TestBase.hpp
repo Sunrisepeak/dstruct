@@ -93,7 +93,7 @@ static void test_sma_allocator() {
         memArr[i] = MyMemAlloc::allocate(memSize /= 2);
         if (i > 0) {
             TEST_LOG("%p %p", memArr[i - 1], memArr[i]);
-            DSTRUCT_ASSERT(memArr[i - 1] + memSize * 2 == memArr[i]);
+            DSTRUCT_ASSERT(reinterpret_cast<char *>(memArr[i - 1]) + memSize * 2 == memArr[i]);
         }
     }
 
@@ -114,7 +114,7 @@ static void test_sma_allocator() {
  
     DSTRUCT_ASSERT(mem1024 == nullptr);
     
-    MEM_VERIFY(mem1024 = MyMemAlloc::allocate(1024)); // ok - only debug
+    SMA_MEM_VERIFY(mem1024 = MyMemAlloc::allocate(1024)); // ok - only debug
 
     DSTRUCT_ASSERT(MyMemAlloc::deallocate(mem1024, 1024) == true);
 
@@ -126,7 +126,7 @@ static void test_sma_allocator() {
             memArr[i] = MyMemAlloc::allocate(memAllocSeq[i]);
             if (i > 0) {
                 TEST_LOG("%p %p", memArr[i - 1], memArr[i]);
-                DSTRUCT_ASSERT(memArr[i - 1] + memAllocSeq[i - 1] == memArr[i]);
+                DSTRUCT_ASSERT(reinterpret_cast<char *>(memArr[i - 1]) + memAllocSeq[i - 1] == memArr[i]);
             }
         }
 
