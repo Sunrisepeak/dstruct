@@ -2,7 +2,7 @@
 
 DStruct is a portable and structurally simple data structure template library.
 
-| [Features](#Features) - [Usage](#Usage) - [Core](#Core) - [Whos Using](#Whos using) - [Other](#Other) - [中文](README.zh.md) |
+| [Features](#Features) - [Usage](#Usage) - [Core](#Core) - [Who is using](#Who-is-using) - [Other](#Other) - [中文](README.zh.md) |
 | ------------------------------------------------------------ |
 | Design Philosophy - Interface Documentation - Static Memory Allocator (SMA) - Porting Guide - Related Videos |
 
@@ -10,7 +10,7 @@ DStruct is a portable and structurally simple data structure template library.
 
 ## Features
 
-- Easily portable, no dependent std
+- Easily portable, no dependent std-lib
 - Easy to use, like std-lib style
 - Easy to learn, customize, and improve
 - Provides custom allocators interface
@@ -109,7 +109,7 @@ int main() {
 ```
 
 
-## Whos using
+## Who-is-using
 
 - [**DSVisual**：](https://github.com/Sunrisepeak/DSVisual) Data structure visualization library
 
