@@ -41,6 +41,33 @@ int main() {
     for (int i = 0; i < arr.size(); i++) {
         std::cout << arr[-(i + 1)] << " : " << arr[i] << std::endl;
     }
+    return 0;
+}
+```
+
+### 3. 代码用例 - 静态内存
+
+> 使用静态内存SMA, 支持无内存管理环境(如: 裸机)
+
+```cpp
+#include <dstruct.hpp>
+
+int main() {
+    //dstruct::Vector<int> dVec;
+    dstruct::smemory::Vector<int> sVec;
+
+    for (int i = 0; i < 10; i++) {
+        sVec.push_back(i);
+    }
+
+    int i = 0;
+    for (auto v : sVec) {
+        DSTRUCT_ASSERT(v == i++);
+    }
+
+    while (!sVec.empty()) {
+        sVec.pop_back();
+    }
 
     return 0;
 }
@@ -71,6 +98,11 @@ int main() {
     return 0;
 }
 ```
+
+
+
+**注: 静态数据结构定义在`dstruct::smemory`空间里, 其他接口及用法同动态内存支持的数据结构一样**
+
 
 
 
