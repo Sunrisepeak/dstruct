@@ -67,7 +67,10 @@ public:
     typename BinarySearchTree::ConstIteratorType
     find(const T &obj) const {
         auto target = _find_or_insert(_Node::to_link(_mRootPtr), obj, _mCmp, false);
-        return _create_iterator(target, TraversalType::InOrder);
+        return typename BinarySearchTree::ConstIteratorType(
+            _create_iterator(target, TraversalType::InOrder),
+            true
+        );
     }
 
     // push/pop
