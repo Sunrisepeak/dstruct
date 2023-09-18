@@ -37,19 +37,19 @@ public: // bigfive
 public: // base op
     ReferenceType operator*() const;
     PointerType operator->() const;
-    bool operator!=(const Self &it) const;
-    bool operator==(const Self &it) const;
+    bool operator!=(const __Self &it) const;
+    bool operator==(const __Self &it) const;
 public: // ForwardIterator
-    Self& operator++();
-    Self operator++(int);
+    __Self& operator++();
+    __Self operator++(int);
 public: // BidirectionalIterator
-    Self& operator--();
-    Self operator--(int);
+    __Self& operator--();
+    __Self operator--(int);
 public: // RandomIterator
-    Self operator+(int) const;
-    Self operator-(int) const;
-    Self operator+=(int) const;
-    Self operator-=(int) const;
+    __Self operator+(int) const;
+    __Self operator-(int) const;
+    __Self operator+=(int) const;
+    __Self operator-=(int) const;
 
 // Member Var Spec
 protected: // member var
