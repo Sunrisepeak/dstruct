@@ -51,6 +51,27 @@ public:
     Child(int data) : Parent(data) {}
 };
 
+template <typename D>
+struct TypeHelper {
+    using _int8_t = typename D::_int8_t;
+    using _int16_t = typename D::_int16_t;
+};
+
+struct Type1 {
+    using _int8_t = char;
+    using _int16_t = short;
+};
+
+template <typename T>
+struct Type2 : TypeHelper<T> {
+/* // error: need use typename TypeHelper<T>::_int16_t
+    _int16_t test() {
+        _int8_t i = 40;
+        return i;
+    }
+*/
+};
+
 int main() {
 
     std::cout << "\n\nTesting: " << __FILE__ << std::endl;
@@ -82,5 +103,8 @@ int main() {
     const int &data = val;
     std::cout << &val << " -- " << &data << std::endl;
 }
+
+// test7: Type
+    Type2<Type1> t;
     return 0;
 }

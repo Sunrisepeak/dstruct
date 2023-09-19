@@ -1,10 +1,28 @@
-# DStruct Spec
+// Use of this source code is governed by Apache-2.0 License
+// that can be found in the License file.
+//
+// Copyright (C) 2023 - present  Sunrisepeak
+//
+// Author: Sunrisepeak (speakshen@163.com)
+// ProjectLinks: https://github.com/Sunrisepeak/DStruct
+//
 
-## DStruct Spec V0.0.1  - Draft - 2023.9
+#ifndef __DSTRUCT_SPEC_HPP__DSTRUCT_V001
+#define __DSTRUCT_SPEC_HPP__DSTRUCT_V001
+#include <cstddef>
+namespace dstruct {
 
-### Iterator Spec
+template <typename T, typename Alloc>
+struct AllocSpec {
+    static T *allocate(int n = 1) {
+        return static_cast<T *>(Alloc::allocate(n * sizeof(T)));
+    }
 
-```cpp
+    static void deallocate(T *ptr, int n = 1) {
+        Alloc::deallocate(ptr, n * sizeof(T));
+    }
+};
+
 struct ForwardIterator { };
 struct BidirectionalIterator { };
 struct RandomIterator { };
@@ -25,20 +43,24 @@ protected: // iterator category type
 private:
     using __Self               = DStructIteratorTypeSpec;
 
+/*
 public: // bigfive
     __Self();
     __Self(const __Self &);
     __Self & operator=(const __Self&);
     __Self(__Self &&);
-    __Self & operator=(__Self &&)；
+    __Self & operator=(__Self &&);
     ~__Self();
+*/
 
 // Interface Spec
 public: // base op
-    ReferenceType operator*() const;
-    PointerType operator->() const;
-    bool operator!=(const __Self &it) const;
-    bool operator==(const __Self &it) const;
+    ReferenceType operator*() const { return *_mPointer; }
+    PointerType operator->() const { return _mPointer; }
+    virtual bool operator!=(const DStructIteratorTypeSpec &it) const { return _mPointer != it._mPointer; }
+    virtual bool operator==(const DStructIteratorTypeSpec &it) const { return _mPointer == it._mPointer; }
+
+/* pls: according to your dstruct impl them
 public: // ForwardIterator
     __Self& operator++();
     __Self operator++(int);
@@ -50,18 +72,14 @@ public: // RandomIterator
     __Self operator-(int) const;
     __Self operator+=(int) const;
     __Self operator-=(int) const;
+*/
 
 // Member Var Spec
 protected: // member var
     PointerType _mPointer;
 };
-```
 
-
-### Data Structures Spec
-
-```cpp
-template <typename T, typename Alloc, template <typename> class Iterator>
+template <typename T, typename Alloc, typename Iterator, typename ConstIterator>
 class DStructTypeSpec {
 // Type Spec
 public: // common type
@@ -73,13 +91,14 @@ public: // common type
     using SizeType             = unsigned long long;
     using DifferenceType       = long long;
 public: // iterator type
-    using IteratorType         = Iterator<ValueType>;
-    using ConstIteratorType    = Iterator<const ValueType>;
+    using IteratorType         = Iterator;
+    using ConstIteratorType    = ConstIterator;
 protected: // alloc type
     using _Alloc               = AllocSpec<T, Alloc>;
 private:
     using __Self               = DStructTypeSpec;
 
+/* pls: according to your dstruct impl them
 public: // bigfive
     __Self();
     __Self(const __Self &);
@@ -112,19 +131,12 @@ public: // iterator/range-for support
     ConstIteratorType begin() const;
     IteratorType end();
     ConstIteratorType end() const;
+*/
 };
-```
 
+template <typename T, typename Alloc, template <typename> class Iterator>
+using _DStructTypeSpec = DStructTypeSpec<T, Alloc, Iterator<T>, Iterator<const T>>;
 
-### Algorithms Spec
-
-
-### Port & Allocator Spec
-
-```cpp
-struct Alloc {
-    static void * allocate(size_t bytes);
-    static void deallocate(void *addr, size_t bytes);
 };
-```
 
+#endif

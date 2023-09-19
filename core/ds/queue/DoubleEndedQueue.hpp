@@ -157,11 +157,11 @@ protected:
  
 template <typename T, size_t ARR_SIZE, typename Alloc>
 class DoubleEndedQueue :
-    public _DStructTypeSpec<T, _DoubleEndedQueueIterator<T, ARR_SIZE>, _DoubleEndedQueueIterator<const T, ARR_SIZE>, Alloc> {
+    public DStructTypeSpec<T, Alloc, _DoubleEndedQueueIterator<T, ARR_SIZE>, _DoubleEndedQueueIterator<const T, ARR_SIZE>> {
 
 protected:
-    using _Array      = Array<T, ARR_SIZE>;
-    using _AllocArray = DSAlloc<_Array, Alloc>;
+    using _Array         = Array<T, ARR_SIZE>;
+    using _AllocArray    = dstruct::AllocSpec<_Array, Alloc>;
     using _ArrMapTable   = Vector<_Array *>;
 /*
     struct _Block {

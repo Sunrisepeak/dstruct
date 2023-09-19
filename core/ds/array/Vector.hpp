@@ -15,7 +15,7 @@
 namespace dstruct {
 
 template <typename T, typename __Alloc = port::Alloc>
-class Vector : public DStructTypeSpec<T, __Alloc> {
+class Vector : public _DStructTypeSpec<T, __Alloc, PrimitiveIterator> {
 
 public: // big five
     Vector() :  _mSize { 0 }, _mCapacity { 0 }, _mC { nullptr } { }

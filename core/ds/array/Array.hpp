@@ -15,7 +15,7 @@
 namespace dstruct {
 
 template <typename T, size_t N>
-class Array : public DStructTypeSpec<T>{
+class Array : public _DStructTypeSpec<T, port::Alloc /*unused*/ , PrimitiveIterator> {
 
 public: // big Five
 

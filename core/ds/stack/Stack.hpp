@@ -19,7 +19,7 @@ namespace adapter {
 
 // DS: need support pop_back / push_back / back
 template <typename T, typename DS>
-class Stack : public _DStructTypeSpec<T, typename DS::ConstIteratorType, typename DS::ConstIteratorType> {
+class Stack {
 
     DSTRUCT_TYPE_SPEC_DECLARE(DS)
 
