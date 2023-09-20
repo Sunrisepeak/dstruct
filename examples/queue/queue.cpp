@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include "dstruct.hpp"
+#include <dstruct.hpp>
 
 
 int main() {

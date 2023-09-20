@@ -31,7 +31,7 @@ DStruct 是一个易于移植且结构简洁的数据结构模板库
 
 ```cpp
 #include <iostream>
-#include "dstruct.hpp"
+#include <dstruct.hpp>
 
 int main() {
     dstruct::Array<int, 10> arr(2);

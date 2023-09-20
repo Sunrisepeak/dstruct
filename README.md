@@ -31,7 +31,7 @@ DStruct is a portable and structurally simple data structure template library.
 
 ```cpp
 #include <iostream>
-#include "dstruct.hpp"
+#include <dstruct.hpp>
 
 int main() {
     dstruct::Array<int, 10> arr(2);
