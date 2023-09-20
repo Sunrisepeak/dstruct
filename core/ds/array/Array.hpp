@@ -10,12 +10,14 @@
 #ifndef __ARRAY_HPP__DSTRUCT
 #define __ARRAY_HPP__DSTRUCT
 
-#include <core/common.hpp>
+#include <spec/DStructSpec.hpp>
+#include <core/Iterator.hpp>
+#include <core/utils.hpp>
 
 namespace dstruct {
 
 template <typename T, size_t N>
-class Array : public _DStructTypeSpec<T, port::Alloc /*unused*/ , PrimitiveIterator> {
+class Array : public _DStructTypeSpec<T, dstruct::Alloc /*unused*/ , PrimitiveIterator> {
 
 public: // big Five
 
@@ -54,14 +56,12 @@ public: // operator
     T & operator[](int index) {
         if (index < 0)
             index = N + index;
-        DSTRUCT_ASSERT(index < static_cast<int>(N));
         return _mC[index];
     }
 
     T operator[](int index) const {
         if (index < 0)
             index = N + index;
-        DSTRUCT_ASSERT(index < static_cast<int>(N));
         return _mC[index];
     }
 

@@ -10,11 +10,13 @@
 #ifndef __VECTOR_HPP__DSTRUCT
 #define __VECTOR_HPP__DSTRUCT
 
+#include <spec/DStructSpec.hpp>
 #include <core/common.hpp>
+#include <core/Iterator.hpp>
 
 namespace dstruct {
 
-template <typename T, typename __Alloc = port::Alloc>
+template <typename T, typename __Alloc = dstruct::Alloc>
 class Vector : public _DStructTypeSpec<T, __Alloc, PrimitiveIterator> {
 
 public: // big five

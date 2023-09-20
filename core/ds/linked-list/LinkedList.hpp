@@ -15,7 +15,7 @@
 
 namespace dstruct {
 
-template <typename T, template <typename> class LinkedListIterator, typename Alloc = port::Alloc>
+template <typename T, template <typename> class LinkedListIterator, typename Alloc = dstruct::Alloc>
 class _LinkedList : public _DStructTypeSpec<T, Alloc, LinkedListIterator> {
 
 protected:

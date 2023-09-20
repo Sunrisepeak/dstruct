@@ -11,41 +11,29 @@
 #define __DSTRUCT_PORT_HPP__DSTRUCT
 
 namespace dstruct {
+namespace port { // pls impl/port the alloc
+    static void *allocate(int bytes);
+    static void deallocate(void *addr, int bytes);
+} // namespace port end
 
-using int8_t = char;
-using int16_t = short;
-using int32_t = int;
-using int64_t = long long;
-
-using uint8_t = unsigned char;
-using uint16_t = unsigned short;
-using uint32_t = unsigned int;
-using uint64_t = unsigned long long;
-
-using size_t = unsigned long long;
-using ptr_t = size_t;
-
-
-#define __DSTRUCT_CRASH(expr) \
-    if (expr) { \
-        *(static_cast<volatile char *>(0)) = 'E'; \
+struct Alloc {
+    static void * allocate(int bytes) {
+        return dstruct::port::allocate(bytes);
     }
 
-namespace port {
-// pls impl/port the alloc
-/* 
-struct Alloc
-{
-    static void *allocate(size_t bytes);
-    static void deallocate(void *addr, size_t bytes);
+    static void deallocate(void *addr, int bytes) {
+        dstruct::port::deallocate(addr, bytes);
+    }
 };
-*/
-}
 
-}
+} // namespace dstruct
 
 // interface impl
+#ifdef ENABLE_SMA
+#include <port/static-memory/sma-dstruct-port.hpp>
+#else
 #include <port/libc/libc-dstruct-port.hpp>
+#endif
 
 #ifdef __DSTRUCT_PORT_ASSERT
 #define DSTRUCT_ASSERT(expr) __DSTRUCT_PORT_ASSERT(expr)
@@ -53,10 +41,8 @@ struct Alloc
 #define DSTRUCT_ASSERT(expr) __DSTRUCT_CRASH(!(expr))
 #endif
 
-
 struct DStructPlacementNewFlag { };
-inline void * operator new(size_t sz, void *ptr, DStructPlacementNewFlag *) noexcept { return ptr; }
+inline void * operator new(dstruct::port::size_t sz, void *ptr, DStructPlacementNewFlag *) noexcept { return ptr; }
 // void operator delete(void *ptr, DStructPlacementNewFlag *) {  } haven't used
-
 
 #endif /* __DSTRUCT_PORT_HPP__DSTRUCT */

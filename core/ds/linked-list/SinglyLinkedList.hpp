@@ -46,7 +46,7 @@ protected:
     typename _Node::LinkType *_mLinkPtr;
 };
 
-template <typename T, typename Alloc = port::Alloc>
+template <typename T, typename Alloc = dstruct::Alloc>
 class SinglyLinkedList : public _LinkedList<T, _SinglyLinkListIterator, Alloc> {
 protected:
     using _List = _LinkedList<T, _SinglyLinkListIterator, Alloc>;

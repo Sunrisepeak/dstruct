@@ -60,7 +60,7 @@ public: // bigfive
 
     // from it convert to const-it
     _BinaryTreeIterator(
-        const _BinaryTreeIterator<typename types::RemoveConst<T>::Type> &obj,
+        const _BinaryTreeIterator<typename RemoveConst<T>::Type> &obj,
         bool __unused
     ) : _BinaryTreeIterator(obj._mTreeNodeLinkPtr, obj._mNextFunc) {
         //__sync();

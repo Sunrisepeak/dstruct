@@ -17,12 +17,12 @@
 
 namespace dstruct {
 
-template <typename T, size_t ARR_SIZE, typename Alloc = port::Alloc>
+template <typename T, size_t ARR_SIZE, typename Alloc = dstruct::Alloc>
 class DoubleEndedQueue;
 
 template <typename T, size_t ARR_SIZE>
 class _DoubleEndedQueueIterator : public DStructIteratorTypeSpec<T, RandomIterator> {
-    friend class DoubleEndedQueue<T, ARR_SIZE, port::Alloc>;
+    friend class DoubleEndedQueue<T, ARR_SIZE, dstruct::Alloc>;
     friend class _DoubleEndedQueueIterator<const T, ARR_SIZE>; // for it -> const-it
 protected:
     using _Array         = dstruct::Array<T, ARR_SIZE>;
@@ -75,7 +75,7 @@ public:
 
     // for it -> const-it
     _DoubleEndedQueueIterator(
-        const _DoubleEndedQueueIterator<typename types::RemoveConst<T>::Type, ARR_SIZE> &obj,
+        const _DoubleEndedQueueIterator<typename RemoveConst<T>::Type, ARR_SIZE> &obj,
         bool _unsedFlag // constructor dispatch flag
     ) : _DoubleEndedQueueIterator() {
 

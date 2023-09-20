@@ -16,7 +16,7 @@
 namespace dstruct {
 
 // Compare(parent, child) == true
-template <typename T, typename Compare, typename Alloc = port::Alloc>
+template <typename T, typename Compare, typename Alloc = dstruct::Alloc>
 class Heap {
 
 protected:
