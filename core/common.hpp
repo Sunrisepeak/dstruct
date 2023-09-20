@@ -18,7 +18,7 @@
 
 namespace dstruct {
 
-#define DSTRUCT_TYPE_SPEC_DECLARE(DStruct) \
+#define DSTRUCT_TYPE_SPEC_HELPER(DStruct) \
 public: \
     using ValueType            = typename DStruct::ValueType; \
     using ReferenceType        = typename DStruct::ReferenceType; \
@@ -30,6 +30,14 @@ public: \
 public: \ 
     using IteratorType         = typename DStruct::IteratorType; \
     using ConstIteratorType    = typename DStruct::ConstIteratorType;
+
+#define DSTRUCT_COPY_SEMANTICS(DStruct) \
+    DStruct(const DStruct &ds) : DStruct() { *this = ds; } \
+    DStruct & operator=(const DStruct &ds)
+
+#define DSTRUCT_MOVE_SEMANTICS(DStruct) \
+    DStruct(DStruct &&ds) : DStruct() { *this = dstruct::move(ds); } \
+    DStruct & operator=(DStruct &&ds)
 
 // TODO: Check placement new for primitive type(example pointer) and self-def type
 // https://en.cppreference.com/w/cpp/language/new

@@ -21,7 +21,7 @@ namespace adapter {
 template <typename T, typename DS>
 class Queue {
 
-    DSTRUCT_TYPE_SPEC_DECLARE(DS)
+    DSTRUCT_TYPE_SPEC_HELPER(DS)
 
 public:
     Queue() = default;
