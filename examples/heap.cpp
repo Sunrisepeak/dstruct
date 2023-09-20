@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include "dstruct.hpp"
+#include <dstruct.hpp>
 
 
 int main() {
@@ -18,7 +18,7 @@ int main() {
 
     dstruct::MinHeap<int> _minHeap;
     dstruct::PriorityQueue<int> minHeap;
-    dstruct::MaxHeap<int, dstruct::port::Alloc> _maxHeap;
+    dstruct::MaxHeap<int, dstruct::Alloc> _maxHeap;
     dstruct::Heap<int, dstruct::greater<int>> maxHeap;
 
     for (int i = 0; i < 10; i++) {

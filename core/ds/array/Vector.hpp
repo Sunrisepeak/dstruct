@@ -14,43 +14,43 @@
 
 namespace dstruct {
 
-template <typename T, typename __Alloc = port::Alloc>
-class Vector : public DStructTypeSpec<T, __Alloc> {
+template <typename T, typename __Alloc = dstruct::Alloc>
+class Vector : public _DStructTypeSpec<T, __Alloc, PrimitiveIterator> {
+
+    DSTRUCT_TYPE_SPEC_HELPER(Vector);
 
 public: // big five
     Vector() :  _mSize { 0 }, _mCapacity { 0 }, _mC { nullptr } { }
 
-    Vector(size_t n, const T &obj) : Vector() {
+    Vector(size_t n, ConstReferenceType element) : Vector() {
         DSTRUCT_ASSERT(n != 0);
         resize(n);
         for (int i = 0; i < n; i++)
-             dstruct::construct(_mC + i, obj);
+             dstruct::construct(_mC + i, element);
         _mSize = n;
         _mCapacity = n;
     }
 
-    Vector(const Vector& vec) : Vector() { *this = vec; }
-    Vector & operator=(const Vector &vec) {
-        resize(vec._mCapacity);
-        _mSize = vec._mSize;
+    DSTRUCT_COPY_SEMANTICS(Vector) {
+        resize(ds._mCapacity);
+        _mSize = ds._mSize;
         for (int i = 0; i < _mSize; i++) {
-            //_mC[i] = vec._mC[i]; have some clas haven't operator=
-            dstruct::construct(_mC + i, vec._mC[i]);
+            dstruct::construct(_mC + i, ds._mC[i]);
         }
         return *this;
     }
 
-    Vector(Vector &&vec) : Vector() { *this = dstruct::move(vec); }
-    Vector & operator=(Vector &&vec) {
-        dstruct::destory(this);
+    DSTRUCT_MOVE_SEMANTICS(Vector) {
+        //dstruct::destory(this);
+        this->~Vector();
 
-        this->_mC = vec._mC;
-        this->_mSize = vec._mSize;
-        this->_mCapacity = vec._mCapacity;
+        this->_mC = ds._mC;
+        this->_mSize = ds._mSize;
+        this->_mCapacity = ds._mCapacity;
 
-        // init vec
-        vec._mC = nullptr;
-        vec._mSize = vec._mCapacity = 0;
+        // init ds
+        ds._mC = nullptr;
+        ds._mSize = ds._mCapacity = 0;
 
         return *this;
     }
@@ -68,28 +68,55 @@ public: // big five
     }
 
 public: // Capacity
-    bool empty() const { return _mSize == 0; }
-    size_t size() const { return _mSize; }
-    size_t capacity() const { return _mCapacity; }
+    bool empty() const {
+        return _mSize == 0;
+    }
+
+    SizeType size() const {
+        return _mSize;
+    }
+
+    SizeType capacity() const {
+        return _mCapacity;
+    }
 
 public: // Access
-    T back() const {  DSTRUCT_ASSERT(_mSize > 0); return _mC[_mSize - 1]; }
-    T front() const { return _mC[0]; }
+    ConstReferenceType back() const {
+        DSTRUCT_ASSERT(_mSize > 0);
+        return _mC[_mSize - 1];
+    }
+
+    ConstReferenceType front() const {
+        return _mC[0];
+    }
+
+    ConstReferenceType operator[](int index) const {
+        if (index < 0)
+            index = _mSize + index;
+        DSTRUCT_ASSERT(index < static_cast<int>(_mSize));
+        return _mC[index];
+    }
 
 public: // Modifiers
-    void push(const T &obj) { push_back(obj); }
-    void push_back(const T &obj) {
+    void push(ConstReferenceType element) {
+        push_back(element);
+    }
+
+    void push_back(ConstReferenceType element) {
         if (_mSize + 1 > _mCapacity) {
             if (_mSize)
                 resize(2 * _mSize);
             else
                 resize(2);
         }
-        dstruct::construct(_mC + _mSize, obj);
+        dstruct::construct(_mC + _mSize, element);
         _mSize++;
     }
 
-    void pop() { pop_back(); }
+    void pop() {
+        pop_back();
+    }
+
     void pop_back() {
         DSTRUCT_ASSERT(_mSize > 0);
         --_mSize;
@@ -99,8 +126,33 @@ public: // Modifiers
         }
     }
 
+    ReferenceType operator[](int index) {
+        if (index < 0)
+            index = _mSize + index;
+        DSTRUCT_ASSERT(index < static_cast<int>(_mSize));
+        return _mC[index];
+    }
+
+public: // iterator
+    IteratorType begin() {
+        return _mC;
+    }
+
+    ConstIteratorType begin() const {
+        return _mC;
+    }
+
+    IteratorType end() {
+        return _mC + _mSize;
+    }
+
+    ConstIteratorType end() const {
+        return _mC + _mSize;
+    }
+
+public:
     void resize(size_t n) {
-        T *oldC = _mC;
+        PointerType oldC = _mC;
         if (n == 0) _mC = nullptr;
         else _mC = Vector::_Alloc::allocate(n);
         for (int i = 0; i < _mSize; i++) {
@@ -117,7 +169,7 @@ public: // Modifiers
             _mSize = n;
     }
 
-    void resize(size_t n, const T &obj) {
+    void resize(size_t n, ConstReferenceType element) {
         // release
         for (int i = 0; i < _mSize; i++) {
             dstruct::destory(_mC + i);
@@ -127,34 +179,13 @@ public: // Modifiers
         _mC = Vector::_Alloc::allocate(n);
         _mCapacity = _mSize = n;
         for (int i = 0; i < _mSize; i++) {
-            dstruct::construct(_mC + i, obj);
+            dstruct::construct(_mC + i, element);
         }
     }
 
-public: // operator
-    T & operator[](int index) {
-        if (index < 0)
-            index = _mSize + index;
-        DSTRUCT_ASSERT(index < static_cast<int>(_mSize));
-        return _mC[index];
-    }
-
-    T operator[](int index) const {
-        if (index < 0)
-            index = _mSize + index;
-        DSTRUCT_ASSERT(index < static_cast<int>(_mSize));
-        return _mC[index];
-    }
-
-public: // iterator
-    typename Vector::IteratorType begin() { return _mC; }
-    typename Vector::ConstIteratorType begin() const { return _mC; }
-    typename Vector::IteratorType end() { return _mC + _mSize; }
-    typename Vector::ConstIteratorType end() const { return _mC + _mSize; }
-
 protected: // data member
-    size_t _mSize, _mCapacity;
-    T *_mC;
+    SizeType _mSize, _mCapacity;
+    PointerType _mC;
 };
 
 };

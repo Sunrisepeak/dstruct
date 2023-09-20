@@ -34,7 +34,7 @@
 
 // other
 #include <core/algorithm.hpp>
-#include <core/StaticMemAllocator.hpp>
+#include <memory/StaticMemAllocator.hpp>
 
 namespace dstruct {
 

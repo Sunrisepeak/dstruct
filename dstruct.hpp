@@ -38,7 +38,7 @@
 #include <core/algorithm.hpp>
 
 // other
-#include <core/StaticMemAllocator.hpp>
+#include <memory/StaticMemAllocator.hpp>
 
 namespace dstruct {
     // Array
@@ -50,37 +50,37 @@ namespace dstruct {
     using EListNode = _EmbeddedListNode<T, Link>;
 
 // SinglyLinkedList
-    template <typename T, typename Alloc = port::Alloc>
+    template <typename T, typename Alloc = dstruct::Alloc>
     using SLinkedList = SinglyLinkedList<T, Alloc>;
 
 // DoublyLinkedList
-    template <typename T, typename Alloc = port::Alloc>
+    template <typename T, typename Alloc = dstruct::Alloc>
     using DLinkedList = DoublyLinkedList<T, Alloc>;
 
 // Queue
-    template <typename T, typename Alloc = port::Alloc>
+    template <typename T, typename Alloc = dstruct::Alloc>
     using Queue = adapter::Queue<T, DoubleEndedQueue<T, 32, Alloc>>;
-    template <typename T, size_t ArrSize = 32, typename Alloc = port::Alloc>
+    template <typename T, size_t ArrSize = 32, typename Alloc = dstruct::Alloc>
     using Deque = DoubleEndedQueue<T, ArrSize, Alloc>;
-    template <typename T, typename CMP = less<T>, typename Alloc = port::Alloc>
+    template <typename T, typename CMP = less<T>, typename Alloc = dstruct::Alloc>
     using PriorityQueue = Heap<T, CMP, Alloc>;
 
 // Stack
-    template <typename T, typename Alloc = port::Alloc>
+    template <typename T, typename Alloc = dstruct::Alloc>
     using Stack = adapter::Stack<T, Vector<T, Alloc>>;
 
     //template <typename T, typename Compare, typename StackType = adapter::Stack<T, Vector<T>>>
     //class XValueStack;
-    template <typename T, typename Alloc = port::Alloc>
+    template <typename T, typename Alloc = dstruct::Alloc>
     using MinStack = stack::XValueStack<T, less<T>, adapter::Stack<T, Vector<T, Alloc>> >;
-    template <typename T, typename Alloc = port::Alloc>
+    template <typename T, typename Alloc = dstruct::Alloc>
     using MaxStack = stack::XValueStack<T, greater<T>, adapter::Stack<T, Vector<T, Alloc>> >;
 
 
 // Heap
-    template <typename T, typename Alloc = port::Alloc>
+    template <typename T, typename Alloc = dstruct::Alloc>
     using MinHeap = Heap<T, less<T>, Alloc>;
-    template <typename T, typename Alloc = port::Alloc>
+    template <typename T, typename Alloc = dstruct::Alloc>
     using MaxHeap = Heap<T, greater<T>, Alloc>;
 
 // Tree
@@ -89,7 +89,7 @@ namespace dstruct {
     //class BinarySearchTree;
     template <typename T>
     using EBinaryTreeNode = tree::EmbeddedBinaryTreeNode<T>;
-    template <typename T, typename Alloc = port::Alloc>
+    template <typename T, typename Alloc = dstruct::Alloc>
     using BSTree = tree::BinarySearchTree<T, less<T>, Alloc>;
 };
 

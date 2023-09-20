@@ -18,17 +18,17 @@
 #define __DSTRUCT_PORT_ASSERT(expr) assert(expr)
 
 namespace dstruct {
-
 namespace port {
-struct Alloc {
-    static void *allocate(size_t bytes) {
-        return malloc(bytes);
-    }
 
-    static void deallocate(void *addr, size_t bytes) {
-        free(addr);
-    }
-};
+using size_t = ::size_t;
+
+static void * allocate(int bytes) {
+    return malloc(bytes);
+}
+
+static void deallocate(void *addr, int bytes) {
+    free(addr);
+}
 
 }
 

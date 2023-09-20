@@ -16,13 +16,13 @@
 namespace dstruct {
 
 // Compare(parent, child) == true
-template <typename T, typename Compare, typename Alloc = port::Alloc>
+template <typename T, typename Compare, typename Alloc = dstruct::Alloc>
 class Heap {
 
 protected:
     using _Heap = dstruct::Vector<T, Alloc>;
 
-    DSTRUCT_TYPE_SPEC_DECLARE(_Heap)
+    DSTRUCT_TYPE_SPEC_HELPER(_Heap)
 
 public:
     Heap(const Compare &cmp = Compare(), const T &obj = T()) :

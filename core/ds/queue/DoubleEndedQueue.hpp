@@ -17,12 +17,12 @@
 
 namespace dstruct {
 
-template <typename T, size_t ARR_SIZE, typename Alloc = port::Alloc>
+template <typename T, size_t ARR_SIZE, typename Alloc = dstruct::Alloc>
 class DoubleEndedQueue;
 
 template <typename T, size_t ARR_SIZE>
 class _DoubleEndedQueueIterator : public DStructIteratorTypeSpec<T, RandomIterator> {
-    friend class DoubleEndedQueue<T, ARR_SIZE, port::Alloc>;
+    friend class DoubleEndedQueue<T, ARR_SIZE, dstruct::Alloc>;
     friend class _DoubleEndedQueueIterator<const T, ARR_SIZE>; // for it -> const-it
 protected:
     using _Array         = dstruct::Array<T, ARR_SIZE>;
@@ -75,7 +75,7 @@ public:
 
     // for it -> const-it
     _DoubleEndedQueueIterator(
-        const _DoubleEndedQueueIterator<typename types::RemoveConst<T>::Type, ARR_SIZE> &obj,
+        const _DoubleEndedQueueIterator<typename RemoveConst<T>::Type, ARR_SIZE> &obj,
         bool _unsedFlag // constructor dispatch flag
     ) : _DoubleEndedQueueIterator() {
 
@@ -157,11 +157,11 @@ protected:
  
 template <typename T, size_t ARR_SIZE, typename Alloc>
 class DoubleEndedQueue :
-    public _DStructTypeSpec<T, _DoubleEndedQueueIterator<T, ARR_SIZE>, _DoubleEndedQueueIterator<const T, ARR_SIZE>, Alloc> {
+    public DStructTypeSpec<T, Alloc, _DoubleEndedQueueIterator<T, ARR_SIZE>, _DoubleEndedQueueIterator<const T, ARR_SIZE>> {
 
 protected:
-    using _Array      = Array<T, ARR_SIZE>;
-    using _AllocArray = DSAlloc<_Array, Alloc>;
+    using _Array         = Array<T, ARR_SIZE>;
+    using _AllocArray    = dstruct::AllocSpec<_Array, Alloc>;
     using _ArrMapTable   = Vector<_Array *>;
 /*
     struct _Block {

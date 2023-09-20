@@ -10,53 +10,9 @@
 #ifndef __ITERATOR_HPP__DSTRUCT
 #define __ITERATOR_HPP__DSTRUCT
 
+#include <spec/DStructSpec.hpp>
+
 namespace dstruct {
-
-struct ForwardIterator { };
-struct BidirectionalIterator { };
-struct RandomIterator { };
-
-template <typename T, typename Category = ForwardIterator>
-class DStructIteratorTypeSpec {
-public: // common type
-    using CategoryType    = Category;
-    using ValueType       = T;
-    using PointerType     = ValueType*;
-    using ReferenceType   = ValueType&;
-    using DifferenceType  = size_t;
-
-protected:
-    //template <typename _Iterator>
-    //friend DifferenceType distance(const _Iterator &, const _Iterator &);
-
-public: // base op
-    ReferenceType operator*() const { return *_mPointer; };
-    PointerType operator->() const { return _mPointer; };
-    virtual bool operator!=(const DStructIteratorTypeSpec &it) const { return _mPointer != it._mPointer; }
-    virtual bool operator==(const DStructIteratorTypeSpec &it) const { return _mPointer == it._mPointer; }
-
-protected: // member var
-    PointerType _mPointer;
-
-/* pls: according to your dstruct impl them
-public: // ForwardIterator
-    virtual Self& operator++() = 0;
-    virtual Self operator++(int) = 0;
-public: // BidirectionalIterator
-    virtual Self& operator--() = 0;
-    virtual Self operator--(int) = 0;
-public: // RandomIterator
-    virtual Self operator+(int) const = 0;
-    virtual Self operator-(int) const = 0;
-    virtual Self operator+=(int) const = 0;
-    virtual Self operator-=(int) const = 0;
-//    virtual ReferenceType operator[](int index) = 0;
-//    virtual ValueType operator[](int index) const = 0;
-public: // other
-    virtual bool operator<(int) const = 0;
-    friend DifferenceType operator-(const Self&, const Self&); // outside for your it
-*/
-};
 
 template <typename RandomIteratorType>
 static auto distance(const RandomIteratorType &first, const RandomIteratorType &last) -> typename RandomIteratorType::DifferenceType {

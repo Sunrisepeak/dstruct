@@ -10,13 +10,14 @@
 #ifndef __STATIC_MEM_ALLOCATOR_HPP__DSTRUCT
 #define __STATIC_MEM_ALLOCATOR_HPP__DSTRUCT
 
+// only use no-dependency and static data-structures
 #include <core/ds/array/Array.hpp>
 #include <core/ds/linked-list/EmbeddedList.hpp>
 
 namespace dstruct {
 
 #define SMA_MEM_ALIGN 8
-#define SMA_MEM_VERIFY(expr) DSTRUCT_ASSERT((expr) != nullptr)
+#define SMA_MEM_VERIFY(expr) __DSTRUCT_CRASH((expr) == nullptr)
 #define SMA_POINTER_CMP(p1, p2) (reinterpret_cast<char *>(p1) == reinterpret_cast<char *>(p2))
 
 template <int MEMORY_SIZE, int MAX_BLOCK_SIZE = 128>
@@ -27,7 +28,6 @@ private:
 
 private: // big five
     StaticMemAllocator() : _mFreeMemSize { MEMORY_SIZE }, _mMemoryPool { 0 }, _mFreeMemList(__Link{ nullptr }) {
-        //printf("_mMemoryPool:\t%p\n", _mMemoryPool);
         int addrOffset = 0;
         __Link *tailPtr = &(_mFreeMemList[_TO_INDEX(MAX_BLOCK_SIZE)]);
         while (addrOffset + MAX_BLOCK_SIZE <= MEMORY_SIZE) {
@@ -108,7 +108,6 @@ protected:
             _insert_mem_block_to_list(memFragmentAddr, memFragmentListIndex);
         }
 
-        //printf("allocate:\t%p %03d - %p %03d\n", memPtr, freeMemListIndex, memFragmentAddr, memFragmentListIndex);
         _mFreeMemSize -= MEM_ALIGN_ROUND_UP(bytes);
 
         return memPtr;
@@ -118,7 +117,6 @@ protected:
         if (bytes <= 0 || bytes > MAX_BLOCK_SIZE || addr == nullptr) return false;
         _insert_mem_block_to_list(addr, _TO_INDEX(bytes));
         _mFreeMemSize += MEM_ALIGN_ROUND_UP(bytes);
-        //printf("deallocate:\t%p %03d\n", addr, _TO_INDEX(bytes));
         return true;
     }
 
@@ -156,7 +154,6 @@ protected:
                             if (SMA_POINTER_CMP(addrUP, secondMemBlockPtr) || SMA_POINTER_CMP(addrDown, secondMemBlockPtr)) { // check merge-able
                                 firstMemLinkPtr->next = firstMemBlockPtr->next; // delete firstMemBlock from list[i]
                                 secondMemLinkPtr->next = secondMemBlockPtr->next; // delete secondMemBlock from list[j]
-                                //printf("memory_merge: [%p, %p], from list %d %d\n", firstMemBlockPtr, secondMemBlockPtr, i, j);
                                 _insert_mem_block_to_list(
                                     firstMemBlockPtr < secondMemBlockPtr ? firstMemBlockPtr : secondMemBlockPtr,
                                     i + j + 1
@@ -164,7 +161,7 @@ protected:
                                 secondMemBlockFlag = true;
                                 break;
                             }
-                            
+
                             if (firstMemBlockPtr > secondMemBlockPtr) break;
 
                             secondMemLinkPtr = secondMemBlockPtr;

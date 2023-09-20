@@ -15,13 +15,13 @@
 
 namespace dstruct {
 
-template <typename T, template <typename> class LinkedListIterator, typename Alloc = port::Alloc>
-class _LinkedList : public DStructTypeSpec<T, Alloc, LinkedListIterator> {
+template <typename T, template <typename> class LinkedListIterator, typename Alloc = dstruct::Alloc>
+class _LinkedList : public _DStructTypeSpec<T, Alloc, LinkedListIterator> {
 
 protected:
     //using _Node     = typename _LinkedList::IteratorType::_Node;
     using _Node      = typename LinkedListIterator<T>::_Node;
-    using _AllocNode = DSAlloc<_Node, Alloc>;
+    using _AllocNode = AllocSpec<_Node, Alloc>;
 /*
     // use void link to support doubly/singly link
     union LinkUnion { // TODO: better method?

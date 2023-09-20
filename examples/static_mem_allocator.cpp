@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include "dstruct.hpp"
+#include <dstruct.hpp>
 
 #define MEM_1M_BYTE 1024 * 1024
 

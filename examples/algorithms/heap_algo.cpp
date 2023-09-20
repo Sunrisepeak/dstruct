@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include "dstruct.hpp"
+#include <dstruct.hpp>
 
 
 bool cmp_func(int a, int b) {

@@ -19,7 +19,7 @@ namespace tree {
 
 // TODO: https://en.cppreference.com/w/cpp/language/operator_comparison
 template <typename T, typename CMP, typename Alloc>
-class BinarySearchTree : public DStructTypeSpec<T, Alloc, _BinaryTreeIterator> {
+class BinarySearchTree : public _DStructTypeSpec<T, Alloc, _BinaryTreeIterator> {
 
 public: // type
     enum TraversalType : uint8_t {
@@ -30,7 +30,7 @@ public: // type
 
 protected:
     using _Node      = EmbeddedBinaryTreeNode<T>; 
-    using _AllocNode = DSAlloc<_Node, Alloc>;
+    using _AllocNode = AllocSpec<_Node, Alloc>;
 
 public: // big five
 

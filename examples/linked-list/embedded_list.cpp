@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include "dstruct.hpp"
+#include <dstruct.hpp>
 
 // int: embeded singly linked list methods sets
 using IntESList = dstruct::EListNode<int, dstruct::_SinglyLink>;

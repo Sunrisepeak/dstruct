@@ -19,9 +19,9 @@ namespace adapter {
 
 // DS: need support pop_front / push_back 
 template <typename T, typename DS>
-class Queue : public _DStructTypeSpec<T, typename DS::ConstIteratorType, typename DS::ConstIteratorType> {
+class Queue {
 
-    DSTRUCT_TYPE_SPEC_DECLARE(DS)
+    DSTRUCT_TYPE_SPEC_HELPER(DS)
 
 public:
     Queue() = default;
