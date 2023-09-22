@@ -10,6 +10,8 @@
 #ifndef __DSTRUCT_HPP__DSTRUCT
 #define __DSTRUCT_HPP__DSTRUCT
 
+//#define ENABLE_SMA
+
 #include <dstruct-static.hpp>
 
 #include <core/ds/Heap.hpp>
