@@ -273,7 +273,7 @@ protected: // quick allocator
     }
 
 protected: // memory pool manager
-    // request: bytes > MAX_BLOCK_SIZE
+    // manage big-mem-block: bytes > MAX_BLOCK_SIZE
     __MemBlock _mem_pool_allocate(int bytes) {
 
         __MemBlock targetMemIndex;
