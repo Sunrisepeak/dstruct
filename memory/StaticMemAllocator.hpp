@@ -19,14 +19,19 @@ namespace dstruct {
 
 #define SMA_MEM_ALIGN 8
 #define SMA_MEM_VERIFY(expr) __DSTRUCT_CRASH((expr) == nullptr)
-#define SMA_POINTER_CMP(p1, p2) (reinterpret_cast<char *>(p1) == reinterpret_cast<char *>(p2))
+#define SMA_ADDRESS_EQUAL(p1, p2) (reinterpret_cast<char *>(p1) == reinterpret_cast<char *>(p2))
+
+#ifndef SMA_LOGD
+#define SMA_LOGD(...) // no-impl
+#endif
+
 
 /*
 _mFreeMemList: when SMA_MEM_ALIGN equal 8
     +---------------------------+
     | 0 | 1 | ......... |n-1| X | - index
     +---------------------------+
-    | p | p | ......... | p | X | - list-head 
+    | l | l | ......... | l | p | - list-head 
     ----------------------------+
       |                  |     |
       V                  V     V 
@@ -35,7 +40,7 @@ _mFreeMemList: when SMA_MEM_ALIGN equal 8
     8*(0+1)             8*n    __MemBlock->data        - mem-block size
 */
 
-
+// Note: request MEMORY_SIZE % SMA_MEM_ALIGN == 0
 template <int MEMORY_SIZE, int MAX_BLOCK_SIZE = 128>
 struct StaticMemAllocator {
 
@@ -97,7 +102,7 @@ public: // mem-manager interface
             listIndex--;
         }
 
-        maxSize = (listIndex + 1) * SMA_MEM_ALIGN;
+        maxSize = _TO_SIZE(listIndex);
 
         return maxSize;
     }
@@ -106,9 +111,9 @@ public: // mem-manager interface
         _Instance()._memory_merge();
     }
 
-    static void dump(const char *str) {
-        printf("sma dump(total %d, used %d, free %d) - %s: \n",
-            MEMORY_SIZE, MEMORY_SIZE - _Instance()._mFreeMemSize, _Instance()._mFreeMemSize, str);
+    static void dump() {
+        SMA_LOGD("sma dump(total %d, used %d, free %d):",
+            MEMORY_SIZE, MEMORY_SIZE - _Instance()._mFreeMemSize, _Instance()._mFreeMemSize);
         int verifyFreeMemSize = 0;
         for (int i = 0; i < _Instance()._mFreeMemList.size(); i++) {
             __Link *mbPtr = _Instance()._mFreeMemList[i].next;
@@ -120,13 +125,13 @@ public: // mem-manager interface
                 } else {
                     size = _TO_SIZE(i);
                 }
-                printf("\tt-index: %d, l-index %d, addr %p, size %d\n", i, lIndex++, mbPtr, size);
+                SMA_LOGD("\tt-index: %d, l-index %d, addr %p, size %d", i, lIndex++, mbPtr, size);
                 verifyFreeMemSize += size;
                 mbPtr = mbPtr->next;
             }
         }
 
-        printf("sma dump free-mem verify: %d == %d\n", _Instance()._mFreeMemSize, verifyFreeMemSize);
+        SMA_LOGD("\tfree-mem verify: %d == %d", _Instance()._mFreeMemSize, verifyFreeMemSize);
 
         __DSTRUCT_CRASH(_Instance()._mFreeMemSize != verifyFreeMemSize);
     }
@@ -151,44 +156,26 @@ protected:
 
     void * _allocate(int bytes) {
 
-        int freeMemListIndex = bytes > MAX_BLOCK_SIZE ? _mFreeMemList.size() - 1 : _TO_INDEX(bytes);
+        __MemBlock targetMemBlockIndex;
 
-        while ( // search free memory block
-            freeMemListIndex < _mFreeMemList.size() &&
-            _mFreeMemList[freeMemListIndex].next == nullptr
-        ) freeMemListIndex++;
-
-        if (freeMemListIndex == _mFreeMemList.size()) {
-            return nullptr;
+        if (bytes > MAX_BLOCK_SIZE) {
+            targetMemBlockIndex = _mem_pool_allocate(bytes);
+        } else {
+            targetMemBlockIndex = _quick_mem_allocate(bytes);
+            if (targetMemBlockIndex.link.next == nullptr)
+                targetMemBlockIndex = _mem_pool_allocate(bytes);
         }
 
-        // preLinkPtr
-        __Link *preLinkPtr = &(_mFreeMemList[freeMemListIndex]);
-        if (freeMemListIndex == _mFreeMemList.size() - 1) { // search mem-pool
-            while (preLinkPtr->next != nullptr) {
-                auto mbPtr = __MemBlock::to_node(preLinkPtr->next);
-                if (mbPtr->data >= MEM_ALIGN_ROUND_UP(bytes))
-                    break;
-                preLinkPtr = preLinkPtr->next;
-            }
-        }
+        __Link *memPtr = targetMemBlockIndex.link.next;
 
-        __Link *memPtr = preLinkPtr->next;
         if (memPtr == nullptr) return nullptr;
-        // delete memory block
-        preLinkPtr->next = memPtr->next;
 
         int allocatedSize = MEM_ALIGN_ROUND_UP(bytes);
         void *memFragmentAddr = reinterpret_cast<char *>(memPtr) + allocatedSize;
+        int memFragmentSize = targetMemBlockIndex.data - allocatedSize;
 
-        // check and insert memory fragment to list
-        if (freeMemListIndex == _mFreeMemList.size() - 1) { // mem-pool
-            auto mbPtr = __MemBlock::to_node(memPtr);
-            _insert_mem_block_to_list(memFragmentAddr, mbPtr->data - allocatedSize);
-        } else {
-            int size = _TO_SIZE(freeMemListIndex) - allocatedSize;
-            _insert_mem_block_to_list(memFragmentAddr, size);
-        }
+        // insert memory fragment to list
+        _insert_mem_block_to_list(memFragmentAddr, memFragmentSize);
 
         _mFreeMemSize -= allocatedSize;
 
@@ -202,21 +189,46 @@ protected:
         return true;
     }
 
-    void _memory_merge() {
+protected: // quick allocator
+    // request: bytes <= MAX_BLOCK_SIZE
+    __MemBlock _quick_mem_allocate(int bytes) {
 
-        if (_mFreeMemList.back().next != nullptr) return;
+        __MemBlock targetMemIndex;
 
+        bytes = MEM_ALIGN_ROUND_UP(bytes);
+
+        int freeMemListIndex = _TO_INDEX(bytes);
+        while ( // search free memory block
+            freeMemListIndex < _mFreeMemList.size() - 1 &&
+            _mFreeMemList[freeMemListIndex].next == nullptr
+        ) freeMemListIndex++;
+
+        if (freeMemListIndex == _mFreeMemList.size() - 1) {
+            targetMemIndex.link.next = nullptr;
+            targetMemIndex.data = 0;
+        } else {
+            // fill mem block info(addr and size) to targetMemIndex
+            auto targetMemBlockLinkPtr = _mFreeMemList[freeMemListIndex].next;
+            targetMemIndex.link.next = targetMemBlockLinkPtr;
+            targetMemIndex.data = _TO_SIZE(freeMemListIndex);
+            // delete target memory block from quick-mem
+            _mFreeMemList[freeMemListIndex].next = targetMemBlockLinkPtr->next;
+        }
+
+        return targetMemIndex;
+    }
+
+    void _quick_mem_memory_merge() {
         for (int i = 0; i < _mFreeMemList.size() - 1; i++) {
             auto firstMemLinkPtr = &(_mFreeMemList[i]);
             __Link *firstMemBlockPtr = firstMemLinkPtr->next;
             __Link *secondMemBlockPtr = nullptr;
             while (firstMemBlockPtr) {
                 secondMemBlockPtr = firstMemBlockPtr->next;
-                if (SMA_POINTER_CMP(reinterpret_cast<char *>(firstMemBlockPtr) + (i + 1) * SMA_MEM_ALIGN, secondMemBlockPtr)) {
+                if (SMA_ADDRESS_EQUAL(reinterpret_cast<char *>(firstMemBlockPtr) + (i + 1) * SMA_MEM_ALIGN, secondMemBlockPtr)) {
                     // merge firstMemBlockPtr and secondMemBlockPtr
                     firstMemLinkPtr->next = secondMemBlockPtr->next; // delete first/secondMemBlockPtr from list[i]
                     int listIndex = i * 2 + 1;
-                    //printf("memory_merge: [%p, %p], from list %d\n", firstMemBlockPtr, secondMemBlockPtr, i);
                     _insert_mem_block_to_list(firstMemBlockPtr, _TO_SIZE(listIndex));
                 } else {
                     bool secondMemBlockFlag = false;
@@ -233,7 +245,7 @@ protected:
                             void *addrUP = reinterpret_cast<char *>(firstMemBlockPtr) - (j + 1) * SMA_MEM_ALIGN;
                             void *addrDown = reinterpret_cast<char *>(firstMemBlockPtr) + (i + 1) * SMA_MEM_ALIGN;
 
-                            if (SMA_POINTER_CMP(addrUP, secondMemBlockPtr) || SMA_POINTER_CMP(addrDown, secondMemBlockPtr)) { // check merge-able
+                            if (SMA_ADDRESS_EQUAL(addrUP, secondMemBlockPtr) || SMA_ADDRESS_EQUAL(addrDown, secondMemBlockPtr)) { // check merge-able
                                 firstMemLinkPtr->next = firstMemBlockPtr->next; // delete firstMemBlock from list[i]
                                 secondMemLinkPtr->next = secondMemBlockPtr->next; // delete secondMemBlock from list[j]
                                 _insert_mem_block_to_list(
@@ -258,10 +270,53 @@ protected:
                 firstMemBlockPtr = firstMemLinkPtr->next;
             }
         }
-
-        _mem_pool_memory_merge();
     }
 
+protected: // memory pool manager
+    // request: bytes > MAX_BLOCK_SIZE
+    __MemBlock _mem_pool_allocate(int bytes) {
+
+        __MemBlock targetMemIndex;
+
+        bytes = MEM_ALIGN_ROUND_UP(bytes);
+
+        __Link *preLinkPtr = &(_mFreeMemList[-1]);
+        __MemBlock *targetMemBlockPtr = nullptr;
+        while (preLinkPtr->next != nullptr) { // FFMA - First Fit
+            targetMemBlockPtr = __MemBlock::to_node(preLinkPtr->next);
+            if (targetMemBlockPtr->data >= bytes)
+                break;
+            preLinkPtr = preLinkPtr->next;
+        }
+
+        if (preLinkPtr->next != nullptr) {
+            // fill mem-block to targetMemIndex
+            targetMemIndex.data = targetMemBlockPtr->data;
+            targetMemIndex.link.next = __MemBlock::to_link(targetMemBlockPtr);
+            // delete memory block from mem-pool
+            preLinkPtr->next = targetMemBlockPtr->link.next;
+        } else { // allocate failed
+            targetMemIndex.link.next = nullptr;
+        }
+
+        return targetMemIndex;
+    }
+
+    void _mem_pool_memory_merge() {
+        __MemBlock *mbPtr = __MemBlock::to_node(_mFreeMemList.back().next);
+        while (mbPtr != nullptr) {
+            auto next = __MemBlock::to_node(mbPtr->link.next);
+            if (SMA_ADDRESS_EQUAL(reinterpret_cast<char *>(mbPtr) + mbPtr->data, next)) {
+                // merge next to mbPtr
+                mbPtr->data += next->data;
+                mbPtr->link.next = next->link.next;
+            } else {
+                mbPtr = next;
+            }
+        }
+    }
+
+protected: // common
     void _insert_mem_block_to_list(void *addr, int size) {
 
         if (size <= 0) return;
@@ -287,21 +342,11 @@ protected:
 
     }
 
-    void _mem_pool_memory_merge() {
-        int id = 0;
-        __MemBlock *mbPtr = __MemBlock::to_node(_mFreeMemList.back().next);
-        while (mbPtr != nullptr) {
-            auto next = __MemBlock::to_node(mbPtr->link.next);
-            if (SMA_POINTER_CMP(reinterpret_cast<char *>(mbPtr) + mbPtr->data, next)) {
-                // merge next to mbPtr
-                mbPtr->data += next->data;
-                mbPtr->link.next = next->link.next;
-            } else {
-                id++;
-                mbPtr = next;
-            }
-        }
+    void _memory_merge() {
+        _quick_mem_memory_merge();
+        _mem_pool_memory_merge();
     }
+
 };
 
 }
