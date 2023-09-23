@@ -10,7 +10,7 @@
 #ifndef __SMA_DSTRUCT_PORT_HPP__DSTRUCT
 #define __SMA_DSTRUCT_PORT_HPP__DSTRUCT
 
-#define ENABLE_SMA_LOG
+//#define ENABLE_SMA_LOG
 
 #ifdef ENABLE_SMA_LOG
 #include <cstdio>
