@@ -27,7 +27,7 @@ public: \
     using ConstPointerType     = typename DStruct::ConstPointerType; \
     using SizeType             = typename DStruct::SizeType; \
     using DifferenceType       = typename DStruct::DifferenceType; \
-public: \ 
+public: \
     using IteratorType         = typename DStruct::IteratorType; \
     using ConstIteratorType    = typename DStruct::ConstIteratorType;
 
