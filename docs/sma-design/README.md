@@ -22,12 +22,12 @@
 
 ### 三、目录
 
-#### 1.[静态内存分配器(SMA) 设计与实现 - 简单分配器](sma-design-part1.md)
+#### 1.[静态内存分配器(SMA) 设计与实现 - 简单分配器](https://github.com/Sunrisepeak/DStruct/blob/main/docs/sma-design/sma-design-part1.md)
 
-- 基础概念: 内存、分配器、分配器规范
+- 基础概念: 内存、分配器、分配器接口/规范
 - 数据结构: 数组、内存块标记
 
-#### 2.静态内存分配器(SMA) 设计与实现 - 内存池和内存管理
+#### 2.[静态内存分配器(SMA) 设计与实现 - 内存池和内存管理](https://github.com/Sunrisepeak/DStruct/blob/main/docs/sma-design/sma-design-part2.md)
 
 - 基础概念: 内存对齐、内存池、内存碎片、内存管理、内存整理&合并
 - 数据结构: 数组、链表
