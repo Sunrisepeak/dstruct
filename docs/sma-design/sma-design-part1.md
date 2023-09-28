@@ -343,9 +343,7 @@ int main() {
 
 #### 3.6 测试log
 
-- 默认分配与释放测试
-- 打开debug log 进行测试
-- 分配失败测试
+**默认分配与释放测试**
 
 ```bash
 speak@speak-pc:~/workspace/github/HelloWorld$ g++ dstruct/simple_allocator.cpp -I ../DStruct && ./a.out
@@ -354,6 +352,11 @@ malloc: request size 4, memory allocate failed...
 malloc: request size 6, memory allocate failed...
 main: free 31, addr 0x560f30f41428
 main: rgb: (1, 2, 3)
+```
+
+**打开debug log 进行测试**
+
+```cpp
 speak@speak-pc:~/workspace/github/HelloWorld$ g++ dstruct/simple_allocator.cpp -DDEBUG -I ../DStruct && ./a.out
 init: init allocate: memory address 0x55665776a040, size 1024
 init: address 0x55665776a040, block-size 32
@@ -456,6 +459,11 @@ free: addr 0x55665776a3a0, size 4, block-size 32
 free: addr 0x55665776a3c0, size 4, block-size 32
 free: addr 0x55665776a3e0, size 4, block-size 32
 free: addr 0x55665776a400, size 4, block-size 32
+```
+
+**分配失败测试**
+
+```bash
 speak@speak-pc:~/workspace/github/HelloWorld$ g++ dstruct/simple_allocator.cpp -I ../DStruct && ./a.out
 init: init allocate: memory address 0x55db86e65040, size 1024
 malloc: request size 4, memory allocate failed...
