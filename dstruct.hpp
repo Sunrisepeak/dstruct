@@ -34,6 +34,8 @@
 #include <core/ds/linked-list/SinglyLinkedList.hpp>
 #include <core/ds/linked-list/DoublyLinkedList.hpp>
 
+#include <core/ds/string/String.hpp>
+
 // tree
 #include <core/ds/tree/BinarySearchTree.hpp>
 
@@ -46,6 +48,8 @@ namespace dstruct {
     // Array
 
     // Vector
+    
+    // String
 
 // EmbeddedList
     template <typename T, typename Link = _DoublyLink>

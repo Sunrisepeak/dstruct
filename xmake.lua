@@ -28,6 +28,10 @@ target("dstruct_vector")
     set_kind("binary")
     add_files("examples/array/vector.cpp")
 
+target("dstruct_string")
+    set_kind("binary")
+    add_files("examples/string.cpp")
+
 target("embedded_list")
     set_kind("binary")
     add_files("examples/linked-list/embedded_list.cpp")
