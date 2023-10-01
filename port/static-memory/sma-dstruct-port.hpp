@@ -11,6 +11,7 @@
 #define __SMA_DSTRUCT_PORT_HPP__DSTRUCT
 
 //#define ENABLE_SMA_LOG
+//#define ENABLE_SMA_DUMP
 
 #ifdef ENABLE_SMA_LOG
 #include <cstdio>
@@ -28,24 +29,34 @@ using DefaultSMA = StaticMemAllocator<1024 * 1024>; // 1M
 
 static void * allocate(int bytes) {
     SMA_LOGD("allocate-start: request %d", bytes);
+#ifdef ENABLE_SMA_DUMP
     DefaultSMA::dump();
+#endif
     auto *memPtr = DefaultSMA::allocate(bytes);
     if (memPtr == nullptr) {
         SMA_LOGD("memory_merge");
         DefaultSMA::memory_merge();
+#ifdef ENABLE_SMA_DUMP
         DefaultSMA::dump();
+#endif
         SMA_MEM_VERIFY(memPtr = DefaultSMA::allocate(bytes));
     }
+#ifdef ENABLE_SMA_DUMP
     DefaultSMA::dump();
+#endif
     SMA_LOGD("allocate-end");
     return memPtr;
 }
 
 static void deallocate(void *addr, int bytes) {
     SMA_LOGD("deallocate-start: addr %p, size %d", addr, bytes);
+#ifdef ENABLE_SMA_DUMP
     DefaultSMA::dump();
+#endif
     __DSTRUCT_CRASH(DefaultSMA::deallocate(addr, bytes) == false);
+#ifdef ENABLE_SMA_DUMP
     DefaultSMA::dump();
+#endif
     SMA_LOGD("deallocate-end");
 }
 
