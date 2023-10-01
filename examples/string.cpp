@@ -17,12 +17,16 @@ int main() {
 
     dstruct::String s = "Hello";
 
-    std::cout << s.c_str() << std::endl;
+    //std::cout << s.c_str() << std::endl;
     DSTRUCT_ASSERT(s == "Hello");
 
-    s = s + ", DStruct!";
+    s += ", DStruct!";
 
-    std::cout << s.c_str() << std::endl;
+    for (auto c : s) {
+        //std::cout << c << std::endl;
+    }
+
+    //std::cout << s.c_str() << std::endl;
     DSTRUCT_ASSERT(s == "Hello, DStruct!");
 
     std::cout << "   pass" << std::endl;

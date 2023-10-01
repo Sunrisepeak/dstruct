@@ -15,7 +15,7 @@
 
 namespace dstruct {
 
-// TODO: optimize this temp version impl
+// simple implement for string
 class String {
 private:
     using __CharList = Vector<char>;
@@ -23,7 +23,7 @@ private:
     DSTRUCT_TYPE_SPEC_HELPER(__CharList);
 
 public:
-    String() : _mCharList {1, '\0'} { }
+    String() : _mCharList {1, '\0'} { _mCharList.resize(15); }
 
     DSTRUCT_COPY_SEMANTICS(String) {
         _mCharList = ds._mCharList;
@@ -50,11 +50,11 @@ public:
 
 public: // Capacity
     bool empty() const {
-        return _mCharList.empty();
+        return size() == 0;
     }
 
     SizeType size() const {
-        return _mCharList.size() - 1;
+        return _mCharList.size() - 1 /* '\0' */;
     }
 
     SizeType capacity() const {
@@ -84,13 +84,40 @@ public: // Modifiers
         return _mCharList[index];
     }
 
-public:
-    ConstPointerType data() const {
-        return &(_mCharList[0]); // TODO: add data-op to spec
+public: // iterator/range-for support
+    IteratorType begin() {
+        return _mCharList.begin();
     }
 
+    ConstIteratorType begin() const {
+        return _mCharList.begin();
+    }
+
+    IteratorType end() {
+        return _mCharList.end() - 1;
+    }
+
+    ConstIteratorType end() const {
+        return _mCharList.end() - 1;
+    }
+
+public:
     ConstPointerType c_str() const {
-        return data();
+        return &(_mCharList[0]);
+    }
+
+    String & operator+=(const String &str) {
+        if (_mCharList.capacity() < _mCharList.size() + str._mCharList.size() - 1)
+            _mCharList.resize(_mCharList.size() + str._mCharList.size() - 1);
+        _mCharList[-1] = str[0];
+        for (int i = 1; i < str._mCharList.size(); i++) {
+            _mCharList.push_back(str._mCharList[i]);
+        }
+        return *this;
+    }
+
+    String & operator+=(const char * str) {
+        return *this += String(str);
     }
 
 protected:
@@ -99,10 +126,7 @@ protected:
 
 String operator+(const String s1, const String s2) {
     String s = s1;
-    for (int i = 0; i < s2.size(); i++) {
-        s.push_back(s2[i]);
-    }
-    return s;
+    return s += s2;
 }
 
 String operator+(const String s1, const char *s2) {
