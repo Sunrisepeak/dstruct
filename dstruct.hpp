@@ -34,7 +34,8 @@
 #include <core/ds/linked-list/SinglyLinkedList.hpp>
 #include <core/ds/linked-list/DoublyLinkedList.hpp>
 
-#include <core/ds/string/String.hpp>
+// String
+#include <core/ds/string/BasicString.hpp>
 
 // tree
 #include <core/ds/tree/BinarySearchTree.hpp>
@@ -50,6 +51,7 @@ namespace dstruct {
     // Vector
     
     // String
+    using String = BasicString<char, dstruct::Alloc>;
 
 // EmbeddedList
     template <typename T, typename Link = _DoublyLink>

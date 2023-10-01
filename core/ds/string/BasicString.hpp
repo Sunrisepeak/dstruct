@@ -7,37 +7,37 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __STRING_HPP__DSTRUCT
-#define __STRING_HPP__DSTRUCT
+#ifndef __BASIC_STRING_HPP__DSTRUCT
+#define __BASIC_STRING_HPP__DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/array/Vector.hpp>
 
 namespace dstruct {
 
-// simple implement for string
-class String {
+template <typename CharType, typename Alloc>
+class BasicString {
 private:
-    using __CharList = Vector<char>;
+    using __CharList = Vector<CharType, Alloc>;
 
     DSTRUCT_TYPE_SPEC_HELPER(__CharList);
 
 public:
-    String() : _mCharList {1, '\0'} {
+    BasicString() : _mCharList {1, '\0'} {
         _mCharList.resize(15);
     }
 
-    DSTRUCT_COPY_SEMANTICS(String) {
+    DSTRUCT_COPY_SEMANTICS(BasicString) {
         _mCharList = ds._mCharList;
         return *this;
     }
 
-    DSTRUCT_MOVE_SEMANTICS(String) {
+    DSTRUCT_MOVE_SEMANTICS(BasicString) {
         _mCharList = dstruct::move(ds._mCharList);
         return *this;
     }
 
-    String(const char *str) : String() {
+    BasicString(const char *str) : BasicString() {
         _mCharList[-1] = *str;
         while (*(++str) != '\0') {
             _mCharList.push_back(*str);
@@ -45,10 +45,10 @@ public:
         _mCharList.push_back('\0');
     }
 
-    ~String() = default;
+    ~BasicString() = default;
 
-    String & operator=(const char *str) {
-        *this = String(str);
+    BasicString & operator=(const char *str) {
+        *this = BasicString(str);
         return *this;
     }
 
@@ -110,7 +110,7 @@ public:
         return &(_mCharList[0]);
     }
 
-    String & operator+=(const String &str) {
+    BasicString & operator+=(const BasicString &str) {
         if (_mCharList.capacity() < _mCharList.size() + str._mCharList.size() - 1)
             _mCharList.resize(_mCharList.size() + str._mCharList.size() - 1);
         _mCharList[-1] = str[0];
@@ -120,28 +120,36 @@ public:
         return *this;
     }
 
-    String & operator+=(const char * str) {
-        return *this += String(str);
+    BasicString & operator+=(const char * str) {
+        return *this += BasicString(str);
     }
 
 protected:
     __CharList _mCharList;
 };
 
-String operator+(const String s1, const String s2) {
-    String s = s1;
+template <typename CharType, typename Alloc>
+static BasicString<CharType, Alloc>
+operator+(const BasicString<CharType, Alloc> s1, const BasicString<CharType, Alloc> s2) {
+    BasicString<CharType, Alloc> s = s1;
     return s += s2;
 }
 
-String operator+(const String s1, const char *s2) {
-    return operator+(s1, String(s2));
+template <typename CharType, typename Alloc>
+static BasicString<CharType, Alloc>
+operator+(const BasicString<CharType, Alloc> s1, const char *s2) {
+    return operator+(s1, BasicString<CharType, Alloc>(s2));
 }
 
-String operator+(const char *s1, const String s2) {
-    return operator+(String(s1), s2);
+template <typename CharType, typename Alloc>
+static BasicString<CharType, Alloc>
+operator+(const char *s1, const BasicString<CharType, Alloc> s2) {
+    return operator+(BasicString<CharType, Alloc>(s1), s2);
 }
 
-bool operator==(const String s1, const String s2) {
+template <typename CharType, typename Alloc>
+static bool
+operator==(const BasicString<CharType, Alloc> s1, const BasicString<CharType, Alloc> s2) {
     if (s1.size() != s2.size())
         return false;
     for (int i = 0; i < s1.size(); i++) {
@@ -152,24 +160,34 @@ bool operator==(const String s1, const String s2) {
     return true;
 }
 
-bool operator==(const String s1, const char *s2) {
-    return operator==(s1, String(s2));
+template <typename CharType, typename Alloc>
+static bool
+operator==(const BasicString<CharType, Alloc> s1, const char *s2) {
+    return operator==(s1, BasicString<CharType, Alloc>(s2));
 }
 
-bool operator==(const char *s1, const String s2) {
-    return operator==(String(s1), s2);
+template <typename CharType, typename Alloc>
+static bool
+operator==(const char *s1, const BasicString<CharType, Alloc> s2) {
+    return operator==(BasicString<CharType, Alloc>(s1), s2);
 }
 
-bool operator!=(const String s1, const String s2) {
+template <typename CharType, typename Alloc>
+static bool
+operator!=(const BasicString<CharType, Alloc> s1, const BasicString<CharType, Alloc> s2) {
     return !operator==(s1, s2);
 }
 
-bool operator!=(const String s1, const char *s2) {
-    return operator!=(s1, String(s2));
+template <typename CharType, typename Alloc>
+static bool
+operator!=(const BasicString<CharType, Alloc> s1, const char *s2) {
+    return operator!=(s1, BasicString<CharType, Alloc>(s2));
 }
 
-bool operator!=(const char *s1, const String s2) {
-    return operator!=(String(s1), s2);
+template <typename CharType, typename Alloc>
+static bool
+operator!=(const char *s1, const BasicString<CharType, Alloc> s2) {
+    return operator!=(BasicString<CharType, Alloc>(s1), s2);
 }
 
 }
