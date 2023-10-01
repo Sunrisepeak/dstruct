@@ -23,7 +23,9 @@ private:
     DSTRUCT_TYPE_SPEC_HELPER(__CharList);
 
 public:
-    String() : _mCharList {1, '\0'} { _mCharList.resize(15); }
+    String() : _mCharList {1, '\0'} {
+        _mCharList.resize(15);
+    }
 
     DSTRUCT_COPY_SEMANTICS(String) {
         _mCharList = ds._mCharList;
@@ -42,6 +44,8 @@ public:
         }
         _mCharList.push_back('\0');
     }
+
+    ~String() = default;
 
     String & operator=(const char *str) {
         *this = String(str);
