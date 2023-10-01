@@ -29,6 +29,9 @@
 #include <core/ds/linked-list/SinglyLinkedList.hpp>
 #include <core/ds/linked-list/DoublyLinkedList.hpp>
 
+// String
+#include <core/ds/string/BasicString.hpp>
+
 // tree
 #include <core/ds/tree/BinarySearchTree.hpp>
 
@@ -40,7 +43,7 @@ namespace dstruct {
 
 namespace smemory {
 // SMA
-    #define SMA_MEM_SIZE 1024 * 2 // 2k
+    #define SMA_MEM_SIZE 1024 * 10 // 10K
     using SMA = dstruct::StaticMemAllocator<SMA_MEM_SIZE>;
 
 // Array
@@ -50,6 +53,9 @@ namespace smemory {
 // Vector
     template <typename T>
     using Vector = dstruct::Vector<T, SMA>;
+
+// String
+    using String = BasicString<char, SMA>;
 
 // EmbeddedList
     template <typename T, typename Link = _DoublyLink>
