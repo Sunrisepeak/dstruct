@@ -42,17 +42,17 @@ public: // big five
     // copy/move-action impl in subclass
     _LinkedList(const _LinkedList &list) = delete;
     _LinkedList & operator=(const _LinkedList &list) = delete;
-    _LinkedList(_LinkedList &&list) : _LinkedList() { *this = dstruct::move(list); }
-    _LinkedList & operator=(_LinkedList &&list) {
+
+    DSTRUCT_MOVE_SEMANTICS(_LinkedList) {
         // 1.clear
         while (!_LinkedList::empty()) pop_front();
         // 2.only move data
-        _LinkedList::_mHeadNode = list._mHeadNode;
-        _LinkedList::_mSize = list._mSize;
+        _LinkedList::_mHeadNode = ds._mHeadNode;
+        _LinkedList::_mSize = ds._mSize;
         // 3.spec move impl in subclass
         // 4.reset
-        _Node::init(&(list._mHeadNode));
-        list._mSize = 0;
+        _Node::init(&(ds._mHeadNode));
+        ds._mSize = 0;
 
         return *this;
     }

@@ -7,13 +7,12 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __TREE_HPP__DSTRUCT
-#define __TREE_HPP__DSTRUCT
+#ifndef __TREE_BASE_HPP__DSTRUCT
+#define __TREE_BASE_HPP__DSTRUCT
 
 namespace dstruct {
 
 namespace tree {
-
 
 template <typename T, typename Link>
 struct TreeNode {

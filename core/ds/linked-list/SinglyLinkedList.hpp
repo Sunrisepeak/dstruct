@@ -56,20 +56,26 @@ protected:
     using _List::_mSize;
 
 public: // big five
-    SinglyLinkedList() : _List(), _mTailNodePtr { &_mHeadNode } { }
-    SinglyLinkedList(size_t n, const T &obj) : SinglyLinkedList() { while (n--) push_back(obj); }
-    // copy
-    SinglyLinkedList(const SinglyLinkedList &list) : SinglyLinkedList() { *this = list; }
-    SinglyLinkedList & operator=(const SinglyLinkedList &list) {
+    SinglyLinkedList() : _List(), _mTailNodePtr { &_mHeadNode } {
+
+    }
+
+    SinglyLinkedList(size_t n, const T &obj) : SinglyLinkedList() {
+        while (n--) {
+            push_back(obj);
+        }
+    }
+
+    DSTRUCT_COPY_SEMANTICS(SinglyLinkedList) {
         // clear
         while (!_List::empty()) _List::pop_front();
         _mTailNodePtr = &_mHeadNode;
         // copy
-        if (list._mSize != 0) {
-            auto linkPtr =  list._mHeadNode.link.next;
+        if (ds._mSize != 0) {
+            auto linkPtr =  ds._mHeadNode.link.next;
             auto nextLinkPtr = linkPtr->next;
             auto nodePtr = _Node::to_node(linkPtr);
-            while (nextLinkPtr != &(list._mHeadNode.link)) {
+            while (nextLinkPtr != &(ds._mHeadNode.link)) {
                 push_back(nodePtr->data);
                 linkPtr = nextLinkPtr;
                 nextLinkPtr = nextLinkPtr->next;
@@ -80,15 +86,14 @@ public: // big five
         }
         return *this;
     }
-    // move
-    SinglyLinkedList(SinglyLinkedList &&list) : SinglyLinkedList() { *this = dstruct::move(list); }
-    SinglyLinkedList & operator=(SinglyLinkedList &&list) {
+
+    DSTRUCT_MOVE_SEMANTICS(SinglyLinkedList) {
         // move list
-        _List::operator=(dstruct::move(list));
-        _mTailNodePtr = list._mTailNodePtr;
+        _List::operator=(dstruct::move(ds));
+        _mTailNodePtr = ds._mTailNodePtr;
         _mTailNodePtr->link.next = _Node::to_link(&_mHeadNode);
         // reset
-        list._mTailNodePtr = &(list._mHeadNode);
+        ds._mTailNodePtr = &(ds._mHeadNode);
         return *this;
     }
 
