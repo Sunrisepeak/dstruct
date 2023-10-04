@@ -19,18 +19,13 @@ namespace tree {
 
 // TODO: https://en.cppreference.com/w/cpp/language/operator_comparison
 template <typename T, typename CMP, typename Alloc>
-class BinarySearchTree : public _DStructTypeSpec<T, Alloc, _BinaryTreeIterator> {
-
-public: // type
-    enum TraversalType : uint8_t {
-        PreOrder,
-        InOrder,
-        PostOrder,
-    };
-
+class BinarySearchTree : public BinaryTree<T, Alloc> {
+    using __BinaryTree  = BinaryTree<T, Alloc>;
+public:
+    using TraversalType = typename __BinaryTree::TraversalType;
 protected:
-    using _Node      = EmbeddedBinaryTreeNode<T>; 
-    using _AllocNode = AllocSpec<_Node, Alloc>;
+    using _Node         = typename __BinaryTree::_Node;
+    using _AllocNode    = typename __BinaryTree::_AllocNode;
 
 public: // big five
 
@@ -41,6 +36,26 @@ public: // big five
         for (auto it = begin; it != end; it++) {
             push(*it);
         }
+    }
+
+    DSTRUCT_COPY_SEMANTICS(BinarySearchTree) {
+        _mRootPtr = __BinaryTree::copy_tree(ds._mRootPtr);
+        _mSize = ds._mSize;
+        _mCmp = ds._mCmp;
+        return *this;
+    }
+
+    DSTRUCT_MOVE_SEMANTICS(BinarySearchTree) {
+        // move
+        _mRootPtr = ds._mRootPtr;
+        _mSize = ds._mSize;
+        _mCmp = ds._mCmp;
+
+        // reset
+        ds._mRootPtr = nullptr;
+        ds._mSize = 0;
+
+        return *this;
     }
 
     virtual ~BinarySearchTree() {
@@ -128,24 +143,24 @@ public: // algo
 
         switch (ttype) {
             case TraversalType::PreOrder:
-                return  tree::preorder_traversal(_begin(_Node::to_link(_mRootPtr), ttype), cbWrapper);
+                return  tree::preorder_traversal(__BinaryTree::first_node(_Node::to_link(_mRootPtr), ttype), cbWrapper);
             case TraversalType::InOrder:
-                return  tree::inorder_traversal(_begin(_Node::to_link(_mRootPtr), ttype), cbWrapper);
+                return  tree::inorder_traversal(__BinaryTree::first_node(_Node::to_link(_mRootPtr), ttype), cbWrapper);
             case TraversalType::PostOrder:
-                return  tree::postorder_traversal(_begin(_Node::to_link(_mRootPtr), ttype), cbWrapper);
+                return  tree::postorder_traversal(__BinaryTree::first_node(_Node::to_link(_mRootPtr), ttype), cbWrapper);
             default: {
                 DSTRUCT_ASSERT(false);
             }
         }
 
-        return  tree::preorder_traversal(_begin(_Node::to_link(_mRootPtr), ttype), cbWrapper);
+        return  tree::preorder_traversal(__BinaryTree::first_node(_Node::to_link(_mRootPtr), ttype), cbWrapper);
     }
 
 public: // range-for and iterator
 
     typename BinarySearchTree::ConstIteratorType begin(TraversalType ttype = TraversalType::InOrder) const {
         return typename BinarySearchTree::ConstIteratorType(
-            _create_iterator(_begin(_Node::to_link(_mRootPtr), ttype), ttype),
+            _create_iterator(__BinaryTree::first_node(_Node::to_link(_mRootPtr), ttype), ttype),
             true
         );
     }
@@ -158,17 +173,6 @@ public: // range-for and iterator
     }
 
 public: // static pub api
-
-    static typename _Node::LinkType * _begin(typename _Node::LinkType *root, TraversalType ttype = TraversalType::InOrder) {
-        auto first = root;
-        if (ttype != TraversalType::PreOrder) {
-            while (first->left != nullptr) {
-                DSTRUCT_ASSERT(first->left->parent == first);
-                first = first->left;
-            }
-        }
-        return first;
-    }
 
     static typename _Node::LinkType * _find_or_insert(
         typename _Node::LinkType *root,

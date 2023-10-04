@@ -73,20 +73,18 @@ public: // big five
     DoublyLinkedList() = default;
     DoublyLinkedList(size_t n, const T &obj) : DoublyLinkedList() { while(n--) push_back(obj); }
 
-    DoublyLinkedList(const DoublyLinkedList &list) : DoublyLinkedList() { *this = list; }
-    DoublyLinkedList & operator=(const DoublyLinkedList &list) {
+    DSTRUCT_COPY_SEMANTICS(DoublyLinkedList) {
         while (!_List::empty()) pop_back(); // clear
         // copy
-        for (auto it = list.begin(); it != list.end(); it++) {
+        for (auto it = ds.begin(); it != ds.end(); it++) {
             push_back(*it);
         }
         return *this;
     }
 
-    DoublyLinkedList(DoublyLinkedList &&list) : DoublyLinkedList() { *this = dstruct::move(list); }
-    DoublyLinkedList & operator=(DoublyLinkedList &&list) {
+    DSTRUCT_MOVE_SEMANTICS(DoublyLinkedList) {
         // move list data
-        _List::operator=(dstruct::move(list));
+        _List::operator=(dstruct::move(ds));
         // update link: first-data and last-data point to new headNode
         auto headLinkPtr = _Node::to_link(&_mHeadNode);
         _mHeadNode.link.prev->next = headLinkPtr;

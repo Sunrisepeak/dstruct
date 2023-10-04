@@ -26,19 +26,18 @@ class XValueStack {
 public:
     XValueStack() = default;
     XValueStack(const Compare &cmp) : _mCmp { cmp } { }
-    XValueStack(const XValueStack &obj) { *this = obj; }
-    XValueStack & operator=(const XValueStack &obj) {
-        this->_mXValue = obj._mXValue;
-        this->_mCmp = obj._mCmp;
-        this->_mStack = obj._mStack;
+
+    DSTRUCT_COPY_SEMANTICS(XValueStack) {
+        this->_mXValue = ds._mXValue;
+        this->_mCmp = ds._mCmp;
+        this->_mStack = ds._mStack;
         return *this;
     }
 
-    XValueStack(XValueStack &&obj) { *this = dstruct::move(obj); }
-    XValueStack & operator=(XValueStack &&obj) {
-        _mXValue = dstruct::move(obj._mXValue);
-        _mCmp =  dstruct::move(obj._mCmp);
-        _mStack =  dstruct::move(obj._mStack);
+    DSTRUCT_MOVE_SEMANTICS(XValueStack) {
+        _mXValue = dstruct::move(ds._mXValue);
+        _mCmp =  dstruct::move(ds._mCmp);
+        _mStack =  dstruct::move(ds._mStack);
         return *this;
     }
 

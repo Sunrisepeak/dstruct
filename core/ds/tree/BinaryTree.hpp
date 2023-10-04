@@ -14,7 +14,6 @@
 #include <core/ds/tree/EmbeddedBinaryTree.hpp>
 
 namespace dstruct {
-
 namespace tree {
 
 template <typename T>
@@ -90,25 +89,50 @@ protected:
     NextFunc _mNextFunc;
 };
 
-/*
-struct BinaryTree {
-    template <typename BinaryTreeIteratorType, typename Callback>
-    static void preorder_traversal(BinaryTreeIteratorType begin, Callback &cb) {
+template <typename T, typename Alloc>
+class BinaryTree : public _DStructTypeSpec<T, Alloc, _BinaryTreeIterator> {
 
+public: // type
+    enum TraversalType : uint8_t {
+        PreOrder,
+        InOrder,
+        PostOrder,
+    };
+
+protected:
+    using _Node      = EmbeddedBinaryTreeNode<T>; 
+    using _AllocNode = AllocSpec<_Node, Alloc>;
+
+public:
+    static _Node * copy_tree(_Node *root) {
+        if (!root)
+            return nullptr;
+
+        _Node *newRoot = _AllocNode::allocate();
+        newRoot->data = root->data;
+        newRoot->parent = nullptr;
+
+        newRoot->left = copy_tree(root->left);
+        if (newRoot->left)
+            newRoot->left->parent = newRoot;
+
+        newRoot->right = copy_tree(root->right);
+        if (newRoot->right)
+            newRoot->right->parent = newRoot;
+
+        return newRoot;
     }
 
-    template <typename BinaryTreeIteratorType, typename Callback>
-    static void inorder_traversal(BinaryTreeIteratorType begin, Callback &cb) {
-
+    static typename _Node::LinkType * first_node(typename _Node::LinkType *root, TraversalType ttype = TraversalType::InOrder) {
+        auto first = root;
+        if (ttype != TraversalType::PreOrder) {
+            while (first->left != nullptr) {
+                first = first->left;
+            }
+        }
+        return first;
     }
-
-    template <typename BinaryTreeIteratorType, typename Callback>
-    static void postorder_traversal(BinaryTreeIteratorType begin, Callback &cb) {
-
-    }
-
 };
-*/
 
 } // namespace tree
 
