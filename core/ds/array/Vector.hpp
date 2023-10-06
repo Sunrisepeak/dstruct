@@ -156,7 +156,7 @@ public:
         if (n == 0) _mC = nullptr;
         else _mC = Vector::_Alloc::allocate(n);
         for (int i = 0; i < _mSize; i++) {
-            if (i < n)
+            if (i < n) // TODO: use move by check type-tag
                 dstruct::construct(_mC + i, oldC[i]);
             dstruct::destory(oldC + i);
         }
@@ -170,15 +170,21 @@ public:
     }
 
     void resize(size_t n, ConstReferenceType element) {
+        // alloc
+        PointerType oldC = _mC;
+        _mC = Vector::_Alloc::allocate(n);
+
         // release
         for (int i = 0; i < _mSize; i++) {
-            dstruct::destory(_mC + i);
+            if (i < n) // TODO: use move by check type-tag
+                dstruct::construct(_mC + i, oldC[i]);
+            dstruct::destory(oldC + i);
         }
-        Vector::_Alloc::deallocate(_mC, _mCapacity);
-        // alloc
-        _mC = Vector::_Alloc::allocate(n);
+        Vector::_Alloc::deallocate(oldC, _mCapacity);
+
+        // set
         _mCapacity = _mSize = n;
-        for (int i = 0; i < _mSize; i++) {
+        for (int i = n; i < _mSize; i++) {
             dstruct::construct(_mC + i, element);
         }
     }

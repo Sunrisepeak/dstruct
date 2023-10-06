@@ -35,6 +35,9 @@
 // tree
 #include <core/ds/tree/BinarySearchTree.hpp>
 
+// set
+#include <core/ds/set/DisjointSetBase.hpp>
+
 // other
 #include <core/algorithm.hpp>
 #include <memory/StaticMemAllocator.hpp>
@@ -96,6 +99,9 @@ namespace smemory {
     using EBinaryTreeNode = tree::EmbeddedBinaryTreeNode<T>;
     template <typename T>
     using BSTree = tree::BinarySearchTree<T, less<T>, SMA>;
+
+// Set
+    using UFSet = DisjointSetBase<SMA>;
 
 }
 
