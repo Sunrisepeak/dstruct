@@ -40,6 +40,9 @@
 // tree
 #include <core/ds/tree/BinarySearchTree.hpp>
 
+// set
+#include <core/ds/set/DisjointSetBase.hpp>
+
 #include <core/algorithm.hpp>
 
 // other
@@ -99,6 +102,9 @@ namespace dstruct {
     using EBinaryTreeNode = tree::EmbeddedBinaryTreeNode<T>;
     template <typename T, typename Alloc = dstruct::Alloc>
     using BSTree = tree::BinarySearchTree<T, less<T>, Alloc>;
+
+// Set
+    using UFSet = DisjointSetBase<dstruct::Alloc>;
 };
 
 #endif
