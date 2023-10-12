@@ -41,7 +41,7 @@
 #include <core/ds/tree/BinarySearchTree.hpp>
 
 // set
-#include <core/ds/set/DisjointSetBase.hpp>
+#include <core/ds/set/DisjointSet.hpp>
 
 #include <core/algorithm.hpp>
 
@@ -104,7 +104,7 @@ namespace dstruct {
     using BSTree = tree::BinarySearchTree<T, less<T>, Alloc>;
 
 // Set
-    using UFSet = DisjointSetBase<dstruct::Alloc>;
+    using UFSet = DisjointSet<dstruct::Alloc>;
 };
 
 #endif
