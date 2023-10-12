@@ -39,6 +39,7 @@
 
 // tree
 #include <core/ds/tree/BinarySearchTree.hpp>
+#include <core/ds/tree/AVLTree.hpp>
 
 // set
 #include <core/ds/set/DisjointSet.hpp>

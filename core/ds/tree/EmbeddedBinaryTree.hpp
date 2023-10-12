@@ -35,10 +35,13 @@ struct _BinaryTreeLink {
 static _BinaryTreeLink * left_rotate(_BinaryTreeLink *root) {
     _BinaryTreeLink *newRoot = root->right;
     newRoot->parent = root->parent;
+
+    // update subTree
+    root->right = newRoot->left;
     if (nullptr != newRoot->left) {
         newRoot->left->parent = root;
-        root->right = newRoot->left;
     }
+
     root->parent = newRoot;
     newRoot->left = root;
     return newRoot;
@@ -47,10 +50,13 @@ static _BinaryTreeLink * left_rotate(_BinaryTreeLink *root) {
 static _BinaryTreeLink * right_rotate(_BinaryTreeLink *root) {
     _BinaryTreeLink *newRoot = root->left;
     newRoot->parent = root->parent;
+
+    // update subTree
+    root->left = newRoot->right;
     if (nullptr != newRoot->right) {
         newRoot->right->parent = root;
-        root->left = newRoot->right;
     }
+
     root->parent = newRoot;
     newRoot->right = root;
     return newRoot;
