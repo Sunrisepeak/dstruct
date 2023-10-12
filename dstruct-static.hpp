@@ -36,7 +36,7 @@
 #include <core/ds/tree/BinarySearchTree.hpp>
 
 // set
-#include <core/ds/set/DisjointSetBase.hpp>
+#include <core/ds/set/DisjointSet.hpp>
 
 // other
 #include <core/algorithm.hpp>
@@ -101,7 +101,7 @@ namespace smemory {
     using BSTree = tree::BinarySearchTree<T, less<T>, SMA>;
 
 // Set
-    using UFSet = DisjointSetBase<SMA>;
+    using UFSet = DisjointSet<SMA>;
 
 }
 

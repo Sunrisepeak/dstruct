@@ -8,6 +8,7 @@
 //
 
 #include <iostream>
+#include <map>
 
 #include <dstruct.hpp>
 
@@ -15,36 +16,61 @@ int main() {
 
     std::cout << "\nTesting: " << __FILE__;
 
-    dstruct::UFSet ufSet(6);
+    { // base-test
+        dstruct::UFSet ufSet(6);
 
-    DSTRUCT_ASSERT(ufSet.size() == ufSet.count());
+        DSTRUCT_ASSERT(ufSet.size() == 6);
+        DSTRUCT_ASSERT(ufSet.size() == ufSet.count());
 
-    // union-op
-    ufSet.union_set(0, 1);
-    ufSet.union_set(2, 3);
-    ufSet.connect(0, 3);
+        // merge by union root
+        ufSet.union_set(0, 1);
+        ufSet.union_set(2, 3);
+        // merge by connect element of subset
+        ufSet.connect(0, 3);
 
-    // connect test
-    DSTRUCT_ASSERT(ufSet.connected(1, 2));
-    DSTRUCT_ASSERT( !(ufSet.connected(1, 4)) );
+        // connect test
+        DSTRUCT_ASSERT(ufSet.connected(1, 2));
+        DSTRUCT_ASSERT( !(ufSet.connected(1, 4)) );
 
-    int setNumber = ufSet.count();
-    ufSet.push();
+        int key = ufSet.size() - 1;
 
-    DSTRUCT_ASSERT(setNumber + 1 == ufSet.count());
+        DSTRUCT_ASSERT( !(ufSet.connected(1, key)) );
+        
+        //ufSet.union_set(1, key); // error-op: union directly
+        //ufSet.connect(1, key); // ok 
+        int root1 = ufSet.find(1);
+        int root2 = ufSet.find(key);
+        if (root1 != root2)
+            ufSet.union_set(root1, root2);
 
-    int key = ufSet.size() - 1;
+        DSTRUCT_ASSERT(ufSet.connected(1, key));
+    }
 
-    DSTRUCT_ASSERT( !(ufSet.connected(1, key)) );
-    
-    //ufSet.union_set(1, key); // error-op: union directly
-    //ufSet.connect(1, key); // ok 
-    int root1 = ufSet.find(1);
-    int root2 = ufSet.find(key);
-    if (root1 != root2)
-        ufSet.union_set(root1, root2);
+    {// example base key-value
+        std::map<std::string, int> city { // key-value: id-name
+            {"Shanghai", 0},
+            {"Hangzhou", 1},
+            {"NewYork", 2},
+            {"Beijing", 3},
+            {"Anhui", 4},
+            {"Suzhou", 5}
+        };
+        dstruct::UFSet ufSet(city.size());      // key
 
-    DSTRUCT_ASSERT(ufSet.connected(1, key));
+        // connect (NewYork) to (Hangzhou)
+        ufSet.union_set(city["NewYork"], city["Hangzhou"]);
+        // connect (Anhui) to (Suzhou)
+        ufSet.connect(city["Anhui"], city["Suzhou"]);
+
+        if (false == ufSet.connected(city["NewYork"], city["Beijing"])) {
+            ufSet.connect(city["NewYork"], city["Beijing"]);
+        }
+
+        // connect (NewYork, Hangzhou, Beijing) to (Suzhou, Anhui)
+        ufSet.connect(city["Hangzhou"], city["Suzhou"]);
+
+        DSTRUCT_ASSERT(ufSet.connected(city["Anhui"], city["Beijing"]));
+    }
 
     std::cout << "   pass" << std::endl;
 
