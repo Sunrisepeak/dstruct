@@ -7,30 +7,29 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DISJOINT_SET_BASE_HPP__DSTRUCT
-#define __DISJOINT_SET_BASE_HPP__DSTRUCT
+#ifndef __DISJOINT_SET_HPP__DSTRUCT
+#define __DISJOINT_SET_HPP__DSTRUCT
 
 #include <core/common.hpp>
-#include <core/ds/array/Vector.hpp>
+#include <core/ds/array/Array.hpp>
 
 namespace dstruct {
 
-#define DEFAULT_TREE_HEIGHT -1
-
+// only for key(int: 0 ~ N)
 template <typename Alloc>
-class DisjointSetBase {
+class DisjointSet {
 private:
     using __Array = dstruct::Vector<int, Alloc>;
 
     DSTRUCT_TYPE_SPEC_HELPER(__Array)
 
 public:
-    DisjointSetBase(int n) : _mArray(n, DEFAULT_TREE_HEIGHT) { }
-    DisjointSetBase(const DisjointSetBase &) = default;
-    DisjointSetBase & operator=(const DisjointSetBase &) = default;
-    DisjointSetBase(DisjointSetBase &&) = default;
-    DisjointSetBase & operator=(DisjointSetBase &&) = default;
-    ~DisjointSetBase() = default;
+    DisjointSet(int n) : _mArray(n, -1) { }
+    DisjointSet(const DisjointSet &) = default;
+    DisjointSet & operator=(const DisjointSet &) = default;
+    DisjointSet(DisjointSet &&) = default;
+    DisjointSet & operator=(DisjointSet &&) = default;
+    ~DisjointSet() = default;
 
 public: // Capacity
     bool empty() const {
@@ -43,15 +42,6 @@ public: // Capacity
 
     SizeType capacity() const {
         return _mArray.capacity();
-    }
-
-public:
-    void push() {
-        _mArray.push_back(DEFAULT_TREE_HEIGHT); // Tree-Height is 1
-    }
-
-    void resize(int n) {
-        _mArray.resize(n, DEFAULT_TREE_HEIGHT);
     }
 
 public:
