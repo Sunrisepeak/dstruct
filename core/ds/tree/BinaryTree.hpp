@@ -104,6 +104,74 @@ protected:
     using _AllocNode = AllocSpec<_Node, Alloc>;
 
 public:
+    BinaryTree(_Node *root, size_t size) : _mSize { size }, _mRootPtr { root } { }
+/*
+    DSTRUCT_COPY_SEMANTICS
+    DSTRUCT_MOVE_SEMANTICS
+    (Note: impl by subclass)
+*/
+    virtual ~BinaryTree() {
+        if (_mRootPtr) {
+            tree::postorder_traversal(&(_mRootPtr->link), [](typename _Node::LinkType *linkPtr) {
+                _Node *nPtr = _Node::to_node(linkPtr);
+                dstruct::destory(nPtr);
+                _AllocNode::deallocate(nPtr);
+            });
+        }
+        _mRootPtr = nullptr;
+        _mSize = 0;
+    }
+
+public:
+    bool empty() const {
+        return _mSize == 0;
+    }
+
+    size_t size() const {
+        return _mSize;
+    }
+
+public: // algo
+    template <typename Callback>
+    void traversal(Callback cb, TraversalType ttype = TraversalType::InOrder) const {
+
+        auto cbWrapper = [&](typename _Node::LinkType *link) {
+            typename  BinaryTree::ConstIteratorType::ValueType &data = _Node::to_node(link)->data;
+            cb(data);
+        };
+
+        switch (ttype) {
+            case TraversalType::PreOrder:
+                return  tree::preorder_traversal(first_node(_Node::to_link(_mRootPtr), ttype), cbWrapper);
+            case TraversalType::InOrder:
+                return  tree::inorder_traversal(first_node(_Node::to_link(_mRootPtr), ttype), cbWrapper);
+            case TraversalType::PostOrder:
+                return  tree::postorder_traversal(first_node(_Node::to_link(_mRootPtr), ttype), cbWrapper);
+            default: {
+                DSTRUCT_ASSERT(false);
+            }
+        }
+
+        return  tree::preorder_traversal(first_node(_Node::to_link(_mRootPtr), ttype), cbWrapper);
+    }
+
+public: // range-for and iterator
+
+    typename BinaryTree::ConstIteratorType begin(TraversalType ttype = TraversalType::InOrder) const {
+        return typename BinaryTree::ConstIteratorType(
+            _create_iterator(first_node(_Node::to_link(_mRootPtr), ttype), ttype),
+            true
+        );
+    }
+
+    typename BinaryTree::ConstIteratorType end(TraversalType ttype = TraversalType::InOrder) const {
+        return typename BinaryTree::ConstIteratorType(
+            _create_iterator(nullptr, ttype),
+            true
+        );
+    }
+
+public:
     static _Node * copy_tree(_Node *root) {
         if (!root)
             return nullptr;
@@ -132,10 +200,40 @@ public:
         }
         return first;
     }
+
+protected:
+    size_t _mSize;
+    _Node *_mRootPtr;
+
+    void _update_root(typename _Node::LinkType *root) {
+        _mRootPtr = _Node::to_node(root);
+        if (_mRootPtr != nullptr) {
+            _mRootPtr->link.parent = nullptr;
+        }
+    }
+
+    typename BinaryTree::IteratorType _create_iterator(typename _Node::LinkType *link, TraversalType itType) const {
+        typename BinaryTree::IteratorType::NextFunc nextFunc = nullptr;
+        switch (itType) {
+            case TraversalType::PreOrder:
+                nextFunc = next_preorder;
+                break;
+            case TraversalType::InOrder:
+                nextFunc = next_inorder;
+                break;
+            case TraversalType::PostOrder:
+                nextFunc = next_postorder;
+                break;
+            default:
+                nextFunc = next_preorder;
+                break;
+        }
+        return typename BinaryTree::IteratorType(link, nextFunc);
+    }
+
 };
 
 } // namespace tree
-
 } // namespace dstruct
 
 #endif

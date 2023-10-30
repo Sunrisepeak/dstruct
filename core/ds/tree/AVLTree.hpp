@@ -11,31 +11,33 @@
 #define __AVL_TREE_HPP__DSTRUCT
 
 #include <core/common.hpp>
-#include <core/ds/tree/EmbeddedBinaryTree.hpp>
 #include <core/ds/tree/BinaryTree.hpp>
 
 namespace dstruct {
 
-template <typename T, typename CMP, typename Alloc>
-class AVLTree {
+template <typename T>
+struct _AVLData {
+    int height;
+    T val;
+};
 
-private:
-    struct __Data {
-        int height;
-        T val;
-    };
+template <typename T, typename CMP, typename Alloc>
+class AVLTree : tree::BinaryTree<_AVLData<T>, Alloc> {
+    using __BinaryTree  = tree::BinaryTree<_AVLData<T>, Alloc>;
+public:
+    using TraversalType = typename __BinaryTree::TraversalType;
 protected:
-    using _Node      = tree::EmbeddedBinaryTreeNode<__Data>; 
-    using _AllocNode = AllocSpec<_Node, Alloc>;
+    using _Node         = typename __BinaryTree::_Node;
+    using _AllocNode    = typename __BinaryTree::_AllocNode;
 
 public:
-    AVLTree(CMP cmp = CMP()) : _mSize { 0 }, _mCmp { cmp }, _mRootPtr { nullptr } { }
+    AVLTree(CMP cmp = CMP()) : __BinaryTree { nullptr, 0 }, _mCmp { cmp } { }
 
 public:
     void insert(const T &element) {
-        auto root = _insert(_Node::to_link(_mRootPtr), element);
-        _update_root(root);
-        _mSize++;
+        auto root = _insert(_Node::to_link(__BinaryTree::_mRootPtr), element);
+        __BinaryTree::_update_root(root);
+        __BinaryTree::_mSize++;
     }
 
     void erase() {
@@ -43,26 +45,17 @@ public:
     }
 
     int height() const {
-        return _mRootPtr ? _mRootPtr->data.height : 0;
+        return __BinaryTree::_mRootPtr ? __BinaryTree::_mRootPtr->data.height : 0;
     }
 
 protected:
-    size_t _mSize;
     CMP _mCmp;
-    _Node *_mRootPtr;
-
-    void _update_root(typename _Node::LinkType *root) {
-        _mRootPtr = _Node::to_node(root);
-        if (_mRootPtr != nullptr) {
-            _mRootPtr->link.parent = nullptr;
-        }
-    }
 
     typename _Node::LinkType * _insert(typename _Node::LinkType *root, const T &element) {
         _Node *rootNode = nullptr;
         if (root == nullptr) { // create node
             rootNode = _AllocNode::allocate();
-            dstruct::construct(rootNode, _Node(__Data{0, element}));
+            dstruct::construct(rootNode, _Node(_AVLData<T>{0, element}));
             root = _Node::to_link(rootNode);
         } else {
             rootNode = _Node::to_node(root);
