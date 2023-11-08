@@ -197,7 +197,7 @@ protected:
             // step2: move val, and del obj from nPtr->data change to tmpPtr->data
             _Node *nPtr = _Node::to_node(linkPtr);
             _Node *tmpPtr = _Node::to_node(tmp);
-            
+
             nPtr->data = tmpPtr->data;
             linkPtr->right = _delete(linkPtr->right, tmpPtr->data); // retry
 

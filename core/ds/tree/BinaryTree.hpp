@@ -89,6 +89,7 @@ protected:
     NextFunc _mNextFunc;
 };
 
+#include <core/ds/queue/Queue.hpp>
 template <typename T, typename Alloc>
 class BinaryTree : public _DStructTypeSpec<T, Alloc, _BinaryTreeIterator> {
 
@@ -129,6 +130,10 @@ public:
 
     size_t size() const {
         return _mSize;
+    }
+
+    _Node *_get_root_ptr() {
+        return _mRootPtr;
     }
 
 public: // algo
