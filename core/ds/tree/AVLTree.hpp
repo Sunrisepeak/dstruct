@@ -93,7 +93,7 @@ protected:
                 root->left = _insert(root->left, element);
                 if (_height(root->left) - _height(root->right) == 2) {
                     if (_mCmp(_Node::to_node(root->left)->data.val, element)) { // LR: double-rotate
-                        root = _left_rotate(root->left);
+                        root->left = _left_rotate(root->left);
                     }
                     root = _right_rotate(root);
                 }
@@ -101,7 +101,8 @@ protected:
                 root->right = _insert(root->right, element);
                 if (_height(root->right) - _height(root->left) == 2) {
                     if (_mCmp(element, _Node::to_node(root->right)->data.val)) { // RL: double-rotate
-                        root = _right_rotate(root->right); 
+                        root->right = _right_rotate(root->right);
+                        // TODO: verify need update root-height?
                     }
                     root = _left_rotate(root);
                 }
@@ -112,8 +113,6 @@ protected:
 
         rootNode = _Node::to_node(root); // update, if root changed
         rootNode->data.height = dstruct::max(_height(rootNode->link.left), _height(rootNode->link.right)) + 1;
-        printf("_insert: %d %d: L-H %d, R-H %d\n",
-            rootNode->data.height, rootNode->data.val, _height(rootNode->link.left), _height(rootNode->link.right));
 
         return root;
     }
@@ -157,8 +156,6 @@ protected:
         }
 
         nPtr->data.height = dstruct::max(_height(nPtr->link.left), _height(nPtr->link.right)) + 1;
-        printf("delete: %d %d: L-H %d, R-H %d\n",
-            nPtr->data.height, nPtr->data.val, _height(nPtr->link.left), _height(nPtr->link.right));
 
         return _check_and_balance(root);
     }
@@ -167,12 +164,8 @@ protected:
         root = tree::left_rotate(root);
         auto rootNode = _Node::to_node(root);
         auto leftNode = _Node::to_node(root->left);
-        printf("_left_rotate: root: %d %d left node: %d %d\n",
-            rootNode->data.height, rootNode->data.val, leftNode->data.height, leftNode->data.val);
-        leftNode->data.height = dstruct::max(_height(leftNode->link.left), _height(leftNode->link.left)) + 1;
+        leftNode->data.height = dstruct::max(_height(leftNode->link.left), _height(leftNode->link.right)) + 1;
         rootNode->data.height = dstruct::max(leftNode->data.height, _height(rootNode->link.left)) + 1;
-        printf("_left_rotate: root: %d %d left node: %d %d\n",
-            rootNode->data.height, rootNode->data.val, leftNode->data.height, leftNode->data.val);
         return root;
     }
 
@@ -180,12 +173,8 @@ protected:
         root = tree::right_rotate(root);
         auto rootNode = _Node::to_node(root);
         auto rightNode = _Node::to_node(root->right);
-        printf("_right_rotate: root: %d %d right node: %d %d\n",
-            rootNode->data.height, rootNode->data.val, rightNode->data.height, rightNode->data.val);
-        rightNode->data.height = dstruct::max(_height(rightNode->link.left), _height(rightNode->link.left)) + 1;
+        rightNode->data.height = dstruct::max(_height(rightNode->link.left), _height(rightNode->link.right)) + 1;
         rootNode->data.height = dstruct::max(_height(rootNode->link.left), rightNode->data.height) + 1;
-        printf("_right_rotate: root: %d %d right node: %d %d\n",
-            rootNode->data.height, rootNode->data.val, rightNode->data.height, rightNode->data.val);
         return root;
     }
 };

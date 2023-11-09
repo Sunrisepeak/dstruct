@@ -13,7 +13,7 @@
 using std::queue;
 
 #include <dstruct.hpp>
-/*
+
 using Node = dstruct::tree::EmbeddedBinaryTreeNode<dstruct::_AVLData<int>>;
 
 void printTreeStructure(Node::LinkType *root) {
@@ -41,7 +41,7 @@ void printTreeStructure(Node::LinkType *root) {
         std::cout << std::endl;
     }
 }
-*/
+
 
 int main() {
 
@@ -56,23 +56,40 @@ int main() {
 
         //printTreeStructure((Node::LinkType *)avlTree._get_root_ptr());
 
-        for (int i = 0; i <= 10; i++) {
+        for (int i = 0; i <= 10; i++) {// Test: delete
             avlTree.pop(i);
             //printTreeStructure((Node::LinkType *)avlTree._get_root_ptr());
         }
 
-        DSTRUCT_ASSERT(avlTree.size() == 0);
+        DSTRUCT_ASSERT(avlTree.empty());
 
         for (int i = 101; i <= 200; i++) { // Test: L-Rotate
             avlTree.insert(i);
         }
+
+        //printTreeStructure((Node::LinkType *)avlTree._get_root_ptr());
+
         for (int i = 1; i <= 100; i++) {
             avlTree.insert(500 + i);
             avlTree.insert(500 - i);
         }
 
-        std::cout << avlTree.height() << std::endl;
+        //std::cout << avlTree.height() << " - " << avlTree.size() << std::endl;
+
+        //printTreeStructure((Node::LinkType *)avlTree._get_root_ptr());
+
         DSTRUCT_ASSERT(avlTree.height() <= 9 /* 2^9 = 512*/);
+
+        int sum { 0 };
+        avlTree.traversal(
+            [&](dstruct::_AVLData<int> data) {
+                sum++;
+            },
+            decltype(avlTree)::TraversalType::PreOrder
+        );
+
+        DSTRUCT_ASSERT(sum == 100 + 2 * 100);
+
     }
 
     std::cout << "   pass" << std::endl;
