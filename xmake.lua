@@ -68,6 +68,10 @@ target("dstruct_binary_search_tree")
     set_kind("binary")
     add_files("examples/binary_search_tree.cpp")
 
+target("dstruct_avl_tree")
+    set_kind("binary")
+    add_files("examples/tree/avl_tree.cpp")
+
 target("dstruct_ufset")
     set_kind("binary")
     add_files("examples/set/ufset.cpp")

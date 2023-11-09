@@ -86,6 +86,16 @@ static void swap(T &a, T &b) {
     b = dstruct::move(c);
 }
 
+template <typename T>
+static T max(const T &a, const T &b) {
+    return a > b ? a : b;
+}
+
+template <typename T>
+static T abs(const T &a) {
+    return a >= 0 ? a : -a;
+}
+
 };
 
 #endif
