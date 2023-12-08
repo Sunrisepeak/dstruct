@@ -32,6 +32,7 @@ public: // big five
     }
 
     DSTRUCT_COPY_SEMANTICS(Vector) {
+        clear();
         resize(ds._mCapacity);
         _mSize = ds._mSize;
         for (int i = 0; i < _mSize; i++) {
@@ -42,8 +43,7 @@ public: // big five
     }
 
     DSTRUCT_MOVE_SEMANTICS(Vector) {
-        //dstruct::destroy(this);
-        this->~Vector();
+        clear();
 
         this->_mC = ds._mC;
         this->_mSize = ds._mSize;
@@ -57,15 +57,7 @@ public: // big five
     }
 
     ~Vector() {
-        if (_mC) {
-            // don't need to destroy haven't contructed area
-            for (int i = 0; i < _mSize; i++) {
-                dstruct::destroy(_mC + i);
-            }
-            Vector::_Alloc::deallocate(_mC, _mCapacity);
-        }
-        _mSize = _mCapacity = 0;
-        _mC = nullptr;
+        clear();
     }
 
 public: // Capacity
@@ -132,6 +124,18 @@ public: // Modifiers
             index = _mSize + index;
         DSTRUCT_ASSERT(index < static_cast<int>(_mSize));
         return _mC[index];
+    }
+
+    void clear() {
+        if (_mC) {
+            // don't need to destroy haven't contructed area
+            for (int i = 0; i < _mSize; i++) {
+                dstruct::destroy(_mC + i);
+            }
+            Vector::_Alloc::deallocate(_mC, _mCapacity);
+        }
+        _mSize = _mCapacity = 0;
+        _mC = nullptr;
     }
 
 public: // iterator
