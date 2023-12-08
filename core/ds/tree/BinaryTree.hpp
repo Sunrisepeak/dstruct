@@ -112,14 +112,7 @@ public:
     (Note: impl by subclass)
 */
     virtual ~BinaryTree() {
-        if (_mRootPtr) {
-            tree::postorder_traversal(&(_mRootPtr->link), [](typename _Node::LinkType *linkPtr) {
-                _Node *nPtr = _Node::to_node(linkPtr);
-                dstruct::destroy(nPtr);
-                _AllocNode::deallocate(nPtr);
-            });
-        }
-        _mRootPtr = nullptr;
+        release_tree(_mRootPtr);
         _mSize = 0;
     }
 
@@ -194,6 +187,17 @@ public:
             newRoot->right->parent = newRoot;
 
         return newRoot;
+    }
+
+    static void release_tree(_Node *root) {
+        if (root) {
+            tree::postorder_traversal(&(root->link), [](typename _Node::LinkType *linkPtr) {
+                _Node *nPtr = _Node::to_node(linkPtr);
+                dstruct::destroy(nPtr);
+                _AllocNode::deallocate(nPtr);
+            });
+        }
+        root = nullptr;
     }
 
     static typename _Node::LinkType * first_node(typename _Node::LinkType *root, TraversalType ttype = TraversalType::InOrder) {
