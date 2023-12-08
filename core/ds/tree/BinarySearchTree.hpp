@@ -39,6 +39,7 @@ public: // big five
     }
 
     DSTRUCT_COPY_SEMANTICS(BinarySearchTree) {
+        __BinaryTree::~BinaryTree(); // release
         __BinaryTree::_mRootPtr = __BinaryTree::copy_tree(ds._mRootPtr);
         __BinaryTree::_mSize = ds._mSize;
         _mCmp = ds._mCmp;
