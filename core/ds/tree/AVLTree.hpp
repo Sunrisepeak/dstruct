@@ -148,7 +148,7 @@ protected:
                 if (subTree) subTree->parent = root->parent;
 
                 // real delete
-                dstruct::destory(nPtr);
+                dstruct::destroy(nPtr);
                 _AllocNode::deallocate(nPtr);
                 __BinaryTree::_mSize--;
                 return subTree; // Note: only need return sub-tree directly

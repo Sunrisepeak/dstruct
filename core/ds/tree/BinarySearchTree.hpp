@@ -210,7 +210,7 @@ protected:
 
         // real delete
         auto nPtr = _Node::to_node(linkPtr);
-        dstruct::destory(nPtr);
+        dstruct::destroy(nPtr);
         _AllocNode::deallocate(nPtr);
         __BinaryTree::_mSize--;
         return subTree;

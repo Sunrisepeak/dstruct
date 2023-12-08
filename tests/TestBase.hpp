@@ -43,7 +43,7 @@ private:
 };
 
 template <typename DStruct>
-static void test_destory() {
+static void test_destroy() {
     DStruct ds;
     Destory des;
     int testNums = 10;
@@ -61,7 +61,7 @@ static void test_destory() {
     DSTRUCT_ASSERT(ds.empty());
 }
 
-static void test_arr_destory() {
+static void test_arr_destroy() {
 
     { // test auto
         dstruct::Array<Destory, 10> ds1;

@@ -220,9 +220,9 @@ public:
     }
 
     ~DoubleEndedQueue() {
-        // dstruct::destory element, but don't use ~_Array()
+        // dstruct::destroy element, but don't use ~_Array()
         for (auto it = _mBegin; it != _mEnd; it++) {
-            dstruct::destory(it.operator->());
+            dstruct::destroy(it.operator->());
         }
 
         // release memory
@@ -303,14 +303,14 @@ public: // push/pop
     void pop_back() {
         _mEnd--;
         _mSize--;
-        dstruct::destory(_mEnd.operator->());
+        dstruct::destroy(_mEnd.operator->());
         if (_mSize <= _mCapacity / 3 && _mArrMapTable.capacity() > MIN_MAP_TABLE_SIZE) {
             _resize(_mCapacity / 2);
         }
     }
 
     void pop_front() {
-        dstruct::destory(&(*(_mBegin)));
+        dstruct::destroy(&(*(_mBegin)));
         _mBegin++;
         _mSize--;
         if (_mSize <= _mCapacity / 3 && _mArrMapTable.capacity() > MIN_MAP_TABLE_SIZE) {
@@ -374,7 +374,7 @@ protected:
         // release arr in old map table
         for (int i = 0; i < oldArrMapTable.capacity() ; i++) {
             if (i < oldArrStartIndex || oldArrEndIndex < i) {
-                //dstruct::destory(oldArrMapTable[i]);
+                //dstruct::destroy(oldArrMapTable[i]);
                 _AllocArray::deallocate(oldArrMapTable[i]);
             }
         }

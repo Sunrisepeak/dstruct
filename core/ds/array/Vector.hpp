@@ -41,7 +41,7 @@ public: // big five
     }
 
     DSTRUCT_MOVE_SEMANTICS(Vector) {
-        //dstruct::destory(this);
+        //dstruct::destroy(this);
         this->~Vector();
 
         this->_mC = ds._mC;
@@ -57,9 +57,9 @@ public: // big five
 
     ~Vector() {
         if (_mC) {
-            // don't need to destory haven't contructed area
+            // don't need to destroy haven't contructed area
             for (int i = 0; i < _mSize; i++) {
-                dstruct::destory(_mC + i);
+                dstruct::destroy(_mC + i);
             }
             Vector::_Alloc::deallocate(_mC, _mCapacity);
         }
@@ -120,7 +120,7 @@ public: // Modifiers
     void pop_back() {
         DSTRUCT_ASSERT(_mSize > 0);
         --_mSize;
-        dstruct::destory(_mC + _mSize);
+        dstruct::destroy(_mC + _mSize);
         if (_mSize < _mCapacity / 3) {
             resize(_mCapacity / 2);
         }
@@ -158,7 +158,7 @@ public:
         for (int i = 0; i < _mSize; i++) {
             if (i < n) // TODO: use move by check type-tag
                 dstruct::construct(_mC + i, oldC[i]);
-            dstruct::destory(oldC + i);
+            dstruct::destroy(oldC + i);
         }
         if (_mCapacity) {
             DSTRUCT_ASSERT(oldC != nullptr);
@@ -178,7 +178,7 @@ public:
         for (int i = 0; i < _mSize; i++) {
             if (i < n) // TODO: use move by check type-tag
                 dstruct::construct(_mC + i, oldC[i]);
-            dstruct::destory(oldC + i);
+            dstruct::destroy(oldC + i);
         }
         Vector::_Alloc::deallocate(oldC, _mCapacity);
 

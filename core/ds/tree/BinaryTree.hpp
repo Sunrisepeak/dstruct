@@ -115,7 +115,7 @@ public:
         if (_mRootPtr) {
             tree::postorder_traversal(&(_mRootPtr->link), [](typename _Node::LinkType *linkPtr) {
                 _Node *nPtr = _Node::to_node(linkPtr);
-                dstruct::destory(nPtr);
+                dstruct::destroy(nPtr);
                 _AllocNode::deallocate(nPtr);
             });
         }

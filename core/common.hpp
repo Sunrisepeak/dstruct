@@ -67,7 +67,7 @@ int * construct<int>(void *addr, const int& obj) noexcept {
 }
 
 template <typename T>
-static void destory(T *addr) noexcept {
+static void destroy(T *addr) noexcept {
 /*
     // method1, but have a litte issue
     static DStructPlacementNewFlag placementNewFlag;

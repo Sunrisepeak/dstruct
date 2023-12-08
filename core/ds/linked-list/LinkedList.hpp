@@ -110,7 +110,7 @@ public: // base op
         // 3. get target node
         _Node *nPtr = _Node::to_node(lPtr);
         // 4. free and decrease size/len
-        dstruct::destory(nPtr);
+        dstruct::destroy(nPtr);
         _AllocNode::deallocate(nPtr);
         _mSize--;
     }

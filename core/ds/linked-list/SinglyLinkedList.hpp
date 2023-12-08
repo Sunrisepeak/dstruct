@@ -138,7 +138,7 @@ public: // low efficient
             link = link->next;
         }
         //free and decrease size/len
-        dstruct::destory(_mTailNodePtr);
+        dstruct::destroy(_mTailNodePtr);
         _AllocNode::deallocate(_mTailNodePtr);
         this->_mSize--;
         // update _mTailNodePtr and link
