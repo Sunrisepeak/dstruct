@@ -35,6 +35,7 @@ public: // big five
         resize(ds._mCapacity);
         _mSize = ds._mSize;
         for (int i = 0; i < _mSize; i++) {
+            dstruct::destroy(_mC + i);
             dstruct::construct(_mC + i, ds._mC[i]);
         }
         return *this;
