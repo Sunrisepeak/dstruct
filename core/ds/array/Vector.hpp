@@ -42,8 +42,7 @@ public: // big five
     }
 
     DSTRUCT_MOVE_SEMANTICS(Vector) {
-        //dstruct::destroy(this);
-        this->~Vector();
+        clear();
 
         this->_mC = ds._mC;
         this->_mSize = ds._mSize;
