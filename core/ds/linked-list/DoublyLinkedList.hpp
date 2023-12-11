@@ -74,7 +74,7 @@ public: // big five
     DoublyLinkedList(size_t n, const T &obj) : DoublyLinkedList() { while(n--) push_back(obj); }
 
     DSTRUCT_COPY_SEMANTICS(DoublyLinkedList) {
-        while (!_List::empty()) pop_back(); // clear
+        clear();
         // copy
         for (auto it = ds.begin(); it != ds.end(); it++) {
             push_back(*it);
@@ -125,6 +125,10 @@ public: // base op
         dstruct::destroy(nPtr);
         _AllocNode::deallocate(nPtr);
         _mSize--;
+    }
+
+    void clear() {
+        _List::_clear();
     }
 };
 

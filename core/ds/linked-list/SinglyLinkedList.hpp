@@ -67,9 +67,7 @@ public: // big five
     }
 
     DSTRUCT_COPY_SEMANTICS(SinglyLinkedList) {
-        // clear
-        while (!_List::empty()) _List::pop_front();
-        _mTailNodePtr = &_mHeadNode;
+        clear();
         // copy
         if (ds._mSize != 0) {
             auto linkPtr =  ds._mHeadNode.link.next;
@@ -128,6 +126,11 @@ public:
         _List::pop_front();
         if (_mSize == 0)
             _mTailNodePtr = &_mHeadNode;
+    }
+
+    void clear() {
+        _List::_clear();
+        _mTailNodePtr = &_mHeadNode;
     }
 
 public: // low efficient
