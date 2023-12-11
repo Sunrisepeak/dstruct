@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v3
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
-        xmake-version: branch@main
+        xmake-version: branch@master
     - name: set build mode
       run: xmake f -m debug
     - name: build examples|test
@@ -35,7 +35,7 @@ jobs:
     - uses: actions/checkout@v3
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
-        xmake-version: branch@main
+        xmake-version: branch@master
     - name: set build mode
       run: xmake f -m debug
     - name: build examples|test
