@@ -125,6 +125,11 @@ public:
         return _mSize;
     }
 
+    void clear() {
+        release_tree(_mRootPtr);
+        _mSize = 0;
+    }
+
     _Node *_get_root_ptr() {
         return _mRootPtr;
     }

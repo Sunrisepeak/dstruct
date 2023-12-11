@@ -88,6 +88,12 @@ public: // Modifiers
         return _mCharList[index];
     }
 
+    void clear() {
+        _mCharList.clear();
+        _mCharList.push_back('\0');
+        _mCharList.resize(15);
+    }
+
 public: // iterator/range-for support
     IteratorType begin() {
         return _mCharList.begin();

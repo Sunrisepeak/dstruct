@@ -66,6 +66,10 @@ public:
         // return dstruct::move(data);
     }
 
+    void clear() {
+        _mStack.clear();
+    }
+
     // Iterator/range-for
     ConstIteratorType begin() const { return _mStack.begin(); }
     ConstIteratorType end() const { return _mStack.end(); }

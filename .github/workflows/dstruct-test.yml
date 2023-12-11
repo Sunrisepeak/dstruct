@@ -11,14 +11,31 @@ on:
     - dev
 
 jobs:
-  build:
+  build-linux:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - name: config and install tools
-      run: wget https://xmake.io/shget.text -O - | bash
+    - uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: branch@master
+    - name: set build mode
+      run: xmake f -m debug
+    - name: build examples|test
+      run: xmake
+    - name: run all test
+      run: xmake r
+
+  build-win:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: branch@master
     - name: set build mode
       run: xmake f -m debug
     - name: build examples|test

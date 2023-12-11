@@ -44,8 +44,8 @@ public: // big five
     _LinkedList & operator=(const _LinkedList &list) = delete;
 
     DSTRUCT_MOVE_SEMANTICS(_LinkedList) {
-        // 1.clear
-        while (!_LinkedList::empty()) pop_front();
+        // 1._clear
+        _clear();
         // 2.only move data
         _LinkedList::_mHeadNode = ds._mHeadNode;
         _LinkedList::_mSize = ds._mSize;
@@ -58,12 +58,10 @@ public: // big five
     }
 
     ~_LinkedList() {
-        while (!empty()) {
-            pop_front();
-        }
+        _clear();
     }
 
-public: // base op
+public: // Capacity
 
     bool empty() const {
         // Note: when _mSize == 1 ->  _mHeadNode.link.next -> _mHeadNode.link
@@ -78,15 +76,15 @@ public: // base op
         return _mSize;
     }
 
-    //T back() const; // impl in sub-class
-    //void push_back(const T &obj);
-    //void pop_back(); // impl in sub-class
-
+public: // Access
     T front() const {
         return _Node::to_node(_mHeadNode.link.next)->data;
     }
 
-    void push(const T &obj) { push_front(obj); }
+public: // Modifiers
+    void push(const T &obj) {
+        push_front(obj);
+    }
 
     void push_front(const T &obj) {
         // 1. alloc and construct node
@@ -99,7 +97,9 @@ public: // base op
         _mSize++;
     }
 
-    void pop() { pop_front(); }
+    void pop() {
+        pop_front();
+    }
 
     void pop_front() {
         DSTRUCT_ASSERT(_mSize > 0);
@@ -140,6 +140,12 @@ public: // support it/range-for
 protected:
     mutable _Node _mHeadNode;
     typename _LinkedList::SizeType _mSize;
+
+    void _clear() {
+        while (!empty()) {
+            pop_front();
+        }
+    }
 };
 
 }

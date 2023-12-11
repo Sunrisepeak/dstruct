@@ -66,7 +66,10 @@ int main() {
         // std::cout << "pop front: " << deque.size() << " " << deque.capacity() << std::endl;
     }
 
-    DSTRUCT_ASSERT(deque.size() == 0);
+    deque.clear(); deque.push(0);
+    deque.clear(); deque.push(1);
+
+    DSTRUCT_ASSERT(deque.size() == 1);
 
     std::cout << "   pass" << std::endl;
 

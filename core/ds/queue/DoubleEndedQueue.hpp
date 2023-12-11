@@ -171,64 +171,37 @@ protected:
 */
 
 public:
-    DoubleEndedQueue() :
-      _mSize { 0 },
-      _mCapacity { MIN_MAP_TABLE_SIZE * ARR_SIZE },
-      _mArrMapTable(MIN_MAP_TABLE_SIZE, nullptr),
-      _mBegin(),
-      _mEnd(_mBegin)
-    {
-        // alloc arr and fill map-table
-        for (int i = 0; i < MIN_MAP_TABLE_SIZE; i++) {
-            _mArrMapTable[i] = _AllocArray::allocate();
-            dstruct::construct(_mArrMapTable[i], _Array());
-        }
-        auto midMapIndex = MIN_MAP_TABLE_SIZE / 2;
-        _mBegin = _mEnd = decltype(_mBegin)(midMapIndex, 0, &_mArrMapTable);
-    }
+    DoubleEndedQueue() : _mSize { 0 }, _mCapacity { 0 } { }
 
-    DoubleEndedQueue(const DoubleEndedQueue &deq) { *this = deq; }
-    DoubleEndedQueue & operator=(const DoubleEndedQueue &deq) {
-        // release element
-        while (!empty()) this->pop(); // TODO: optimize
+    DSTRUCT_COPY_SEMANTICS(DoubleEndedQueue) {
+        _only_clear();
 
-        for (auto &obj : deq) { // TODO: optimize
-            this->push_back(obj);
+        for (auto &obj : ds) { // TODO: optimize
+            push_back(obj);
         }
 
         return *this;
     }
 
-    DoubleEndedQueue(DoubleEndedQueue &&deq) { *this = dstruct::move(deq); }
-    DoubleEndedQueue & operator=(DoubleEndedQueue &&deq) {
-        // release element
-        while (!empty()) this->pop(); // TODO: optimize
-        // release memory
-        for (auto arrPtr : _mArrMapTable) _AllocArray::deallocate(arrPtr);
+    DSTRUCT_MOVE_SEMANTICS(DoubleEndedQueue) {
+        _only_clear();
 
         // move
-        _mSize = deq._mSize;
-        _mCapacity = deq._mCapacity;
-        _mArrMapTable = dstruct::move(deq._mArrMapTable);
-        _mBegin = dstruct::move(deq._mBegin);
-        _mEnd = dstruct::move(deq._mEnd);
+        _mSize = ds._mSize;
+        _mCapacity = ds._mCapacity;
+        _mArrMapTable = dstruct::move(ds._mArrMapTable);
+        _mBegin = dstruct::move(ds._mBegin);
+        _mEnd = dstruct::move(ds._mEnd);
 
-        // reset deq
-        deq._mSize = deq._mCapacity = 0;
+        // reset ds
+        ds._mSize = ds._mCapacity = 0;
+        ds._mArrMapTable.clear();
 
         return *this;
     }
 
     ~DoubleEndedQueue() {
-        // dstruct::destroy element, but don't use ~_Array()
-        for (auto it = _mBegin; it != _mEnd; it++) {
-            dstruct::destroy(it.operator->());
-        }
-
-        // release memory
-        for (auto arrPtr : _mArrMapTable) {
-            _AllocArray::deallocate(arrPtr);
-        }
+        _only_clear();
     }
 
 public: // base op
@@ -268,7 +241,10 @@ public: // push/pop
     }
 
     void push_back(const T &obj) {
-        if (_mEnd._mCurr == _mArrMapTable.back()->end()) {
+        if (_mCapacity == 0) {
+            DSTRUCT_ASSERT(_mArrMapTable.empty());
+            _only_init();
+        } else if (_mEnd._mCurr == _mArrMapTable.back()->end()) {
             _resize(_mCapacity * 2);
         }
         dstruct::construct(&(*_mEnd), obj);
@@ -277,22 +253,14 @@ public: // push/pop
     }
 
     void push_front(const T &obj) {
-        if (_mBegin._mCurr == _mArrMapTable[0]->begin()) {
+        if (_mCapacity == 0) {
+            DSTRUCT_ASSERT(_mArrMapTable.empty());
+            _only_init();
+        } else if (_mBegin._mCurr == _mArrMapTable[0]->begin()) {
             _resize(_mCapacity * 2);
         }
         _mBegin--;
-/*
-        DSTRUCT_ASSERT(_mBegin._mArrMapTable == _mArrMapTable.begin());
-        DSTRUCT_ASSERT(*(_mBegin._mArrMapTable) == _mArrMapTable[0]);
-        auto end = ((*(_mArrMapTable.begin()))->end());
-        DSTRUCT_ASSERT(_mBegin._mCurr == end - 1);
-        DSTRUCT_ASSERT((_mBegin._mCurr).operator->() == end.operator->() - 1);
-        DSTRUCT_ASSERT((_mBegin._mCurr).operator->() == _mBegin.operator->());
-        DSTRUCT_ASSERT(sizeof(*_mBegin) == sizeof(int));
-*/
         dstruct::construct(_mBegin.operator->(), obj);
-        //auto arrPtr = *(_mBegin._mArrMapTable);
-        //(*(*(_mBegin._mArrMapTable)))[distance(_mBegin._mCurr, arrPtr->end())] = obj;
         _mSize++;
     }
 
@@ -318,6 +286,11 @@ public: // push/pop
         }
     }
 
+    void clear() {
+        _only_clear();
+        //_only_init(); // move to first push
+    }
+
 public: // iterator/range-for support
 
     typename DoubleEndedQueue::ConstIteratorType begin() const {
@@ -333,6 +306,44 @@ protected:
     typename DoubleEndedQueue::SizeType _mSize, _mCapacity;
     _ArrMapTable _mArrMapTable;
     typename DoubleEndedQueue::IteratorType _mBegin, _mEnd;
+
+    void _only_clear() {
+        if (!_mArrMapTable.empty()) {
+            DSTRUCT_ASSERT(_mCapacity != 0);
+            // dstruct::destroy element, but don't need to call ~_Array()
+            for (auto it = _mBegin; it != _mEnd; it++) {
+                dstruct::destroy(it.operator->());
+            }
+
+            // release memory
+            for (auto arrPtr : _mArrMapTable) {
+                _AllocArray::deallocate(arrPtr);
+            }
+
+            // reset
+            _mSize = _mCapacity = 0;
+            _mArrMapTable.clear();
+            //_mBegin = _mEnd = nullptr;
+        }
+    }
+
+    // Note: please obj is null-status before use _only_init
+    void _only_init() {
+
+        DSTRUCT_ASSERT(_mArrMapTable.empty() && _mCapacity == 0);
+
+        _mSize = 0;
+        _mCapacity = MIN_MAP_TABLE_SIZE * ARR_SIZE;
+        _mArrMapTable.resize(MIN_MAP_TABLE_SIZE, nullptr);
+        // alloc arr and fill map-table
+        for (int i = 0; i < MIN_MAP_TABLE_SIZE; i++) {
+            _mArrMapTable[i] = _AllocArray::allocate();
+            dstruct::construct(_mArrMapTable[i], _Array());
+        }
+        auto midMapIndex = MIN_MAP_TABLE_SIZE / 2;
+        _mBegin = _mEnd = decltype(_mBegin)(midMapIndex, 0, &_mArrMapTable);
+
+    }
 
     /* (temp)request1: n % ARR_SIZE == 0 */
     /* request2: _mSize < (n and _mCapacity) */
