@@ -40,6 +40,10 @@ int main() {
 
     DSTRUCT_ASSERT(list.size() == 10);
 
+    list.clear();
+    list.push_back(0);
+    DSTRUCT_ASSERT(list.size() == 1);
+
     {   // test move
         dstruct::DoublyLinkedList<int> list(10, 3);
         

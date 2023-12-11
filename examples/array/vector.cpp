@@ -48,6 +48,10 @@ int main() {
 
     DSTRUCT_ASSERT(vec.size() == 10);
 
+    vec.clear();
+
+    DSTRUCT_ASSERT(vec.empty());
+
     std::cout << "   pass" << std::endl;
 
     return 0;
