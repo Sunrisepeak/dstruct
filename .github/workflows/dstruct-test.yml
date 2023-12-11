@@ -11,7 +11,7 @@ on:
     - dev
 
 jobs:
-  build:
+  build-linux:
 
     runs-on: ubuntu-latest
 
@@ -19,6 +19,21 @@ jobs:
     - uses: actions/checkout@v3
     - name: config and install tools
       run: wget https://xmake.io/shget.text -O - | bash
+    - name: set build mode
+      run: xmake f -m debug
+    - name: build examples|test
+      run: xmake
+    - name: run all test
+      run: xmake r
+
+  build-win:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: config and install tools
+      run: Invoke-Expression (Invoke-Webrequest 'https://xmake.io/psget.text' -UseBasicParsing).Content
     - name: set build mode
       run: xmake f -m debug
     - name: build examples|test
