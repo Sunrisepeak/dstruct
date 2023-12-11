@@ -23,7 +23,7 @@ public: // big Five
 
     Array() = default;
 
-    Array(typename Array::ConstReferenceType element) : Array() {
+    Array(typename Array::ConstReferenceType element) {
         for (int i = 0; i < N; i++) {
             _mC[i] = element;
         }
