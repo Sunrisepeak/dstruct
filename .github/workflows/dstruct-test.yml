@@ -17,8 +17,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: config and install tools
-      run: wget https://xmake.io/shget.text -O - | bash
+    - uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: branch@main
     - name: set build mode
       run: xmake f -m debug
     - name: build examples|test
@@ -32,8 +33,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: config and install tools
-      run: Invoke-Expression (Invoke-Webrequest 'https://xmake.io/psget.text' -UseBasicParsing).Content
+    - uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: branch@main
     - name: set build mode
       run: xmake f -m debug
     - name: build examples|test
