@@ -47,6 +47,10 @@ public: // base op
         _mDS.pop_back();
     }
 
+    void clear() {
+        _mDS.clear();
+    }
+
     // Iterator/range-for
     ConstIteratorType begin() const { return _mDS.begin(); }
     ConstIteratorType end() const { return _mDS.end(); }
