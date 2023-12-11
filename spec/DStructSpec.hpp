@@ -154,14 +154,15 @@ public: // Access
     ConstReference operator[](int) const;
 public: // Modifiers
     void push(ConstReferenceType element);
-    void push_back(ConstReferenceType element);
-    void push_front(ConstReferenceType element);
+        void push_back(ConstReferenceType element);
+        void push_front(ConstReferenceType element);
     void pop();
-    void pop_back();
-    void pop_front();
-    IteratorType erase(ConstIteratorType pos);
+        void pop_back();
+        void pop_front();
     IteratorType insert(ConstIteratorType pos, ConstReferenceType element);
+    IteratorType erase(ConstIteratorType pos);
     Reference operator[](int);
+    void clear();
 public: // iterator/range-for support
     IteratorType begin();
     ConstIteratorType begin() const;
