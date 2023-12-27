@@ -49,9 +49,11 @@ int main() {
 
     {
         dstruct::AVLTree<int, dstruct::less<int>, dstruct::Alloc> avlTree;
+        dstruct::AVLTree<const double, dstruct::less<const double>, dstruct::Alloc> avlTree2;
+        avlTree2.push(2.3);
 
         for (int i = 10; i >= 0; i--) { // Test: R-Rotate
-            avlTree.insert(i);
+            avlTree.push(i);
         }
 
         //printTreeStructure((Node::LinkType *)avlTree._get_root_ptr());
@@ -64,14 +66,26 @@ int main() {
         DSTRUCT_ASSERT(avlTree.empty());
 
         for (int i = 101; i <= 200; i++) { // Test: L-Rotate
-            avlTree.insert(i);
+            avlTree.push(i);
         }
 
         //printTreeStructure((Node::LinkType *)avlTree._get_root_ptr());
 
+        auto it = avlTree.find(150);
+        DSTRUCT_ASSERT(it != avlTree.end());
+
+        int val = *it;
+        while (it != avlTree.end()) {
+            //std::cout << *it << " == " << val << std::endl;
+            DSTRUCT_ASSERT(*it == val);
+            // *it = 3; // test const
+            it++;
+            val++;
+        }
+
         for (int i = 1; i <= 100; i++) {
-            avlTree.insert(500 + i);
-            avlTree.insert(500 - i);
+            avlTree.push(500 + i);
+            avlTree.push(500 - i);
         }
 
         //std::cout << avlTree.height() << " - " << avlTree.size() << std::endl;
@@ -92,6 +106,24 @@ int main() {
 
     }
 
+    // test _AVLData
+    {
+        struct A {
+            int a;
+            short b;
+            char c;
+        };
+
+        A data {1, 2, 'a'};
+        auto cmp = [](const A &a, const A &b) { return a.a < b.a; };
+        dstruct::AVLTree<A, decltype(cmp), dstruct::Alloc> avlTree(cmp);
+
+        avlTree.push(data);
+        auto it = avlTree.find(data);
+        DSTRUCT_ASSERT(it != avlTree.end() && it->c == data.c);
+
+        //it->c = 'b'; // only-read
+    }
     std::cout << "   pass" << std::endl;
 
     return 0;

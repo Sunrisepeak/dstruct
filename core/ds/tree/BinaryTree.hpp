@@ -89,7 +89,6 @@ protected:
     NextFunc _mNextFunc;
 };
 
-#include <core/ds/queue/Queue.hpp>
 template <typename T, typename Alloc>
 class BinaryTree : public _DStructTypeSpec<T, Alloc, _BinaryTreeIterator> {
 
@@ -101,7 +100,7 @@ public: // type
     };
 
 protected:
-    using _Node      = EmbeddedBinaryTreeNode<T>; 
+    using _Node      = EmbeddedBinaryTreeNode<T>;
     using _AllocNode = AllocSpec<_Node, Alloc>;
 
 public:

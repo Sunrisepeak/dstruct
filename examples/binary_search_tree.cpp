@@ -45,8 +45,12 @@ int main() {
         int arr[5] { 3, 4, 2, 5, 1 };
         dstruct::BSTree<int> bst(arr, arr + sizeof(arr) / sizeof(int));
         DSTRUCT_ASSERT(bst.size() == sizeof(arr) / sizeof(int));
-        
-        int sum { 0 }, check { 1 };
+
+        for (auto v : bst) {
+            //std::cout << v << std::endl;
+        }
+
+        int sum { 0 };
         bst.traversal(
             [&](int val) {
                 sum += val;

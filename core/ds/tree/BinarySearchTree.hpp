@@ -13,6 +13,7 @@
 #include <core/common.hpp>
 #include <core/ds/tree/EmbeddedBinaryTree.hpp>
 #include <core/ds/tree/BinaryTree.hpp>
+#include <core/ds/tree/BinarySearchTreeBase.hpp>
 
 namespace dstruct {
 namespace tree {
@@ -67,7 +68,7 @@ public:
 
     typename BinarySearchTree::ConstIteratorType
     find(const T &obj) const {
-        auto target = _find_or_insert(_Node::to_link(__BinaryTree::_mRootPtr), obj, _mCmp, false);
+        auto target = BinarySearchTreeBase<T, CMP>::_find(_Node::to_link(__BinaryTree::_mRootPtr), obj, _mCmp);
         return typename BinarySearchTree::ConstIteratorType(
             _create_iterator(target, TraversalType::InOrder),
             true
@@ -76,7 +77,7 @@ public:
 
     // push/pop
     void push(const T &obj) {
-        auto tree = _find_or_insert(_Node::to_link(__BinaryTree::_mRootPtr), obj, _mCmp, true);
+        auto tree = _insert(obj);
         if (__BinaryTree::_mRootPtr == nullptr)
             __BinaryTree::_update_root(tree);
         __BinaryTree::_mSize++;
@@ -118,30 +119,27 @@ public:
         return next;
     }
 
-public: // static pub api
+protected:
+    CMP _mCmp;
 
-    static typename _Node::LinkType * _find_or_insert(
-        typename _Node::LinkType *root,
-        const T &obj,
-        CMP cmp = CMP(),
-        bool insertFlag = false
-    ) {
-        typename _Node::LinkType * target = root;
+    typename _Node::LinkType * _insert(const T &obj) {
+
+        typename _Node::LinkType * target = _Node::to_link(__BinaryTree::_mRootPtr);
         typename _Node::LinkType * parent = nullptr;
 
-        while (target != nullptr) { // find
+        // find parent(leaf-node)
+        while (target != nullptr) {
             parent = target;
-            if (cmp(obj, _Node::to_node(target)->data)) {
+            if (_mCmp(obj, _Node::to_node(target)->data)) {
                 target = target->left;
-            } else if (cmp(_Node::to_node(target)->data, obj)) {
+            } else if (_mCmp(_Node::to_node(target)->data, obj)) {
                 target = target->right;
             } else {
                 // TODO: pls check your cmp, a < b, b < a, but a != b
-                break;
+                // TODO: to support dup-data
+                return target;
             }
         }
-
-        if (!insertFlag) return target;
 
         // create node
         auto nodePtr = _AllocNode::allocate();
@@ -151,7 +149,7 @@ public: // static pub api
         if (parent != nullptr) { // nodePtr isn't root
             newNodeLink->parent = parent;
             decltype(parent) subTree = nullptr; // for readability
-            if (cmp(obj, _Node::to_node(parent)->data)) {
+            if (_mCmp(obj, _Node::to_node(parent)->data)) {
                 subTree = parent->left;
                 parent->left = newNodeLink;
                 newNodeLink->left = subTree;
@@ -166,9 +164,6 @@ public: // static pub api
 
         return newNodeLink;
     }
-
-protected:
-    CMP _mCmp;
 
     typename _Node::LinkType * _delete(typename _Node::LinkType *root, const T &obj) {
         auto nPtr = _Node::to_node(root);
@@ -216,6 +211,7 @@ protected:
         dstruct::destroy(nPtr);
         _AllocNode::deallocate(nPtr);
         __BinaryTree::_mSize--;
+
         return subTree;
     }
 };

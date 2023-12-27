@@ -21,9 +21,9 @@ struct TreeNode {
 
     using LinkType = Link;
     // big five
-    TreeNode() : link {} {  }
-    TreeNode(const T &_data) : TreeNode() { data = _data; }
-    TreeNode(const TreeNode &tNode) { data = tNode.data; link = tNode.link;  }
+    TreeNode() : link {} { }
+    TreeNode(const T &_data) : link {}, data { _data } { }
+    TreeNode(const TreeNode &tNode) : data { tNode.data } { link = tNode.link; }
 
     static TreeNode * to_node(Link *link) {
         return reinterpret_cast<TreeNode *>(link);
