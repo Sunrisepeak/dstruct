@@ -49,8 +49,6 @@ int main() {
 
     {
         dstruct::AVLTree<int, dstruct::less<int>, dstruct::Alloc> avlTree;
-        dstruct::AVLTree<const double, dstruct::less<const double>, dstruct::Alloc> avlTree2;
-        avlTree2.push(2.3);
 
         for (int i = 10; i >= 0; i--) { // Test: R-Rotate
             avlTree.push(i);
@@ -70,18 +68,6 @@ int main() {
         }
 
         //printTreeStructure((Node::LinkType *)avlTree._get_root_ptr());
-
-        auto it = avlTree.find(150);
-        DSTRUCT_ASSERT(it != avlTree.end());
-
-        int val = *it;
-        while (it != avlTree.end()) {
-            //std::cout << *it << " == " << val << std::endl;
-            DSTRUCT_ASSERT(*it == val);
-            // *it = 3; // test const
-            it++;
-            val++;
-        }
 
         for (int i = 1; i <= 100; i++) {
             avlTree.push(500 + i);
@@ -124,6 +110,30 @@ int main() {
 
         //it->c = 'b'; // only-read
     }
+
+    { // test const / find / erase
+        dstruct::AVLTree<const double, dstruct::less<const double>, dstruct::Alloc> avlTree;
+
+        for (int i = 0; i < 100; i++) {
+            avlTree.push(i);
+        }
+
+        auto it = avlTree.find(5);
+        DSTRUCT_ASSERT(it != avlTree.end());
+
+        int val = *it;
+        while (it != avlTree.end()) {
+            //printTreeStructure((Node::LinkType *)avlTree._get_root_ptr());
+            //std::cout << *it << " == " << val << std::endl;
+            DSTRUCT_ASSERT(*it == val);
+            // *it = 3; // test const
+            it = avlTree.erase(it);
+            val++;
+        }
+
+        DSTRUCT_ASSERT(avlTree.size() == 5);
+    }
+
     std::cout << "   pass" << std::endl;
 
     return 0;

@@ -79,6 +79,11 @@ public: // ForwardIterator
         return old;
     }
 
+public:
+    typename _Node::LinkType * __get_link_pointer() {
+        return _mTreeNodeLinkPtr;
+    }
+
 private:
     void __sync() {
         __Self::_mPointer = &(_Node::to_node(_mTreeNodeLinkPtr)->data);
@@ -111,7 +116,7 @@ public:
     (Note: impl by subclass)
 */
     virtual ~BinaryTree() {
-        release_tree(_mRootPtr);
+        clear(_mRootPtr);
         _mSize = 0;
     }
 
@@ -125,7 +130,7 @@ public:
     }
 
     void clear() {
-        release_tree(_mRootPtr);
+        clear(_mRootPtr);
         _mSize = 0;
     }
 
@@ -174,7 +179,7 @@ public: // range-for and iterator
     }
 
 public:
-    static _Node * copy_tree(_Node *root) {
+    static _Node * copy(_Node *root) {
         if (!root)
             return nullptr;
 
@@ -182,18 +187,18 @@ public:
         newRoot->data = root->data;
         newRoot->parent = nullptr;
 
-        newRoot->left = copy_tree(root->left);
+        newRoot->left = copy(root->left);
         if (newRoot->left)
             newRoot->left->parent = newRoot;
 
-        newRoot->right = copy_tree(root->right);
+        newRoot->right = copy(root->right);
         if (newRoot->right)
             newRoot->right->parent = newRoot;
 
         return newRoot;
     }
 
-    static void release_tree(_Node *root) {
+    static void clear(_Node * &root) {
         if (root) {
             tree::postorder_traversal(&(root->link), [](typename _Node::LinkType *linkPtr) {
                 _Node *nPtr = _Node::to_node(linkPtr);

@@ -66,7 +66,7 @@ target("dstruct_heap")
 
 target("dstruct_binary_search_tree")
     set_kind("binary")
-    add_files("examples/binary_search_tree.cpp")
+    add_files("examples/tree/binary_search_tree.cpp")
 
 target("dstruct_avl_tree")
     set_kind("binary")
