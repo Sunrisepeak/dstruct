@@ -63,6 +63,11 @@ public: // ForwardIterator
         return old;
     }
 
+public:
+    typename _Node::LinkType * __get_link_pointer() {
+        return _mIterator.__get_link_pointer();
+    }
+
 private:
     void __sync() {
         if (nullptr == _mIterator.operator->())
@@ -104,6 +109,8 @@ public:
         }
     }
 
+public:
+
     typename AVLTree::ConstIteratorType
     find(const T &obj) const {
         using CMPWrapper = _AVLDataCMP<T, CMP>; // TODO: optimize find(delete CMPWrapper?)
@@ -116,6 +123,23 @@ public:
             __BinaryTree::_create_iterator(target, TraversalType::InOrder),
             true
         );
+    }
+
+    typename AVLTree::ConstIteratorType
+    erase(typename AVLTree::ConstIteratorType it) {
+        auto target = it.__get_link_pointer();
+        decltype(it) next = ++it;
+        typename RemoveConst<T>::Type nextData;
+        bool needUpdateNext = false;
+        
+        if (next.__get_link_pointer() != nullptr) {
+            nextData = *next;
+            needUpdateNext = true;
+        }
+
+        _delete_by_target(target);
+
+        return needUpdateNext ? find(nextData) : next;
     }
 
     int height() const {
@@ -137,16 +161,6 @@ public: // range-for and iterator
 protected:
     CMP _mCmp;
 
-    int _height(typename _Node::LinkType *root) {
-        if (root == nullptr)
-            return 0;
-        return _Node::to_node(root)->data.height;
-    }
-
-    int _balance_factor(typename _Node::LinkType *root) {
-        return root == nullptr ? 0 : _height(root->left) - _height(root->right);
-    }
-
     typename _Node::LinkType * _check_and_balance(typename _Node::LinkType *root) {
         int balance = _balance_factor(root);
         if (balance > 1) { // need r-rotate
@@ -163,16 +177,39 @@ protected:
         return root;
     }
 
-    typename _Node::LinkType * _insert(typename _Node::LinkType *root, const T &element) {
+    void _rebalance_after_delete(typename _Node::LinkType *subTree) {
+        while (subTree != nullptr) {
+            // bottom-up balance
+            auto parent = subTree->parent;
+            auto newSubTree = _check_and_balance(subTree);
+
+            if (parent != nullptr) {
+                if (parent->left == subTree) {
+                    parent->left = newSubTree;
+                } else {
+                    parent->right = newSubTree;
+                }
+                _update_height(parent);
+            } else if (newSubTree != subTree) {
+                __BinaryTree::_update_root(newSubTree);
+            }
+
+            subTree = parent;
+        }
+    }
+
+    typename _Node::LinkType *
+    _insert(typename _Node::LinkType *root, const T &element, typename _Node::LinkType *parent = nullptr) {
         _Node *rootNode = nullptr;
         if (root == nullptr) { // create node
             rootNode = _AllocNode::allocate();
             dstruct::construct(rootNode, _Node(_AVLData<T>(element)));
             root = _Node::to_link(rootNode);
+            root->parent = parent;
         } else {
             rootNode = _Node::to_node(root);
             if (_mCmp(element, rootNode->data.val)) {
-                root->left = _insert(root->left, element);
+                root->left = _insert(root->left, element, root);
                 if (_height(root->left) - _height(root->right) == 2) {
                     if (_mCmp(_Node::to_node(root->left)->data.val, element)) { // LR: double-rotate
                         root->left = _left_rotate(root->left);
@@ -180,7 +217,7 @@ protected:
                     root = _right_rotate(root);
                 }
             } else if (_mCmp(rootNode->data.val, element)) {
-                root->right = _insert(root->right, element);
+                root->right = _insert(root->right, element, root);
                 if (_height(root->right) - _height(root->left) == 2) {
                     if (_mCmp(element, _Node::to_node(root->right)->data.val)) { // RL: double-rotate
                         root->right = _right_rotate(root->right);
@@ -193,10 +230,62 @@ protected:
             }
         }
 
-        rootNode = _Node::to_node(root); // update, if root changed
-        rootNode->data.height = dstruct::max(_height(rootNode->link.left), _height(rootNode->link.right)) + 1;
+        _update_height(root); // update when root changed
 
         return root;
+    }
+
+    typename _Node::LinkType * _delete_by_target(typename _Node::LinkType *target) {
+        if (target == nullptr) {
+            return nullptr;
+        }
+
+        auto parent = target->parent;
+        auto leftChild = target->left;
+        auto rightChild = target->right;
+
+        if (leftChild == nullptr && rightChild == nullptr) {
+            // Case 1: Node has no children
+            if (parent != nullptr) {
+                if (parent->left == target) {
+                    parent->left = nullptr;
+                } else {
+                    parent->right = nullptr;
+                }
+                _update_height(parent);
+                _rebalance_after_delete(parent);
+            }
+
+            _real_delete(target);
+
+            return nullptr;
+        } else if (leftChild != nullptr && rightChild != nullptr) {
+            // Case 3: Node has two children
+            auto successor = __BinaryTree::first_node(rightChild);
+            // TODO: optimize -> workaround by remove const
+            // data by dynamic-alloc, isn't Const-Data-Area so not lead to UB
+            using NoConstTPtr = typename RemoveConst<decltype(_Node::to_node(target)->data.val)>::Type *;
+            NoConstTPtr valPtr =  const_cast<NoConstTPtr>(&(_Node::to_node(target)->data.val));
+            *valPtr = _Node::to_node(successor)->data.val;
+            return _delete_by_target(successor);
+        } else {
+            // Case 2: Node has one child
+            auto child = (leftChild != nullptr) ? leftChild : rightChild;
+            child->parent = parent;
+            if (parent != nullptr) {
+                if (parent->left == target) {
+                    parent->left = child;
+                } else {
+                    parent->right = child;
+                }
+                _update_height(parent);
+                _rebalance_after_delete(parent);
+            }
+
+            _real_delete(target);
+
+            return child;
+        }
     }
 
     typename _Node::LinkType * _delete(typename _Node::LinkType *root, const T &obj) {
@@ -210,10 +299,7 @@ protected:
             // l and r isn't nullptr, need to find leaf-node(r-side)
             if (nullptr != root->left && nullptr != root->right) {
                 // step1: find right-bot
-                typename _Node::LinkType *tmp = root->right;
-                while (nullptr == tmp->left) {
-                    tmp = tmp->left;
-                }
+                auto tmp = __BinaryTree::first_node(root->right);
                 // step2: move val, and del obj from nPtr->data change to tmpPtr->data
                 _Node *tmpPtr = _Node::to_node(tmp);
                 nPtr->data = tmpPtr->data;
@@ -227,19 +313,42 @@ protected:
                     subTree = root->left;
                 }
 
-                if (subTree) subTree->parent = root->parent;
+                if (subTree) {
+                    subTree->parent = root->parent;
+                }
 
-                // real delete
-                dstruct::destroy(nPtr);
-                _AllocNode::deallocate(nPtr);
-                __BinaryTree::_mSize--;
+                _real_delete(root);
+
                 return subTree; // Note: only need return sub-tree directly
             }
         }
 
-        nPtr->data.height = dstruct::max(_height(nPtr->link.left), _height(nPtr->link.right)) + 1;
+        _update_height(root);
 
         return _check_and_balance(root);
+    }
+
+protected: // helper
+    int _height(typename _Node::LinkType *root) {
+        if (root == nullptr)
+            return 0;
+        return _Node::to_node(root)->data.height;
+    }
+
+    void _update_height(typename _Node::LinkType *node) {
+        int height = dstruct::max(_height(node->left), _height(node->right)) + 1;
+        _Node::to_node(node)->data.height = height;
+    }
+
+    int _balance_factor(typename _Node::LinkType *root) {
+        return root == nullptr ? 0 : _height(root->left) - _height(root->right);
+    }
+
+    void _real_delete(typename _Node::LinkType *linkPtr) {
+        auto nodePtr = _Node::to_node(linkPtr);
+        dstruct::destroy(nodePtr);
+        _AllocNode::deallocate(nodePtr);
+        __BinaryTree::_mSize--;
     }
 
     typename _Node::LinkType * _left_rotate(typename _Node::LinkType *root) {

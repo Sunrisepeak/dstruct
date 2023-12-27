@@ -11,7 +11,6 @@
 #define __BINARY_SEARCH_TREE_BASE_HPP__DSTRUCT
 
 #include <core/ds/tree/EmbeddedBinaryTree.hpp>
-#include <stdio.h>
 
 namespace dstruct {
 

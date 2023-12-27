@@ -41,7 +41,7 @@ public: // big five
 
     DSTRUCT_COPY_SEMANTICS(BinarySearchTree) {
         __BinaryTree::clear();
-        __BinaryTree::_mRootPtr = __BinaryTree::copy_tree(ds._mRootPtr);
+        __BinaryTree::_mRootPtr = __BinaryTree::copy(ds._mRootPtr);
         __BinaryTree::_mSize = ds._mSize;
         _mCmp = ds._mCmp;
         return *this;
@@ -64,18 +64,8 @@ public: // big five
 
     ~BinarySearchTree() = default;
 
-public:
+public: // push/pop
 
-    typename BinarySearchTree::ConstIteratorType
-    find(const T &obj) const {
-        auto target = BinarySearchTreeBase<T, CMP>::_find(_Node::to_link(__BinaryTree::_mRootPtr), obj, _mCmp);
-        return typename BinarySearchTree::ConstIteratorType(
-            _create_iterator(target, TraversalType::InOrder),
-            true
-        );
-    }
-
-    // push/pop
     void push(const T &obj) {
         auto tree = _insert(obj);
         if (__BinaryTree::_mRootPtr == nullptr)
@@ -90,6 +80,16 @@ public:
             __BinaryTree::_update_root(root);
         }
         // _mSize--; in _try_to_delete
+    }
+
+public:
+    typename BinarySearchTree::ConstIteratorType
+    find(const T &obj) const {
+        auto target = BinarySearchTreeBase<T, CMP>::_find(_Node::to_link(__BinaryTree::_mRootPtr), obj, _mCmp);
+        return typename BinarySearchTree::ConstIteratorType(
+            _create_iterator(target, TraversalType::InOrder),
+            true
+        );
     }
 
     typename BinarySearchTree::ConstIteratorType
