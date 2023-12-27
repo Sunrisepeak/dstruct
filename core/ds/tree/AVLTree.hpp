@@ -19,12 +19,68 @@ template <typename T>
 struct _AVLData {
     int height;
     T val;
+
+    _AVLData(const T &_val) : height { 0 }, val { _val } { }
+
+};
+
+// this is a wrap for CMP of T-Type
+template <typename T, typename CMP>
+struct _AVLDataCMP {
+    _AVLDataCMP(CMP cmp = CMP()) : __mCMP { cmp } {}
+
+    bool operator()(const _AVLData<T> &a, const _AVLData<T> &b) const {
+        return __mCMP(a.val, b.val);
+    }
+
+private:
+    CMP __mCMP;
+};
+
+template <typename T>
+class _AVLTreeIterator :  public DStructIteratorTypeSpec<const T /* only-read */> {
+private:
+    using __Self = _AVLTreeIterator;
+protected:
+    using _Node = tree::EmbeddedBinaryTreeNode<T>;
+    using _BinaryTreeConstIterator = tree::_BinaryTreeIterator<const _AVLData<T>>;
+public:
+    _AVLTreeIterator(const _BinaryTreeConstIterator &it) : _mIterator { it } {
+        __sync();
+    }
+
+public: // ForwardIterator
+    __Self& operator++() {
+        _mIterator++;
+        __sync();
+        return *this;
+    }
+
+    __Self operator++(int) {
+        __Self old = *this;
+        _mIterator++;
+        __sync();
+        return old;
+    }
+
+private:
+    void __sync() {
+        if (nullptr == _mIterator.operator->())
+            __Self::_mPointer = nullptr;
+        else
+            __Self::_mPointer = &(_mIterator->val);
+    }
+
+protected:
+    _BinaryTreeConstIterator _mIterator;
 };
 
 template <typename T, typename CMP, typename Alloc>
 class AVLTree : public tree::BinaryTree<_AVLData<T>, Alloc> {
+
     using __BinaryTree  = tree::BinaryTree<_AVLData<T>, Alloc>;
 public:
+    using ConstIteratorType = _AVLTreeIterator<T>;
     using TraversalType = typename __BinaryTree::TraversalType;
 protected:
     using _Node         = typename __BinaryTree::_Node;
@@ -34,7 +90,7 @@ public:
     AVLTree(CMP cmp = CMP()) : __BinaryTree { nullptr, 0 }, _mCmp { cmp } { }
 
 public:
-    void insert(const T &element) {
+    void push(const T &element) {
         auto root = _insert(_Node::to_link(__BinaryTree::_mRootPtr), element);
         __BinaryTree::_update_root(root);
         __BinaryTree::_mSize++;
@@ -48,8 +104,34 @@ public:
         }
     }
 
+    typename AVLTree::ConstIteratorType
+    find(const T &obj) const {
+        using CMPWrapper = _AVLDataCMP<T, CMP>; // TODO: optimize find(delete CMPWrapper?)
+        auto target = BinarySearchTreeBase<_AVLData<T>, CMPWrapper>::_find(
+            _Node::to_link(__BinaryTree::_mRootPtr),
+            obj,
+            CMPWrapper(_mCmp)
+        );
+        return typename __BinaryTree::ConstIteratorType(
+            __BinaryTree::_create_iterator(target, TraversalType::InOrder),
+            true
+        );
+    }
+
     int height() const {
         return __BinaryTree::_mRootPtr ? __BinaryTree::_mRootPtr->data.height : 0;
+    }
+
+public: // range-for and iterator
+
+    typename AVLTree::ConstIteratorType
+    begin(TraversalType ttype = TraversalType::InOrder) const {
+        return __BinaryTree::begin();
+    }
+
+    typename AVLTree::ConstIteratorType
+    end(TraversalType ttype = TraversalType::InOrder) const {
+        return __BinaryTree::end();
     }
 
 protected:
@@ -85,7 +167,7 @@ protected:
         _Node *rootNode = nullptr;
         if (root == nullptr) { // create node
             rootNode = _AllocNode::allocate();
-            dstruct::construct(rootNode, _Node(_AVLData<T>{0, element}));
+            dstruct::construct(rootNode, _Node(_AVLData<T>(element)));
             root = _Node::to_link(rootNode);
         } else {
             rootNode = _Node::to_node(root);
