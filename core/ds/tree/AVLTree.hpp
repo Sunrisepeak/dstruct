@@ -177,24 +177,24 @@ protected:
         return root;
     }
 
-    void _rebalance_after_delete(typename _Node::LinkType *subTree) {
-        while (subTree != nullptr) {
+    void _rebalance_after_delete(typename _Node::LinkType *root) {
+        while (root != nullptr) {
             // bottom-up balance
-            auto parent = subTree->parent;
-            auto newSubTree = _check_and_balance(subTree);
+            auto parent = root->parent;
+            auto newRoot = _check_and_balance(root);
 
             if (parent != nullptr) {
-                if (parent->left == subTree) {
-                    parent->left = newSubTree;
+                if (parent->left == root) {
+                    parent->left = newRoot;
                 } else {
-                    parent->right = newSubTree;
+                    parent->right = newRoot;
                 }
                 _update_height(parent);
-            } else if (newSubTree != subTree) {
-                __BinaryTree::_update_root(newSubTree);
+            } else if (newRoot != root) {
+                __BinaryTree::_update_root(newRoot);
             }
 
-            subTree = parent;
+            root = parent;
         }
     }
 
