@@ -28,12 +28,12 @@ int main() {
     // test for & sorted data access
     for (auto kv : charToIntMapTable) {
         DSTRUCT_ASSERT(kv.key == kv.value);
-        //std::cout << kv.key << " - " << kv.value << std::endl;
+        std::cout << kv.key << " - " << kv.value << std::endl;
     }
 
     // test auto-add & default value
     int sum = charToIntMapTable['a'] + charToIntMapTable['d'];
-    DSTRUCT_ASSERT(sum = charToIntMapTable['a']);
+    DSTRUCT_ASSERT(sum == charToIntMapTable['a']);
     DSTRUCT_ASSERT(charToIntMapTable.size() == 4);
 
     std::cout << "   pass" << std::endl;

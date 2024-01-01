@@ -103,7 +103,7 @@ public: // Access
 
 public:
     IteratorType find(const KeyType &key) {
-        return _mDStruct.find(KeyValueType { key, ValueType()});
+        return _mDStruct.find(KeyValueType { key, ValueType() });
     }
 
 public:
