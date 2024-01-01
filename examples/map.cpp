@@ -18,13 +18,14 @@ int main() {
 
     dstruct::Map<char, int> charToIntMapTable;
 
-    charToIntMapTable['a'] = 97;
     charToIntMapTable['b'] = 98;
+    charToIntMapTable['a'] = 97;
     charToIntMapTable['c'] = 99;
     charToIntMapTable['a'] = 'a';
 
     DSTRUCT_ASSERT(charToIntMapTable.size() == 3);
 
+    // test for & sorted data access
     for (auto kv : charToIntMapTable) {
         DSTRUCT_ASSERT(kv.key == kv.value);
         //std::cout << kv.key << " - " << kv.value << std::endl;
