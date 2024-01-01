@@ -84,12 +84,24 @@ template <typename T, typename CMP, typename Alloc>
 class AVLTree : public tree::BinaryTree<_AVLData<T>, Alloc> {
 
     using __BinaryTree  = tree::BinaryTree<_AVLData<T>, Alloc>;
-public:
-    using ConstIteratorType = _AVLTreeIterator<T>;
-    using TraversalType = typename __BinaryTree::TraversalType;
+
 protected:
     using _Node         = typename __BinaryTree::_Node;
     using _AllocNode    = typename __BinaryTree::_AllocNode;
+
+public:
+    using ValueType            = T;
+    using ReferenceType        = ValueType &;
+    using ConstReferenceType   = const ValueType &;
+    using PointerType          = ValueType *;
+    using ConstPointerType     = const ValueType *;
+    using SizeType             = unsigned long long;
+    using DifferenceType       = long long;
+
+public:
+    using IteratorType      = _AVLTreeIterator<T>;
+    using ConstIteratorType = _AVLTreeIterator<T>;
+    using TraversalType = typename __BinaryTree::TraversalType;
 
 public:
     AVLTree(CMP cmp = CMP()) : __BinaryTree { nullptr, 0 }, _mCmp { cmp } { }

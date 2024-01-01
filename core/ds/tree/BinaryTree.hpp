@@ -125,7 +125,13 @@ public:
         return _mSize == 0;
     }
 
-    size_t size() const {
+    typename BinaryTree::SizeType
+    size() const {
+        return _mSize;
+    }
+
+    typename BinaryTree::SizeType
+    capacity() const {
         return _mSize;
     }
 

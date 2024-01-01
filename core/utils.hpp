@@ -33,6 +33,12 @@ struct RemoveConst<const T> {
 };
 
 template <typename T>
+static typename RemoveConst<T>::Type &
+_remove_const(T &data) {
+    return *(const_cast<typename RemoveConst<T>::Type *>(&data));
+}
+
+template <typename T>
 struct IsPointer {
     const static bool value = false;
 };
