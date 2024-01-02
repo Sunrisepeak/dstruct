@@ -20,9 +20,10 @@ struct KeyValue {
     KeyType key;
     ValueType value;
 
+    KeyValue() : key(), value() { }
+
     KeyValue(const KeyType &_key, const ValueType &_value) :
         key { _key }, value { _value } { }
-
 };
 
 // KeyValue
@@ -84,8 +85,17 @@ public: // Capacity
     }
 
 public: // Access
+
+    void push(const KeyValueType &element) {
+        _mDStruct.push(element);
+    }
+
+    void pop(const KeyType &key) {
+        _mDStruct.pop({key, ValueType()});
+    }
+
     ConstReferenceType operator[](const KType &key) const {
-        auto target = find(KeyType { key, ValueType()});
+        auto target = find(key);
         DSTRUCT_ASSERT(target != _mDStruct.end());
         return target->value;
     }
@@ -104,6 +114,14 @@ public: // Access
 public:
     IteratorType find(const KeyType &key) {
         return _mDStruct.find(KeyValueType { key, ValueType() });
+    }
+
+    IteratorType erase(IteratorType &it) {
+        return _mDStruct.erase(it);
+    }
+
+    void clear() {
+        _mDStruct.clear();
     }
 
 public:
