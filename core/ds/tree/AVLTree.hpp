@@ -20,6 +20,8 @@ struct _AVLData {
     int height;
     T val;
 
+    _AVLData() : height { 0 }, val { } { }
+
     _AVLData(const T &_val) : height { 0 }, val { _val } { }
 
 };
@@ -80,16 +82,29 @@ protected:
     _BinaryTreeConstIterator _mIterator;
 };
 
+// TODO: support dup-data
 template <typename T, typename CMP, typename Alloc>
 class AVLTree : public tree::BinaryTree<_AVLData<T>, Alloc> {
 
     using __BinaryTree  = tree::BinaryTree<_AVLData<T>, Alloc>;
-public:
-    using ConstIteratorType = _AVLTreeIterator<T>;
-    using TraversalType = typename __BinaryTree::TraversalType;
+
 protected:
     using _Node         = typename __BinaryTree::_Node;
     using _AllocNode    = typename __BinaryTree::_AllocNode;
+
+public:
+    using ValueType            = T;
+    using ReferenceType        = ValueType &;
+    using ConstReferenceType   = const ValueType &;
+    using PointerType          = ValueType *;
+    using ConstPointerType     = const ValueType *;
+    using SizeType             = unsigned long long;
+    using DifferenceType       = long long;
+
+public:
+    using IteratorType      = _AVLTreeIterator<T>;
+    using ConstIteratorType = _AVLTreeIterator<T>;
+    using TraversalType = typename __BinaryTree::TraversalType;
 
 public:
     AVLTree(CMP cmp = CMP()) : __BinaryTree { nullptr, 0 }, _mCmp { cmp } { }
@@ -298,12 +313,11 @@ protected:
 
             // l and r isn't nullptr, need to find leaf-node(r-side)
             if (nullptr != root->left && nullptr != root->right) {
-                // step1: find right-bot
-                auto tmp = __BinaryTree::first_node(root->right);
-                // step2: move val, and del obj from nPtr->data change to tmpPtr->data
-                _Node *tmpPtr = _Node::to_node(tmp);
-                nPtr->data = tmpPtr->data;
-                root->right = _delete(root->right, tmpPtr->data.val); // retry
+                // step1: find first node in right-sub-tree
+                auto target = __BinaryTree::first_node(root->right);
+                // step2: swap root and target, then continue _delete
+                _swap_node(root, target);
+                root->right = _delete(root->right, obj); // retry
             } else {
                 typename _Node::LinkType *subTree = nullptr;
 
@@ -349,6 +363,43 @@ protected: // helper
         dstruct::destroy(nodePtr);
         _AllocNode::deallocate(nodePtr);
         __BinaryTree::_mSize--;
+    }
+
+    // only for support _delete operate
+    void _swap_node(typename _Node::LinkType * &a, typename _Node::LinkType * &b) {
+        auto aParent = a->parent;
+        auto aLeft = a->left;
+        auto aRight = a->right;
+        auto bParent = b->parent;
+        auto bLeft = b->left;
+        auto bRight = b->right;
+
+        /*
+                |       |
+                a       b
+               / \     / \
+        */
+
+        // reset aParent
+        if (aParent && aParent->left == a) aParent->left = b;
+        if (aParent && aParent->right == a) aParent->right = b;
+        b->parent = aParent;
+
+        // reset bParent
+        if (bParent && bParent->left == a) bParent->left = b;
+        if (bParent && bParent->right == a) bParent->right = b;
+        a->parent = bParent;
+
+        // reset a's l/r
+        if (aLeft) aLeft->parent = b;
+        if (aRight) aRight->parent = b;
+        b->left = aLeft; b->right = aRight;
+
+        // reset b's l/r
+        if (bLeft)  bLeft->parent = a;
+        if (bRight) bRight->parent = a;
+        a->left = bLeft; a->right = bRight;
+
     }
 
     typename _Node::LinkType * _left_rotate(typename _Node::LinkType *root) {

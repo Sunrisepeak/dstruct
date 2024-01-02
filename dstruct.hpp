@@ -44,6 +44,9 @@
 // set
 #include <core/ds/set/DisjointSet.hpp>
 
+// map
+#include <core/ds/Map.hpp>
+
 #include <core/algorithm.hpp>
 
 // other
@@ -106,6 +109,9 @@ namespace dstruct {
 
 // Set
     using UFSet = DisjointSet<dstruct::Alloc>;
+
+// Map
+    //...
 };
 
 #endif
