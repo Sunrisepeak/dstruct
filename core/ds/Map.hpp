@@ -84,7 +84,7 @@ public: // Capacity
         return _mDStruct.capacity();
     }
 
-public: // Access
+public: // Access & Modifiers
 
     void push(const KeyValueType &element) {
         _mDStruct.push(element);
