@@ -119,6 +119,27 @@ public:
         return next;
     }
 
+public: // range-for and iterator
+
+    typename BinarySearchTree::ConstIteratorType
+    begin(TraversalType ttype = TraversalType::InOrder) const {
+        return typename __BinaryTree::ConstIteratorType(
+            __BinaryTree::_create_iterator(
+                __BinaryTree::first_node(_Node::to_link(__BinaryTree::_mRootPtr), ttype),
+                ttype
+            ),
+            true
+        );
+    }
+
+    typename BinarySearchTree::ConstIteratorType
+    end(TraversalType ttype = TraversalType::InOrder) const {
+        return typename __BinaryTree::ConstIteratorType(
+            __BinaryTree::_create_iterator(nullptr, ttype),
+            true
+        );
+    }
+
 protected:
     CMP _mCmp;
 
