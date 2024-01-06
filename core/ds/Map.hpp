@@ -108,7 +108,9 @@ public: // Access & Modifiers
             return dstruct::_remove_const(find(key)->value);
         }
         // convert from const ValueType to ValueType - remove const
-        return dstruct::_remove_const(target->value);
+        // target: dstruct::_AVLTreeIterator<dstruct::KeyValue<const char, int> >
+        // Note: value original define haven't const, so this is not UB
+        return dstruct::_remove_const(find(key)->value);;
     }
 
 public:

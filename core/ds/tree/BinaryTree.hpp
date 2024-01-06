@@ -170,18 +170,12 @@ public: // algo
 
 public: // range-for and iterator
 
-    typename BinaryTree::ConstIteratorType begin(TraversalType ttype = TraversalType::InOrder) const {
-        return typename BinaryTree::ConstIteratorType(
-            _create_iterator(first_node(_Node::to_link(_mRootPtr), ttype), ttype),
-            true
-        );
+    typename BinaryTree::IteratorType begin(TraversalType ttype = TraversalType::InOrder) const {
+        return _create_iterator(first_node(_Node::to_link(_mRootPtr), ttype), ttype);
     }
 
-    typename BinaryTree::ConstIteratorType end(TraversalType ttype = TraversalType::InOrder) const {
-        return typename BinaryTree::ConstIteratorType(
-            _create_iterator(nullptr, ttype),
-            true
-        );
+    typename BinaryTree::IteratorType end(TraversalType ttype = TraversalType::InOrder) const {
+        return _create_iterator(nullptr, ttype);
     }
 
 public:

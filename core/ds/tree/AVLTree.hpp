@@ -40,14 +40,14 @@ private:
 };
 
 template <typename T>
-class _AVLTreeIterator :  public DStructIteratorTypeSpec<const T /* only-read */> {
+class _AVLTreeIterator :  public DStructIteratorTypeSpec<const T> {
 private:
     using __Self = _AVLTreeIterator;
 protected:
     using _Node = tree::EmbeddedBinaryTreeNode<T>;
-    using _BinaryTreeConstIterator = tree::_BinaryTreeIterator<const _AVLData<T>>;
+    using _BinaryTreeIterator = tree::_BinaryTreeIterator<_AVLData<T>>;
 public:
-    _AVLTreeIterator(const _BinaryTreeConstIterator &it) : _mIterator { it } {
+    _AVLTreeIterator(const _BinaryTreeIterator &it) : _mIterator { it } {
         __sync();
     }
 
@@ -79,7 +79,7 @@ private:
     }
 
 protected:
-    _BinaryTreeConstIterator _mIterator;
+    _BinaryTreeIterator _mIterator;
 };
 
 // TODO: support dup-data
@@ -134,10 +134,7 @@ public:
             obj,
             CMPWrapper(_mCmp)
         );
-        return typename __BinaryTree::ConstIteratorType(
-            __BinaryTree::_create_iterator(target, TraversalType::InOrder),
-            true
-        );
+        return __BinaryTree::_create_iterator(target, TraversalType::InOrder);
     }
 
     typename AVLTree::ConstIteratorType
@@ -277,11 +274,7 @@ protected:
         } else if (leftChild != nullptr && rightChild != nullptr) {
             // Case 3: Node has two children
             auto successor = __BinaryTree::first_node(rightChild);
-            // TODO: optimize -> workaround by remove const
-            // data by dynamic-alloc, isn't Const-Data-Area so not lead to UB
-            using NoConstTPtr = typename RemoveConst<decltype(_Node::to_node(target)->data.val)>::Type *;
-            NoConstTPtr valPtr =  const_cast<NoConstTPtr>(&(_Node::to_node(target)->data.val));
-            *valPtr = _Node::to_node(successor)->data.val;
+            _swap_node(target, successor);
             return _delete_by_target(successor);
         } else {
             // Case 2: Node has one child
@@ -365,8 +358,12 @@ protected: // helper
         __BinaryTree::_mSize--;
     }
 
-    // only for support _delete operate
+    // only for support _delete / _delete_by_target operate
     void _swap_node(typename _Node::LinkType * &a, typename _Node::LinkType * &b) {
+
+        // Ensure that a is the ancestor node of b
+        if (a->parent == b) dstruct::swap(a, b);
+
         auto aParent = a->parent;
         auto aLeft = a->left;
         auto aRight = a->right;
@@ -374,31 +371,72 @@ protected: // helper
         auto bLeft = b->left;
         auto bRight = b->right;
 
-        /*
+        if (bParent == a) {
+
+            b->parent = aParent;
+
+            if (a->right == b) {
+                // reset b 2 
+                b->left = aLeft;
+                b->right = a;
+    
+                if (aLeft) aLeft->parent = b;   // 6
+
+            } else {
+                // reset b 2 
+                b->left = a;
+                b->right = aRight;
+
+                if (aRight) aRight->parent = b;   // 6
+            }
+
+            // reset a 1
+            a->right = bRight;
+            a->left = bLeft;
+            a->parent = b;
+
+            // aParent 3
+            if (aParent && aParent->left == a) aParent->left = b;
+            if (aParent && aParent->right == a) aParent->right = b;
+            // bParent -
+            if (bRight) bRight->parent = a; // 4
+            if (bLeft) bLeft->parent = a;   // 5
+
+        } else {
+            /*
                 |       |
                 a       b
                / \     / \
-        */
+            */
 
-        // reset aParent
-        if (aParent && aParent->left == a) aParent->left = b;
-        if (aParent && aParent->right == a) aParent->right = b;
-        b->parent = aParent;
+            // reset aParent
+            if (aParent && aParent->left == a) aParent->left = b;
+            if (aParent && aParent->right == a) aParent->right = b;
+            b->parent = aParent;
 
-        // reset bParent
-        if (bParent && bParent->left == a) bParent->left = b;
-        if (bParent && bParent->right == a) bParent->right = b;
-        a->parent = bParent;
+            // reset bParent
+            if (bParent && bParent->left == b) bParent->left = a;
+            if (bParent && bParent->right == b) bParent->right = a;
+            a->parent = bParent;
 
-        // reset a's l/r
-        if (aLeft) aLeft->parent = b;
-        if (aRight) aRight->parent = b;
-        b->left = aLeft; b->right = aRight;
+            // reset a's l/r
+            if (aLeft) aLeft->parent = b;
+            if (aRight) aRight->parent = b;
+            b->left = aLeft; b->right = aRight;
 
-        // reset b's l/r
-        if (bLeft)  bLeft->parent = a;
-        if (bRight) bRight->parent = a;
-        a->left = bLeft; a->right = bRight;
+            // reset b's l/r
+            if (bLeft)  bLeft->parent = a;
+            if (bRight) bRight->parent = a;
+            a->left = bLeft; a->right = bRight;
+        }
+
+        // swap height
+        dstruct::swap(_Node::to_node(a)->data.height, _Node::to_node(b)->data.height);
+        dstruct::swap(a, b);
+
+        // update root if root changed
+        if (a->parent == nullptr) __BinaryTree::_update_root(a);
+        if (b->parent == nullptr) __BinaryTree::_update_root(b);
 
     }
 
