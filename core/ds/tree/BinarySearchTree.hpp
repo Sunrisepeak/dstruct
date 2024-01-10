@@ -87,7 +87,7 @@ public:
     find(const T &obj) const {
         auto target = BinarySearchTreeBase<T, CMP>::_find(_Node::to_link(__BinaryTree::_mRootPtr), obj, _mCmp);
         return typename BinarySearchTree::ConstIteratorType(
-            _create_iterator(target, TraversalType::InOrder),
+            __BinaryTree::_create_iterator(target, TraversalType::InOrder),
             true
         );
     }
