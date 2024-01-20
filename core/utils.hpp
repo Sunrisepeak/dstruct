@@ -81,8 +81,19 @@ struct greater<T *> {
 };
 
 template <typename T>
-static typename RemoveReference<T>::Type&& move(T&& arg) {
+static typename RemoveReference<T>::Type&& move(T&& arg) noexcept {
     return static_cast<typename RemoveReference<T>::Type&&>(arg);
+}
+
+
+template<typename T>
+static constexpr T&& forward(typename RemoveReference<T>::Type&& arg) noexcept {
+/*
+    // Ref GNU-Version
+    static_assert(!std::is_lvalue_reference<T>::value,
+    "std::forward must not be used to convert an rvalue to an lvalue");
+*/
+    return static_cast<T&&>(arg);
 }
 
 template <typename T>
