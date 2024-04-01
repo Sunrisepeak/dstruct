@@ -158,40 +158,55 @@ public: // iterator
 public:
     void resize(size_t n) {
         PointerType oldC = _mC;
-        if (n == 0) _mC = nullptr;
-        else _mC = Vector::_Alloc::allocate(n);
-        for (int i = 0; i < _mSize; i++) {
-            if (i < n) // TODO: use move by check type-tag
-                dstruct::construct(_mC + i, oldC[i]);
-            dstruct::destroy(oldC + i);
-        }
-        if (_mCapacity) {
-            DSTRUCT_ASSERT(oldC != nullptr);
+
+        if (n == 0)
+            _mC = nullptr;
+        else
+            _mC = Vector::_Alloc::allocate(n);
+
+        if (oldC) {
+            DSTRUCT_ASSERT(_mCapacity != 0);
+            for (int i = 0; i < _mSize; i++) {
+                if (i < n) // TODO: use move by check type-tag
+                    dstruct::construct(_mC + i, oldC[i]);
+                dstruct::destroy(oldC + i);
+            }
             Vector::_Alloc::deallocate(oldC, _mCapacity);
         }
+
         _mCapacity = n;
+
         if (n < _mSize)
             _mSize = n;
     }
 
     void resize(size_t n, ConstReferenceType element) {
+
+        if (n == 0) {
+            resize(0);
+            return;
+        }
+
         // alloc
         PointerType oldC = _mC;
         _mC = Vector::_Alloc::allocate(n);
 
         // release
-        for (int i = 0; i < _mSize; i++) {
-            if (i < n) // TODO: use move by check type-tag
-                dstruct::construct(_mC + i, oldC[i]);
-            dstruct::destroy(oldC + i);
+        if (oldC) {
+            for (int i = 0; i < _mSize; i++) {
+                if (i < n) // TODO: use move by check type-tag
+                    dstruct::construct(_mC + i, oldC[i]);
+                dstruct::destroy(oldC + i);
+            }
+            Vector::_Alloc::deallocate(oldC, _mCapacity);
         }
-        Vector::_Alloc::deallocate(oldC, _mCapacity);
 
         // set
-        _mCapacity = _mSize = n;
-        for (int i = n; i < _mSize; i++) {
+        for (int i = _mSize; i < n; i++) {
             dstruct::construct(_mC + i, element);
         }
+
+        _mCapacity = _mSize = n;
     }
 
 protected: // data member

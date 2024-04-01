@@ -65,7 +65,7 @@ static void test_arr_destroy() {
 
     { // test auto
         dstruct::Array<Destory, 10> ds1;
-        dstruct::Array<Destory, 5> ds2(Destory());
+        dstruct::Array<Destory, 5> ds2{Destory()};
     }
 
     //std::cout << std::endl;
