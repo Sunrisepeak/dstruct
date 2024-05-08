@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DISJOINT_SET_HPP__DSTRUCT
-#define __DISJOINT_SET_HPP__DSTRUCT
+#ifndef DISJOINT_SET_HPP__DSTRUCT
+#define DISJOINT_SET_HPP__DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/array/Array.hpp>

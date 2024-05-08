@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DSTRUCT_STATIC_HPP__DSTRUCT
-#define __DSTRUCT_STATIC_HPP__DSTRUCT
+#ifndef DSTRUCT_STATIC_HPP__DSTRUCT
+#define DSTRUCT_STATIC_HPP__DSTRUCT
 
 #include <core/ds/Heap.hpp>
 

@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __TEST_BASE_HPP__DSTRUCT
-#define __TEST_BASE_HPP__DSTRUCT
+#ifndef TEST_BASE_HPP__DSTRUCT
+#define TEST_BASE_HPP__DSTRUCT
 
 //#include <iostream>
 #include <dstruct.hpp>

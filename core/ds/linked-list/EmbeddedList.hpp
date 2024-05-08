@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __EMBEDDED_LINKED_LIST_HPP__DSTRUCT
-#define __EMBEDDED_LINKED_LIST_HPP__DSTRUCT
+#ifndef EMBEDDED_LINKED_LIST_HPP__DSTRUCT
+#define EMBEDDED_LINKED_LIST_HPP__DSTRUCT
 
 namespace dstruct {
 

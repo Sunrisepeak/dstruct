@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __ITERATOR_HPP__DSTRUCT
-#define __ITERATOR_HPP__DSTRUCT
+#ifndef ITERATOR_HPP__DSTRUCT
+#define ITERATOR_HPP__DSTRUCT
 
 #include <spec/DStructSpec.hpp>
 

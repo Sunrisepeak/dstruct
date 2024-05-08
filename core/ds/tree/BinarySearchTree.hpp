@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __BINARY_SEARCH_TREE_HPP__DSTRUCT
-#define __BINARY_SEARCH_TREE_HPP__DSTRUCT
+#ifndef BINARY_SEARCH_TREE_HPP__DSTRUCT
+#define BINARY_SEARCH_TREE_HPP__DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/tree/EmbeddedBinaryTree.hpp>

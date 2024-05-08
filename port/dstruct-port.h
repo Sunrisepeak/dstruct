@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DSTRUCT_PORT_HPP__DSTRUCT
-#define __DSTRUCT_PORT_HPP__DSTRUCT
+#ifndef DSTRUCT_PORT_HPP__DSTRUCT
+#define DSTRUCT_PORT_HPP__DSTRUCT
 
 namespace dstruct {
 namespace port { // pls impl/port the alloc
@@ -35,10 +35,10 @@ struct Alloc {
 #include <port/libc/libc-dstruct-port.hpp>
 #endif
 
-#ifdef __DSTRUCT_PORT_ASSERT
-#define DSTRUCT_ASSERT(expr) __DSTRUCT_PORT_ASSERT(expr)
+#ifdef DSTRUCT_PORT_ASSERT
+#define DSTRUCT_ASSERT(expr) DSTRUCT_PORT_ASSERT(expr)
 #else
-#define DSTRUCT_ASSERT(expr) __DSTRUCT_CRASH(!(expr))
+#define DSTRUCT_ASSERT(expr) DSTRUCT_CRASH(!(expr))
 #endif
 
 struct DStructPlacementNewFlag { };

@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __LINKED_LIST_HPP__DSTRUCT
-#define __LINKED_LIST_HPP__DSTRUCT
+#ifndef LINKED_LIST_HPP__DSTRUCT
+#define LINKED_LIST_HPP__DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/linked-list/EmbeddedList.hpp>

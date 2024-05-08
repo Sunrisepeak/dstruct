@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DSTRUCT_HPP__DSTRUCT
-#define __DSTRUCT_HPP__DSTRUCT
+#ifndef DSTRUCT_HPP__DSTRUCT
+#define DSTRUCT_HPP__DSTRUCT
 
 //#define ENABLE_SMA
 

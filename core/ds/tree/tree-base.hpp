@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __TREE_BASE_HPP__DSTRUCT
-#define __TREE_BASE_HPP__DSTRUCT
+#ifndef TREE_BASE_HPP__DSTRUCT
+#define TREE_BASE_HPP__DSTRUCT
 
 namespace dstruct {
 

@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __SMA_DSTRUCT_PORT_HPP__DSTRUCT
-#define __SMA_DSTRUCT_PORT_HPP__DSTRUCT
+#ifndef SMA_DSTRUCT_PORT_HPP__DSTRUCT
+#define SMA_DSTRUCT_PORT_HPP__DSTRUCT
 
 //#define ENABLE_SMA_LOG
 //#define ENABLE_SMA_DUMP
@@ -53,7 +53,7 @@ static void deallocate(void *addr, int bytes) {
 #ifdef ENABLE_SMA_DUMP
     DefaultSMA::dump();
 #endif
-    __DSTRUCT_CRASH(DefaultSMA::deallocate(addr, bytes) == false);
+    DSTRUCT_CRASH(DefaultSMA::deallocate(addr, bytes) == false);
 #ifdef ENABLE_SMA_DUMP
     DefaultSMA::dump();
 #endif

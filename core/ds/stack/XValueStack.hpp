@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef ___XVALUE_STACK_HPP__DSTRUCT
-#define ___XVALUE_STACK_HPP__DSTRUCT
+#ifndef _XVALUE_STACK_HPP__DSTRUCT
+#define _XVALUE_STACK_HPP__DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/stack/Stack.hpp>

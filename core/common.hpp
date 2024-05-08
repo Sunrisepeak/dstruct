@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __COMMON_HPP__DSTRUCT
-#define __COMMON_HPP__DSTRUCT
+#ifndef COMMON_HPP__DSTRUCT
+#define COMMON_HPP__DSTRUCT
 
 // Don't modify this file easily
 #include <spec/DStructSpec.hpp>
@@ -53,7 +53,7 @@ public: \
 template <typename T>
 static T* construct(void *addr, const T& obj) noexcept {
     static DStructPlacementNewFlag placementNewFlag;
-    __DSTRUCT_CRASH(addr == nullptr);
+    DSTRUCT_CRASH(addr == nullptr);
     return new(addr, &placementNewFlag) T(obj); // use T's constructor(copy/spec)
 }
 
@@ -69,7 +69,7 @@ static T ** construct(void *addr, const T *obj) {
 
 template <>
 int * construct<int>(void *addr, const int& obj) noexcept {
-    __DSTRUCT_CRASH(addr == nullptr);
+    DSTRUCT_CRASH(addr == nullptr);
     *(reinterpret_cast<int *>(addr)) = obj;
     return reinterpret_cast<int *>(addr);
 }
@@ -82,7 +82,7 @@ static void destroy(T *addr) noexcept {
     delete(ptr, &placementNewFlag);
 */
     // method2, skip detele
-    __DSTRUCT_CRASH(addr == nullptr); // addr is nullptr, trigger crash
+    DSTRUCT_CRASH(addr == nullptr); // addr is nullptr, trigger crash
     addr->~T();
 }
 

@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __MAP_HPP__DSTRUCT
-#define __MAP_HPP__DSTRUCT
+#ifndef MAP_HPP__DSTRUCT
+#define MAP_HPP__DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/tree/AVLTree.hpp>

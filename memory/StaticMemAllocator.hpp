@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __STATIC_MEM_ALLOCATOR_HPP__DSTRUCT
-#define __STATIC_MEM_ALLOCATOR_HPP__DSTRUCT
+#ifndef STATIC_MEM_ALLOCATOR_HPP__DSTRUCT
+#define STATIC_MEM_ALLOCATOR_HPP__DSTRUCT
 
 #include <cstdio>
 // only use no-dependency and static data-structures
@@ -18,7 +18,7 @@
 namespace dstruct {
 
 #define SMA_MEM_ALIGN 8
-#define SMA_MEM_VERIFY(expr) __DSTRUCT_CRASH((expr) == nullptr)
+#define SMA_MEM_VERIFY(expr) DSTRUCT_CRASH((expr) == nullptr)
 #define SMA_ADDRESS_EQUAL(p1, p2) (reinterpret_cast<char *>(p1) == reinterpret_cast<char *>(p2))
 
 #ifndef SMA_LOGD
@@ -133,7 +133,7 @@ public: // mem-manager interface
 
         SMA_LOGD("\tfree-mem verify: %d == %d", _Instance()._mFreeMemSize, verifyFreeMemSize);
 
-        __DSTRUCT_CRASH(_Instance()._mFreeMemSize != verifyFreeMemSize);
+        DSTRUCT_CRASH(_Instance()._mFreeMemSize != verifyFreeMemSize);
     }
 
 protected:

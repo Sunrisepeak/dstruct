@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __AVL_TREE_HPP__DSTRUCT
-#define __AVL_TREE_HPP__DSTRUCT
+#ifndef AVL_TREE_HPP__DSTRUCT
+#define AVL_TREE_HPP__DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/tree/BinaryTree.hpp>

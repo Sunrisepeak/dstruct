@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __VECTOR_HPP__DSTRUCT
-#define __VECTOR_HPP__DSTRUCT
+#ifndef VECTOR_HPP__DSTRUCT
+#define VECTOR_HPP__DSTRUCT
 
 #include <core/common.hpp>
 

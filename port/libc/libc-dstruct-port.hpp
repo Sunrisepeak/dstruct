@@ -7,15 +7,15 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __LIBC_DSTRUCT_PORT_HPP__DSTRUCT
-#define __LIBC_DSTRUCT_PORT_HPP__DSTRUCT
+#ifndef LIBC_DSTRUCT_PORT_HPP__DSTRUCT
+#define LIBC_DSTRUCT_PORT_HPP__DSTRUCT
 
 #include <cstdlib>
 #include <cassert>
 
 #include <port/dstruct-port.h>
 
-#define __DSTRUCT_PORT_ASSERT(expr) assert(expr)
+#define DSTRUCT_PORT_ASSERT(expr) assert(expr)
 
 namespace dstruct {
 namespace port {

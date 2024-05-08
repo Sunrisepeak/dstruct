@@ -7,10 +7,10 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DSTRUCT_SPEC_HPP__DSTRUCT_V001
-#define __DSTRUCT_SPEC_HPP__DSTRUCT_V001
+#ifndef DSTRUCT_SPEC_HPP__DSTRUCT_V001
+#define DSTRUCT_SPEC_HPP__DSTRUCT_V001
 
-#define __DSTRUCT_CRASH(expr) \
+#define DSTRUCT_CRASH(expr) \
     if (expr) { \
         *(static_cast<volatile char *>(0)) = 'E'; \
     }
