@@ -20,7 +20,7 @@ template <typename T>
 class _BinaryTreeIterator : public DStructIteratorTypeSpec<T> {
     friend class _BinaryTreeIterator<const T>; // for const-it -> it
 private:
-    using __Self = _BinaryTreeIterator;
+    using Self = _BinaryTreeIterator;
 protected:
     using _Node = EmbeddedBinaryTreeNode<T>;
 public:
@@ -66,14 +66,14 @@ public: // bigfive
     }
 
 public: // ForwardIterator
-    __Self& operator++() {
+    Self& operator++() {
         _mTreeNodeLinkPtr = _mNextFunc(_mTreeNodeLinkPtr);
         __sync();
         return *this;
     }
 
-    __Self operator++(int) {
-        __Self old = *this;
+    Self operator++(int) {
+        Self old = *this;
         _mTreeNodeLinkPtr = _mNextFunc(_mTreeNodeLinkPtr);
         __sync();
         return old;
@@ -86,7 +86,7 @@ public:
 
 private:
     void __sync() {
-        __Self::_mPointer = &(_Node::to_node(_mTreeNodeLinkPtr)->data);
+        Self::_mPointer = &(_Node::to_node(_mTreeNodeLinkPtr)->data);
     }
 
 protected:

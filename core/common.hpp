@@ -35,17 +35,17 @@ public: \
     DStruct(const DStruct &ds) : DStruct() { *this = ds; } \
     DStruct & operator=(const DStruct &ds) { \
         if (this == &ds) return *this; \
-        return __dstruct_copy_sema(ds); \
+        return _dstruct_copy_sema(ds); \
     } \
-    DStruct & __dstruct_copy_sema(const DStruct &ds)
+    DStruct & _dstruct_copy_sema(const DStruct &ds)
 
 #define DSTRUCT_MOVE_SEMANTICS(DStruct) \
     DStruct(DStruct &&ds) : DStruct() { *this = dstruct::move(ds); } \
     DStruct & operator=(DStruct &&ds) { \
         if (this == &ds) return *this; \
-        return __dstruct_move_sema(dstruct::move(ds)); \
+        return _dstruct_move_sema(dstruct::move(ds)); \
     } \
-    DStruct & __dstruct_move_sema(DStruct &&ds)
+    DStruct & _dstruct_move_sema(DStruct &&ds)
 
 // TODO: Check placement new for primitive type(example pointer) and self-def type
 // https://en.cppreference.com/w/cpp/language/new

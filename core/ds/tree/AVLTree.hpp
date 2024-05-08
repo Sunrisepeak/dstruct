@@ -42,7 +42,7 @@ private:
 template <typename T>
 class _AVLTreeIterator :  public DStructIteratorTypeSpec<const T> {
 private:
-    using __Self = _AVLTreeIterator;
+    using Self = _AVLTreeIterator;
 protected:
     using _Node = tree::EmbeddedBinaryTreeNode<T>;
     using _BinaryTreeIterator = tree::_BinaryTreeIterator<_AVLData<T>>;
@@ -52,14 +52,14 @@ public:
     }
 
 public: // ForwardIterator
-    __Self& operator++() {
+    Self& operator++() {
         _mIterator++;
         __sync();
         return *this;
     }
 
-    __Self operator++(int) {
-        __Self old = *this;
+    Self operator++(int) {
+        Self old = *this;
         _mIterator++;
         __sync();
         return old;
@@ -73,9 +73,9 @@ public:
 private:
     void __sync() {
         if (nullptr == _mIterator.operator->())
-            __Self::_mPointer = nullptr;
+            Self::_mPointer = nullptr;
         else
-            __Self::_mPointer = &(_mIterator->val);
+            Self::_mPointer = &(_mIterator->val);
     }
 
 protected:

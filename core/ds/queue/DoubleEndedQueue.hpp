@@ -28,7 +28,7 @@ protected:
     using _Array         = dstruct::Array<T, ARR_SIZE>;
     using _ArrMapTable   = dstruct::Vector<_Array *>;
 private:
-    using __Self = _DoubleEndedQueueIterator;
+    using Self = _DoubleEndedQueueIterator;
 
 protected: // only for DoubleEndedQueue
     _DoubleEndedQueueIterator() : _mArrMapTablePtr { nullptr } { }
@@ -44,8 +44,8 @@ public:
     }
 
 
-    _DoubleEndedQueueIterator(const __Self &it) { *this = it; }
-    __Self & operator=(const __Self &it) {
+    _DoubleEndedQueueIterator(const Self &it) { *this = it; }
+    Self & operator=(const Self &it) {
         // copy
         _mCurrMapIndex = it._mCurrMapIndex;
         _mCurr = it._mCurr;
@@ -56,8 +56,8 @@ public:
         return *this;
     }
 
-    _DoubleEndedQueueIterator(__Self &&it) { *this = dstruct::move(it); }
-    __Self & operator=(__Self &&it) {
+    _DoubleEndedQueueIterator(Self &&it) { *this = dstruct::move(it); }
+    Self & operator=(Self &&it) {
         // move
         _mCurrMapIndex = it._mCurrMapIndex;
         _mCurr = it._mCurr;
@@ -88,7 +88,7 @@ public:
     }
 
 public: // ForwardIterator
-    __Self& operator++() {
+    Self& operator++() {
         static int cnt = 1;
         _mCurr++;
         if (_mCurr == (*_mArrMapTablePtr)[_mCurrMapIndex]->end()) {
@@ -100,14 +100,14 @@ public: // ForwardIterator
         return *this;
     }
 
-    __Self operator++(int) {
-        __Self oldSelf = *this;
+    Self operator++(int) {
+        Self oldSelf = *this;
         ++(*this);
         return oldSelf;
     }
 
 public: // BidirectionalIterator
-    __Self& operator--() {
+    Self& operator--() {
         if (_mCurr == (*_mArrMapTablePtr)[_mCurrMapIndex]->begin()) {
             _mCurr = (*_mArrMapTablePtr)[--_mCurrMapIndex]->end();
         }
@@ -116,27 +116,27 @@ public: // BidirectionalIterator
         return *this;
     }
 
-    __Self operator--(int) {
-        __Self oldSelf = *this;
+    Self operator--(int) {
+        Self oldSelf = *this;
         --(*this);
         return oldSelf;
     }
 
 public: // RandomIterator
-    __Self operator+(int n) const {
+    Self operator+(int n) const {
         if (n < 0) {
             return operator-(-n);
         }
-        __Self self = *this;
+        Self self = *this;
         while (n--) { self++; }
         return self;
     };
 
-    __Self operator-(int n) const {
+    Self operator-(int n) const {
         if (n < 0) {
             return operator+(-n);
         }
-        __Self self = *this;
+        Self self = *this;
         while (n--) { self--; }
         return self;
     };
@@ -144,7 +144,7 @@ public: // RandomIterator
 private:
     // update _mLNodePtr and _mPointer
     void __sync() {
-        __Self::_mPointer = _mCurr.operator->();
+        Self::_mPointer = _mCurr.operator->();
     }
 
 protected:

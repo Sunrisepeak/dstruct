@@ -74,16 +74,16 @@ public: // common type
 protected: // iterator category type
     using CategoryType         = Category;
 private:
-    using __Self               = DStructIteratorTypeSpec;
+    using Self               = DStructIteratorTypeSpec;
 
 /*
 public: // bigfive
-    __Self();
-    __Self(const __Self &);
-    __Self & operator=(const __Self&);
-    __Self(__Self &&);
-    __Self & operator=(__Self &&);
-    ~__Self();
+    Self();
+    Self(const Self &);
+    Self & operator=(const Self&);
+    Self(Self &&);
+    Self & operator=(Self &&);
+    ~Self();
 */
 
 // Interface Spec
@@ -95,16 +95,16 @@ public: // base op
 
 /* pls: according to your dstruct impl them
 public: // ForwardIterator
-    __Self& operator++();
-    __Self operator++(int);
+    Self& operator++();
+    Self operator++(int);
 public: // BidirectionalIterator
-    __Self& operator--();
-    __Self operator--(int);
+    Self& operator--();
+    Self operator--(int);
 public: // RandomIterator
-    __Self operator+(int) const;
-    __Self operator-(int) const;
-    __Self operator+=(int) const;
-    __Self operator-=(int) const;
+    Self operator+(int) const;
+    Self operator-(int) const;
+    Self operator+=(int) const;
+    Self operator-=(int) const;
 */
 
 // Member Var Spec
@@ -132,16 +132,16 @@ public: // iterator type
 protected: // alloc type
     using _Alloc               = AllocSpec<T, Alloc>;
 private:
-    using __Self               = DStructTypeSpec;
+    using Self               = DStructTypeSpec;
 
 /* pls: according to your dstruct impl them
 public: // bigfive
-    __Self();
-    __Self(const __Self &);
-    __Self & operator=(const __Self&);
-    __Self(__Self &&);
-    __Self & operator=(__Self &&)；
-    ~__Self();
+    Self();
+    Self(const Self &);
+    Self & operator=(const Self&);
+    Self(Self &&);
+    Self & operator=(Self &&)；
+    ~Self();
 
 // Interface Spec
 public: // Capacity

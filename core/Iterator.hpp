@@ -36,29 +36,29 @@ operator-(const PrimitiveIterator<T>&, const PrimitiveIterator<T>&);
 template <typename T>
 class PrimitiveIterator : public DStructIteratorTypeSpec<T, RandomIterator> {
 private:
-    using __Self = PrimitiveIterator;
+    using Self = PrimitiveIterator;
     /* 1. */ // friend typename PrimitiveIterator<T>::DifferenceType operator-(const PrimitiveIterator<T>&, const PrimitiveIterator<T>&); // compiler err?
     /* 2. */ //template <typename _T> friend typename PrimitiveIterator<_T>::DifferenceType operator-(const PrimitiveIterator<_T>&, const PrimitiveIterator<_T>&); // ok, but range issue
-    friend typename __Self::DifferenceType
-    operator-<T>(const __Self&, const __Self&); // explicity template-instance for T
+    friend typename Self::DifferenceType
+    operator-<T>(const Self&, const Self&); // explicity template-instance for T
 
 public:
     PrimitiveIterator() = default;
     PrimitiveIterator(T *ptr) : PrimitiveIterator() {
-        __Self::_mPointer = ptr;
+        Self::_mPointer = ptr;
     }
 
 public: // ForwardIterator
-    __Self& operator++() { __Self::_mPointer++; return *this; };
-    __Self operator++(int) { return __Self::_mPointer++; };
+    Self& operator++() { Self::_mPointer++; return *this; };
+    Self operator++(int) { return Self::_mPointer++; };
 public: // BidirectionalIterator
-    __Self& operator--() { __Self::_mPointer--; return *this; };
-    __Self operator--(int) { return __Self::_mPointer--; };
+    Self& operator--() { Self::_mPointer--; return *this; };
+    Self operator--(int) { return Self::_mPointer--; };
 public: // RandomIterator
-    __Self operator+(const int &n) const { return __Self::_mPointer + n; };
-    __Self operator-(const int &n) const { return __Self::_mPointer - n; };
-//    typename __Self::ReferenceType operator[](int index) { return __Self::_mPointer[index]; }
-//    typename __Self::ValueType operator[](int index) const { return __Self::_mPointer[index]; };
+    Self operator+(const int &n) const { return Self::_mPointer + n; };
+    Self operator-(const int &n) const { return Self::_mPointer - n; };
+//    typename Self::ReferenceType operator[](int index) { return Self::_mPointer[index]; }
+//    typename Self::ValueType operator[](int index) const { return Self::_mPointer[index]; };
 };
 
 

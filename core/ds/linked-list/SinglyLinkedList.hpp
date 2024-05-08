@@ -21,17 +21,17 @@ class _SinglyLinkListIterator : public DStructIteratorTypeSpec<T> {
 public:
     using _Node  = _EmbeddedListNode<T, _SinglyLink>;
 private:
-    using __Self = _SinglyLinkListIterator;
+    using Self = _SinglyLinkListIterator;
 public: // big five
     _SinglyLinkListIterator(typename _Node::LinkType *linkPtr) {
         __sync(linkPtr);
     }
 public: // ForwardIterator
-    __Self& operator++() { 
+    Self& operator++() { 
         __sync(_mLinkPtr->next);
         return *this;
     };
-    __Self operator++(int) {
+    Self operator++(int) {
         auto oldLinkPtr = _mLinkPtr;
         __sync(_mLinkPtr->next);
         return oldLinkPtr;
@@ -40,7 +40,7 @@ private:
     // update _mLinkPtr and _mPointer
     void __sync(typename _Node::LinkType *ptr) {
         _mLinkPtr = ptr;
-        __Self::_mPointer = &(_Node::to_node(_mLinkPtr)->data);
+        Self::_mPointer = &(_Node::to_node(_mLinkPtr)->data);
     }
 protected:
     typename _Node::LinkType *_mLinkPtr;

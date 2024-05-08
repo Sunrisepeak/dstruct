@@ -21,7 +21,7 @@ class _DoublyLinkListIterator : public DStructIteratorTypeSpec<T, BidirectionalI
 public:
     using _Node  = _EmbeddedListNode<T, _DoublyLink>;
 private:
-    using __Self = _DoublyLinkListIterator;
+    using Self = _DoublyLinkListIterator;
 
 public: // big five
     _DoublyLinkListIterator(typename _Node::LinkType *linkPtr) {
@@ -29,21 +29,21 @@ public: // big five
     }
 
 public: // ForwardIterator
-    __Self& operator++() { 
+    Self& operator++() { 
         __sync(_mLinkPtr->next);
         return *this;
     };
-    __Self operator++(int) {
+    Self operator++(int) {
         auto oldLinkPtr = _mLinkPtr;
         __sync(_mLinkPtr->next);
         return oldLinkPtr;
     };
 public: // BidirectionalIterator
-    __Self& operator--() {
+    Self& operator--() {
         __sync(_mLinkPtr->prev);
         return *this;
     };
-    __Self operator--(int) {
+    Self operator--(int) {
         auto oldLinkPtr = _mLinkPtr;
         __sync(_mLinkPtr->prev);
         return oldLinkPtr;
@@ -52,7 +52,7 @@ private:
     // update _mLinkPtr and _mPointer
     void __sync(typename _Node::LinkType *ptr) {
         _mLinkPtr = ptr;
-        __Self::_mPointer = &(_Node::to_node(_mLinkPtr)->data);
+        Self::_mPointer = &(_Node::to_node(_mLinkPtr)->data);
     }
 protected:
     typename _Node::LinkType *_mLinkPtr;
