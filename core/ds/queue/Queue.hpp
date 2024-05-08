@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef QUEUE_HPP__DSTRUCT
-#define QUEUE_HPP__DSTRUCT
+#ifndef QUEUE_HPP_DSTRUCT
+#define QUEUE_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/queue/DoubleEndedQueue.hpp>

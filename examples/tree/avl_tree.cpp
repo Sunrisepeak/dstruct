@@ -14,7 +14,7 @@ using std::queue;
 
 #include <dstruct.hpp>
 
-using Node = dstruct::tree::EmbeddedBinaryTreeNode<dstruct::_AVLData<int>>;
+using Node = dstruct::tree::EmbeddedBinaryTreeNode<dstruct::AVLData_<int>>;
 
 void printTreeStructure(Node::LinkType *root) {
     if (!root) {
@@ -82,7 +82,7 @@ int main() {
 
         int sum { 0 };
         avlTree.traversal(
-            [&](dstruct::_AVLData<int> data) {
+            [&](dstruct::AVLData_<int> data) {
                 sum++;
             },
             decltype(avlTree)::TraversalType::PreOrder
@@ -92,7 +92,7 @@ int main() {
 
     }
 
-    // test _AVLData
+    // test AVLData_
     {
         struct A {
             int a;

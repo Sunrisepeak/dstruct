@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef ARRAY_HPP__DSTRUCT
-#define ARRAY_HPP__DSTRUCT
+#ifndef ARRAY_HPP_DSTRUCT
+#define ARRAY_HPP_DSTRUCT
 
 #include <spec/DStructSpec.hpp>
 #include <core/Iterator.hpp>
@@ -17,7 +17,7 @@
 namespace dstruct {
 
 template <typename T, size_t N>
-class Array : public _DStructTypeSpec<T, dstruct::Alloc /*unused*/ , PrimitiveIterator> {
+class Array : public DStructTypeSpec_<T, dstruct::Alloc /*unused*/ , PrimitiveIterator> {
 
 public: // big Five
 
@@ -105,4 +105,4 @@ protected:
 
 
 
-#endif /* __ARRAY_HPP__TSL */
+#endif

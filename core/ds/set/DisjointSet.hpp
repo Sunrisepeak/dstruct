@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef DISJOINT_SET_HPP__DSTRUCT
-#define DISJOINT_SET_HPP__DSTRUCT
+#ifndef DISJOINT_SET_HPP_DSTRUCT
+#define DISJOINT_SET_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/array/Array.hpp>
@@ -19,9 +19,9 @@ namespace dstruct {
 template <typename Alloc>
 class DisjointSet {
 private:
-    using __Array = dstruct::Vector<int, Alloc>;
+    using Array_e = dstruct::Vector<int, Alloc>;
 
-    DSTRUCT_TYPE_SPEC_HELPER(__Array)
+    DSTRUCT_TYPE_SPEC_HELPER(Array_e)
 
 public:
     DisjointSet(int n) : mArray_d(n, -1) { }
@@ -82,7 +82,7 @@ public:
     }
 
 protected:
-    __Array mArray_d;
+    Array_e mArray_d;
 };
 
 }

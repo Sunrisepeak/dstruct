@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __HEAP_HPP__DSTRUCT
-#define __HEAP_HPP__DSTRUCT
+#ifndef HEAP_HPP_DSTRUCT
+#define HEAP_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/array/Vector.hpp>
@@ -20,9 +20,9 @@ template <typename T, typename Compare, typename Alloc = dstruct::Alloc>
 class Heap {
 
 protected:
-    using _Heap = dstruct::Vector<T, Alloc>;
+    using Heap_ = dstruct::Vector<T, Alloc>;
 
-    DSTRUCT_TYPE_SPEC_HELPER(_Heap)
+    DSTRUCT_TYPE_SPEC_HELPER(Heap_)
 
 public:
     Heap(const Compare &cmp = Compare(), const T &obj = T()) :
@@ -130,7 +130,7 @@ public: // pub static
 
 protected:
     Compare mCmp_d;
-    _Heap mHeap_d;
+    Heap_ mHeap_d;
 
     void _adjust_up() {
         int nodeIndex = mHeap_d.size() - 1;

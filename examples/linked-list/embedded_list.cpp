@@ -12,15 +12,15 @@
 #include <dstruct.hpp>
 
 // int: embeded singly linked list methods sets
-using IntESList = dstruct::EListNode<int, dstruct::_SinglyLink>;
+using IntESList = dstruct::EListNode<int, dstruct::SinglyLink_>;
 
 int main() {
 
     std::cout << "\nTesting: " << __FILE__;
 
-    dstruct::_EmbeddedListNode<int/*, dstruct::DLink*/> _eDLinkedList;
+    dstruct::EmbeddedListNode_<int/*, dstruct::DLink*/> list;
 
-    dstruct::EListNode<int, dstruct::_SinglyLink> *intESList = new IntESList(); // list or head-node
+    dstruct::EListNode<int, dstruct::SinglyLink_> *intESList = new IntESList(); // list or head-node
 
     IntESList::init(intESList);
 
@@ -28,7 +28,7 @@ int main() {
 
     // add element
     for (int i = 0; i < 10; i++) {
-        auto node = new dstruct::EListNode<int, dstruct::_SinglyLink>();
+        auto node = new dstruct::EListNode<int, dstruct::SinglyLink_>();
         node->data = i;
         IntESList::add(intESList, node);
     }

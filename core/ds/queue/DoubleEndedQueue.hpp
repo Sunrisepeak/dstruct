@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef DOUBLE_ENDED_QUEUE_HPP__DSTRUCT
-#define DOUBLE_ENDED_QUEUE_HPP__DSTRUCT
+#ifndef DOUBLE_ENDED_QUEUE_HPP_DSTRUCT
+#define DOUBLE_ENDED_QUEUE_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/algorithm.hpp>
@@ -21,42 +21,42 @@ template <typename T, size_t ARR_SIZE, typename Alloc = dstruct::Alloc>
 class DoubleEndedQueue;
 
 template <typename T, size_t ARR_SIZE>
-class _DoubleEndedQueueIterator : public DStructIteratorTypeSpec<T, RandomIterator> {
+class DoubleEndedQueueIterator_ : public DStructIteratorTypeSpec<T, RandomIterator> {
     friend class DoubleEndedQueue<T, ARR_SIZE, dstruct::Alloc>;
-    friend class _DoubleEndedQueueIterator<const T, ARR_SIZE>; // for it -> const-it
+    friend class DoubleEndedQueueIterator_<const T, ARR_SIZE>; // for it -> const-it
 protected:
-    using _Array         = dstruct::Array<T, ARR_SIZE>;
-    using _ArrMapTable   = dstruct::Vector<_Array *>;
+    using Array_         = dstruct::Array<T, ARR_SIZE>;
+    using ArrMapTable_   = dstruct::Vector<Array_ *>;
 private:
-    using Self = _DoubleEndedQueueIterator;
+    using Self = DoubleEndedQueueIterator_;
 
 protected: // only for DoubleEndedQueue
-    _DoubleEndedQueueIterator() : mArrMapTablePtr_d { nullptr } { }
+    DoubleEndedQueueIterator_() : mArrMapTablePtr_d { nullptr } { }
 
 public:
-    _DoubleEndedQueueIterator(
+    DoubleEndedQueueIterator_(
         size_t mapIndex,
         size_t arrIndex,
-        _ArrMapTable *mapTablePtr
+        ArrMapTable_ *mapTablePtr
     ) : mCurrMapIndex_d { mapIndex }, mArrMapTablePtr_d(mapTablePtr) {
         mCurr_d = (*mArrMapTablePtr_d)[mapIndex]->begin() + arrIndex;
-        __sync();
+        _sync();
     }
 
 
-    _DoubleEndedQueueIterator(const Self &it) { *this = it; }
+    DoubleEndedQueueIterator_(const Self &it) { *this = it; }
     Self & operator=(const Self &it) {
         // copy
         mCurrMapIndex_d = it.mCurrMapIndex_d;
         mCurr_d = it.mCurr_d;
         mArrMapTablePtr_d = it.mArrMapTablePtr_d;
 
-        __sync();
+        _sync();
 
         return *this;
     }
 
-    _DoubleEndedQueueIterator(Self &&it) { *this = dstruct::move(it); }
+    DoubleEndedQueueIterator_(Self &&it) { *this = dstruct::move(it); }
     Self & operator=(Self &&it) {
         // move
         mCurrMapIndex_d = it.mCurrMapIndex_d;
@@ -68,23 +68,23 @@ public:
         it.mCurr_d = nullptr;
         it.mArrMapTablePtr_d = nullptr;
 
-        __sync();
+        _sync();
 
         return *this;
     }
 
     // for it -> const-it
-    _DoubleEndedQueueIterator(
-        const _DoubleEndedQueueIterator<typename RemoveConst<T>::Type, ARR_SIZE> &obj,
+    DoubleEndedQueueIterator_(
+        const DoubleEndedQueueIterator_<typename RemoveConst<T>::Type, ARR_SIZE> &obj,
         bool _unsedFlag // constructor dispatch flag
-    ) : _DoubleEndedQueueIterator() {
+    ) : DoubleEndedQueueIterator_() {
 
             _unsedFlag;
 
             mCurrMapIndex_d = obj.mCurrMapIndex_d,
             mCurr_d = obj.mCurr_d.operator->(); // get it-pointer to init const-it
             mArrMapTablePtr_d = reinterpret_cast<decltype(mArrMapTablePtr_d)>(obj.mArrMapTablePtr_d);
-            __sync();
+            _sync();
     }
 
 public: // ForwardIterator
@@ -96,7 +96,7 @@ public: // ForwardIterator
                 mCurr_d = (*mArrMapTablePtr_d)[++mCurrMapIndex_d]->begin();
             }
         }
-        __sync();
+        _sync();
         return *this;
     }
 
@@ -112,7 +112,7 @@ public: // BidirectionalIterator
             mCurr_d = (*mArrMapTablePtr_d)[--mCurrMapIndex_d]->end();
         }
         mCurr_d--;
-        __sync();
+        _sync();
         return *this;
     }
 
@@ -143,30 +143,30 @@ public: // RandomIterator
 
 private:
     // update mLNodePtr_d and mPointer_d
-    void __sync() {
+    void _sync() {
         Self::mPointer_d = mCurr_d.operator->();
     }
 
 protected:
     size_t mCurrMapIndex_d;
-    typename _Array::IteratorType mCurr_d;     // point to Element / Note: when mCurr_d changed, pls __sync
-    _ArrMapTable *mArrMapTablePtr_d;  // point to Array
+    typename Array_::IteratorType mCurr_d;     // point to Element / Note: when mCurr_d changed, pls _sync
+    ArrMapTable_ *mArrMapTablePtr_d;  // point to Array
 };
 
 #define MIN_MAP_TABLE_SIZE 2
  
 template <typename T, size_t ARR_SIZE, typename Alloc>
 class DoubleEndedQueue :
-    public DStructTypeSpec<T, Alloc, _DoubleEndedQueueIterator<T, ARR_SIZE>, _DoubleEndedQueueIterator<const T, ARR_SIZE>> {
+    public DStructTypeSpec<T, Alloc, DoubleEndedQueueIterator_<T, ARR_SIZE>, DoubleEndedQueueIterator_<const T, ARR_SIZE>> {
 
 protected:
-    using _Array         = Array<T, ARR_SIZE>;
-    using _AllocArray    = dstruct::AllocSpec<_Array, Alloc>;
-    using _ArrMapTable   = Vector<_Array *>;
+    using Array_         = Array<T, ARR_SIZE>;
+    using AllocArray_    = dstruct::AllocSpec<Array_, Alloc>;
+    using ArrMapTable_   = Vector<Array_ *>;
 /*
-    struct _Block {
-        typename _ArrMapTable::IteratorType arr; // point to Array
-        typename _Array::IteratorType curr;      // point to Element
+    struct Block_ {
+        typename ArrMapTable_::IteratorType arr; // point to Array
+        typename Array_::IteratorType curr;      // point to Element
     };
 */
 
@@ -302,22 +302,22 @@ public: // iterator/range-for support
     }
 
 protected:
-    //_Block mFirst_d, mEnd_d;
+    //B_lock_ mFirst_d, mEnd_d;
     typename DoubleEndedQueue::SizeType mSize_d, mCapacity_d;
-    _ArrMapTable mArrMapTable_d;
+    ArrMapTable_ mArrMapTable_d;
     typename DoubleEndedQueue::IteratorType mBegin_d, mEnd_d;
 
     void _only_clear() {
         if (!mArrMapTable_d.empty()) {
             DSTRUCT_ASSERT(mCapacity_d != 0);
-            // dstruct::destroy element, but don't need to call ~_Array()
+            // dstruct::destroy element, but don't need to call ~Array_()
             for (auto it = mBegin_d; it != mEnd_d; it++) {
                 dstruct::destroy(it.operator->());
             }
 
             // release memory
             for (auto arrPtr : mArrMapTable_d) {
-                _AllocArray::deallocate(arrPtr);
+                AllocArray_::deallocate(arrPtr);
             }
 
             // reset
@@ -337,8 +337,8 @@ protected:
         mArrMapTable_d.resize(MIN_MAP_TABLE_SIZE, nullptr);
         // alloc arr and fill map-table
         for (int i = 0; i < MIN_MAP_TABLE_SIZE; i++) {
-            mArrMapTable_d[i] = _AllocArray::allocate();
-            dstruct::construct(mArrMapTable_d[i], _Array());
+            mArrMapTable_d[i] = AllocArray_::allocate();
+            dstruct::construct(mArrMapTable_d[i], Array_());
         }
         auto midMapIndex = MIN_MAP_TABLE_SIZE / 2;
         mBegin_d = mEnd_d = decltype(mBegin_d)(midMapIndex, 0, &mArrMapTable_d);
@@ -369,14 +369,14 @@ protected:
             return;
         }
 
-        _ArrMapTable oldArrMapTable = mArrMapTable_d;
+        ArrMapTable_ oldArrMapTable = mArrMapTable_d;
         mArrMapTable_d.resize(newMapTableSize, nullptr);
 
         // build new map table
         for (int i = 0; i < newMapTableSize ; i++) {
             if (i < newArrStartIndex || newArrEndIndex < i) {
-                mArrMapTable_d[i] = _AllocArray::allocate();
-                dstruct::construct(mArrMapTable_d[i], _Array());
+                mArrMapTable_d[i] = AllocArray_::allocate();
+                dstruct::construct(mArrMapTable_d[i], Array_());
             } else {
                 mArrMapTable_d[i] = oldArrMapTable[oldArrStartIndex + (i - newArrStartIndex)];
             }
@@ -386,7 +386,7 @@ protected:
         for (int i = 0; i < oldArrMapTable.capacity() ; i++) {
             if (i < oldArrStartIndex || oldArrEndIndex < i) {
                 //dstruct::destroy(oldArrMapTable[i]);
-                _AllocArray::deallocate(oldArrMapTable[i]);
+                AllocArray_::deallocate(oldArrMapTable[i]);
             }
         }
 
@@ -398,7 +398,7 @@ protected:
         if (mEnd_d.mCurr_d == mArrMapTable_d[newArrEndIndex]->end()) {
             mEnd_d.mCurrMapIndex_d++;
             mEnd_d.mCurr_d = mArrMapTable_d[mEnd_d.mCurrMapIndex_d]->begin();
-            mEnd_d.__sync();
+            mEnd_d._sync();
 
             // only if old_mEnd == mBegin_d
             if (mBegin_d.mCurr_d == mArrMapTable_d[newArrEndIndex]->end()) {

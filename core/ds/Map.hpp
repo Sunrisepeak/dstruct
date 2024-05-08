@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef MAP_HPP__DSTRUCT
-#define __MAP_HPP__DSTRUCT
+#ifndef MAP_HPP_DSTRUCT
+#define MAP_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/tree/AVLTree.hpp>
@@ -108,7 +108,7 @@ public: // Access & Modifiers
             return dstruct::_remove_const(find(key)->value);
         }
         // convert from const ValueType to ValueType - remove const
-        // target: dstruct::_AVLTreeIterator<dstruct::KeyValue<const char, int> >
+        // target: dstruct::A_VLTreeIterator_<dstruct::KeyValue<const char, int> >
         // Note: value original define haven't const, so this is not UB
         return dstruct::_remove_const(find(key)->value);
     }

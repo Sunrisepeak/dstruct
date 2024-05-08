@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef ALGORITHM_HPP__DSTRUCT
-#define ALGORITHM_HPP__DSTRUCT
+#ifndef ALGORITHM_HPP_DSTRUCT
+#define ALGORITHM_HPP_DSTRUCT
 
 #include <core/utils.hpp>
 namespace dstruct {

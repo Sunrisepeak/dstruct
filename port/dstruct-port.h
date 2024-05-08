@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef DSTRUCT_PORT_HPP__DSTRUCT
-#define DSTRUCT_PORT_HPP__DSTRUCT
+#ifndef DSTRUCT_PORT_HPP_DSTRUCT
+#define DSTRUCT_PORT_HPP_DSTRUCT
 
 namespace dstruct {
 namespace port { // pls impl/port the alloc
@@ -45,4 +45,4 @@ struct DStructPlacementNewFlag { };
 inline void * operator new(dstruct::port::size_t sz, void *ptr, DStructPlacementNewFlag *) noexcept { return ptr; }
 // void operator delete(void *ptr, DStructPlacementNewFlag *) {  } haven't used
 
-#endif /* __DSTRUCT_PORT_HPP__DSTRUCT */
+#endif /* DSTRUCT_PORT_HPP_DSTRUCT */

@@ -17,7 +17,7 @@ int main() {
     std::cout << "\nTesting: " << __FILE__;
 
     dstruct::DoubleEndedQueue<int, 10> _deque; // 0. test cntor
-    dstruct::Deque<int /* Array Size Default 32 */> __deque;
+    dstruct::Deque<int /* Array Size Default 32 */> deque__;
     dstruct::Deque<int, 5> deque;
 
 // test dynamic resize

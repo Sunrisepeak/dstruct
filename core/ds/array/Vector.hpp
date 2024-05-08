@@ -7,15 +7,15 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef VECTOR_HPP__DSTRUCT
-#define VECTOR_HPP__DSTRUCT
+#ifndef VECTOR_HPP_DSTRUCT
+#define VECTOR_HPP_DSTRUCT
 
 #include <core/common.hpp>
 
 namespace dstruct {
 
-template <typename T, typename __Alloc = dstruct::Alloc>
-class Vector : public _DStructTypeSpec<T, __Alloc, PrimitiveIterator> {
+template <typename T, typename Alloc = dstruct::Alloc>
+class Vector : public DStructTypeSpec_<T, Alloc, PrimitiveIterator> {
 
     DSTRUCT_TYPE_SPEC_HELPER(Vector);
 
@@ -132,7 +132,7 @@ public: // Modifiers
             for (int i = 0; i < mSize_d; i++) {
                 dstruct::destroy(mC_d + i);
             }
-            Vector::_Alloc::deallocate(mC_d, mCapacity_d);
+            Vector::Alloc_::deallocate(mC_d, mCapacity_d);
         }
         mSize_d = mCapacity_d = 0;
         mC_d = nullptr;
@@ -162,7 +162,7 @@ public:
         if (n == 0)
             mC_d = nullptr;
         else
-            mC_d = Vector::_Alloc::allocate(n);
+            mC_d = Vector::Alloc_::allocate(n);
 
         if (oldC) {
             DSTRUCT_ASSERT(mCapacity_d != 0);
@@ -171,7 +171,7 @@ public:
                     dstruct::construct(mC_d + i, oldC[i]);
                 dstruct::destroy(oldC + i);
             }
-            Vector::_Alloc::deallocate(oldC, mCapacity_d);
+            Vector::Alloc_::deallocate(oldC, mCapacity_d);
         }
 
         mCapacity_d = n;
@@ -189,7 +189,7 @@ public:
 
         // alloc
         PointerType oldC = mC_d;
-        mC_d = Vector::_Alloc::allocate(n);
+        mC_d = Vector::Alloc_::allocate(n);
 
         // release
         if (oldC) {
@@ -198,7 +198,7 @@ public:
                     dstruct::construct(mC_d + i, oldC[i]);
                 dstruct::destroy(oldC + i);
             }
-            Vector::_Alloc::deallocate(oldC, mCapacity_d);
+            Vector::Alloc_::deallocate(oldC, mCapacity_d);
         }
 
         // set

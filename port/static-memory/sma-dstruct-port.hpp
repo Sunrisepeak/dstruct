@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef SMA_DSTRUCT_PORT_HPP__DSTRUCT
-#define SMA_DSTRUCT_PORT_HPP__DSTRUCT
+#ifndef SMA_DSTRUCTPORT_HPP_DSTRUCT
+#define SMA_DSTRUCTPORT_HPP_DSTRUCT
 
 //#define ENABLE_SMA_LOG
 //#define ENABLE_SMA_DUMP
@@ -16,7 +16,7 @@
 #ifdef ENABLE_SMA_LOG
 #include <cstdio>
 #undef SMA_LOGD
-#define SMA_LOGD(...) printf(__VA_ARGS__); printf("\n")
+#define SMA_LOGD(...) printf(__VAARGS__); printf("\n")
 #endif
 
 #include <memory/StaticMemAllocator.hpp>

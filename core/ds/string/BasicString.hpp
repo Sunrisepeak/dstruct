@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef BASIC_STRING_HPP__DSTRUCT
-#define BASIC_STRING_HPP__DSTRUCT
+#ifndef BASIC_STRING_HPP_DSTRUCT
+#define BASIC_STRING_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/array/Vector.hpp>
@@ -18,9 +18,9 @@ namespace dstruct {
 template <typename CharType, typename Alloc>
 class BasicString {
 private:
-    using __CharList = Vector<CharType, Alloc>;
+    using CharList_e = Vector<CharType, Alloc>;
 
-    DSTRUCT_TYPE_SPEC_HELPER(__CharList);
+    DSTRUCT_TYPE_SPEC_HELPER(CharList_e);
 
 public:
     BasicString() : mCharList_d {1, '\0'} {
@@ -131,7 +131,7 @@ public:
     }
 
 protected:
-    __CharList mCharList_d;
+    CharList_e mCharList_d;
 };
 
 template <typename CharType, typename Alloc>

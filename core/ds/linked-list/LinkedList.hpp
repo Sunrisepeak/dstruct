@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef LINKED_LIST_HPP__DSTRUCT
-#define LINKED_LIST_HPP__DSTRUCT
+#ifndef LINKED_LIST_HPP_DSTRUCT
+#define LINKED_LIST_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/linked-list/EmbeddedList.hpp>
@@ -16,12 +16,12 @@
 namespace dstruct {
 
 template <typename T, template <typename> class LinkedListIterator, typename Alloc = dstruct::Alloc>
-class _LinkedList : public _DStructTypeSpec<T, Alloc, LinkedListIterator> {
+class LinkedList_ : public DStructTypeSpec_<T, Alloc, LinkedListIterator> {
 
 protected:
-    //using _Node     = typename _LinkedList::IteratorType::_Node;
-    using _Node      = typename LinkedListIterator<T>::_Node;
-    using _AllocNode = AllocSpec<_Node, Alloc>;
+    //using Node_     = typename LinkedList_::IteratorType::Node_;
+    using Node_      = typename LinkedListIterator<T>::Node_;
+    using AllocNode_ = AllocSpec<Node_, Alloc>;
 /*
     // use void link to support doubly/singly link
     union LinkUnion { // TODO: better method?
@@ -29,35 +29,35 @@ protected:
             void *next;
             void *prev;
         } _link; // only use in LinkedList
-        typename _Node::LinkType link;
+        typename Node_::LinkType link;
     };
 */
 
 public: // big five
-    _LinkedList() {
-        _Node::init(&mHeadNode_d);
+    LinkedList_() {
+        Node_::init(&mHeadNode_d);
         mSize_d = 0;
     }
 
     // copy/move-action impl in subclass
-    _LinkedList(const _LinkedList &list) = delete;
-    _LinkedList & operator=(const _LinkedList &list) = delete;
+    LinkedList_(const LinkedList_ &list) = delete;
+    LinkedList_ & operator=(const LinkedList_ &list) = delete;
 
-    DSTRUCT_MOVE_SEMANTICS(_LinkedList) {
+    DSTRUCT_MOVE_SEMANTICS(LinkedList_) {
         // 1._clear
         _clear();
         // 2.only move data
-        _LinkedList::mHeadNode_d = ds.mHeadNode_d;
-        _LinkedList::mSize_d = ds.mSize_d;
+        LinkedList_::mHeadNode_d = ds.mHeadNode_d;
+        LinkedList_::mSize_d = ds.mSize_d;
         // 3.spec move impl in subclass
         // 4.reset
-        _Node::init(&(ds.mHeadNode_d));
+        Node_::init(&(ds.mHeadNode_d));
         ds.mSize_d = 0;
 
         return *this;
     }
 
-    ~_LinkedList() {
+    ~LinkedList_() {
         _clear();
     }
 
@@ -72,13 +72,13 @@ public: // Capacity
         return false;
     }
 
-    typename _LinkedList::SizeType size() const {
+    typename LinkedList_::SizeType size() const {
         return mSize_d;
     }
 
 public: // Access
     T front() const {
-        return _Node::to_node(mHeadNode_d.link.next)->data;
+        return Node_::to_node(mHeadNode_d.link.next)->data;
     }
 
 public: // Modifiers
@@ -88,11 +88,11 @@ public: // Modifiers
 
     void push_front(const T &obj) {
         // 1. alloc and construct node
-        _Node *nPtr = _AllocNode::allocate();
+        Node_ *nPtr = AllocNode_::allocate();
         mHeadNode_d.data = obj; // only for contruct nPtr
         dstruct::construct(nPtr, mHeadNode_d);
         // 2. add to list
-        _Node::LinkType::add(&(mHeadNode_d.link), _Node::to_link(nPtr));
+        Node_::LinkType::add(&(mHeadNode_d.link), Node_::to_link(nPtr));
         // 3. increase size
         mSize_d++;
     }
@@ -104,42 +104,42 @@ public: // Modifiers
     void pop_front() {
         DSTRUCT_ASSERT(mSize_d > 0);
         // 1. get target node's link
-        typename _Node::LinkType *lPtr = mHeadNode_d.link.next;
+        typename Node_::LinkType *lPtr = mHeadNode_d.link.next;
         // 2. del target node
-        _Node::LinkType::del(_Node::to_link(&mHeadNode_d), lPtr);
+        Node_::LinkType::del(Node_::to_link(&mHeadNode_d), lPtr);
         // 3. get target node
-        _Node *nPtr = _Node::to_node(lPtr);
+        Node_ *nPtr = Node_::to_node(lPtr);
         // 4. free and decrease size/len
         dstruct::destroy(nPtr);
-        _AllocNode::deallocate(nPtr);
+        AllocNode_::deallocate(nPtr);
         mSize_d--;
     }
 
 public: // support it/range-for
 
-    typename _LinkedList::IteratorType
+    typename LinkedList_::IteratorType
     begin() {
-        return typename _LinkedList::IteratorType(mHeadNode_d.link.next);
+        return typename LinkedList_::IteratorType(mHeadNode_d.link.next);
     }
 
-    typename _LinkedList::ConstIteratorType
+    typename LinkedList_::ConstIteratorType
     begin() const {
-        return typename _LinkedList::ConstIteratorType(mHeadNode_d.link.next);
+        return typename LinkedList_::ConstIteratorType(mHeadNode_d.link.next);
     }
 
-    typename _LinkedList::IteratorType
+    typename LinkedList_::IteratorType
     end() {
-        return typename _LinkedList::IteratorType(_Node::to_link(&mHeadNode_d));
+        return typename LinkedList_::IteratorType(Node_::to_link(&mHeadNode_d));
     }
 
-    typename _LinkedList::ConstIteratorType
+    typename LinkedList_::ConstIteratorType
     end() const { // headNode-link
-        return typename _LinkedList::ConstIteratorType(_Node::to_link(&mHeadNode_d));
+        return typename LinkedList_::ConstIteratorType(Node_::to_link(&mHeadNode_d));
     }
 
 protected:
-    mutable _Node mHeadNode_d;
-    typename _LinkedList::SizeType mSize_d;
+    mutable Node_ mHeadNode_d;
+    typename LinkedList_::SizeType mSize_d;
 
     void _clear() {
         while (!empty()) {

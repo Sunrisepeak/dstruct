@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef COMMON_HPP__DSTRUCT
-#define COMMON_HPP__DSTRUCT
+#ifndef COMMON_HPP_DSTRUCT
+#define COMMON_HPP_DSTRUCT
 
 // Don't modify this file easily
 #include <spec/DStructSpec.hpp>

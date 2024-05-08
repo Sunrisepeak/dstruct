@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef LIBC_DSTRUCT_PORT_HPP__DSTRUCT
-#define LIBC_DSTRUCT_PORT_HPP__DSTRUCT
+#ifndef LIBC_DSTRUCTPORT_HPP_DSTRUCT
+#define LIBC_DSTRUCTPORT_HPP_DSTRUCT
 
 #include <cstdlib>
 #include <cassert>

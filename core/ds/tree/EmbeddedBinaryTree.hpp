@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef EMBEDDED_BINARY_TREE_HPP__DSTRUCT
-#define EMBEDDED_BINARY_TREE_HPP__DSTRUCT
+#ifndef EMBEDDED_BINARY_TREE_HPP_DSTRUCT
+#define EMBEDDED_BINARY_TREE_HPP_DSTRUCT
 
 #include <core/ds/tree/tree-base.hpp>
 
@@ -24,16 +24,16 @@ namespace tree {
    / \
   L   R
 */
-struct _BinaryTreeLink {
-    _BinaryTreeLink *parent;
-    _BinaryTreeLink *left;
-    _BinaryTreeLink *right;
+struct BinaryTreeLink_ {
+    BinaryTreeLink_ *parent;
+    BinaryTreeLink_ *left;
+    BinaryTreeLink_ *right;
 
-    _BinaryTreeLink() : parent { nullptr }, left { nullptr }, right { nullptr } {}
+    BinaryTreeLink_() : parent { nullptr }, left { nullptr }, right { nullptr } {}
 };
 
-static _BinaryTreeLink * left_rotate(_BinaryTreeLink *root) {
-    _BinaryTreeLink *newRoot = root->right;
+static BinaryTreeLink_ * left_rotate(BinaryTreeLink_ *root) {
+    BinaryTreeLink_ *newRoot = root->right;
     newRoot->parent = root->parent;
 
     // update subTree
@@ -47,8 +47,8 @@ static _BinaryTreeLink * left_rotate(_BinaryTreeLink *root) {
     return newRoot;
 }
 
-static _BinaryTreeLink * right_rotate(_BinaryTreeLink *root) {
-    _BinaryTreeLink *newRoot = root->left;
+static BinaryTreeLink_ * right_rotate(BinaryTreeLink_ *root) {
+    BinaryTreeLink_ *newRoot = root->left;
     newRoot->parent = root->parent;
 
     // update subTree
@@ -62,7 +62,7 @@ static _BinaryTreeLink * right_rotate(_BinaryTreeLink *root) {
     return newRoot;
 }
 
-static int height(_BinaryTreeLink *root) {
+static int height(BinaryTreeLink_ *root) {
     int h = 0;
     if (root) {
         int lH, rH;
@@ -73,7 +73,7 @@ static int height(_BinaryTreeLink *root) {
     return h;
 }
 
-static _BinaryTreeLink * next_preorder(_BinaryTreeLink *link) {
+static BinaryTreeLink_ * next_preorder(BinaryTreeLink_ *link) {
     if (link == nullptr) {
         return nullptr;
     }
@@ -98,7 +98,7 @@ static _BinaryTreeLink * next_preorder(_BinaryTreeLink *link) {
 }
 
 template <typename Callback>
-static void preorder_traversal(_BinaryTreeLink *root, Callback &cb) {
+static void preorder_traversal(BinaryTreeLink_ *root, Callback &cb) {
     if (root) {
         cb(root);
         preorder_traversal(root->left, cb);
@@ -106,7 +106,7 @@ static void preorder_traversal(_BinaryTreeLink *root, Callback &cb) {
     }
 }
 
-static _BinaryTreeLink * next_inorder(_BinaryTreeLink *link) {
+static BinaryTreeLink_ * next_inorder(BinaryTreeLink_ *link) {
     if (link == nullptr) {
         return nullptr;
     }
@@ -127,7 +127,7 @@ static _BinaryTreeLink * next_inorder(_BinaryTreeLink *link) {
 }
 
 template <typename Callback>
-static void inorder_traversal(_BinaryTreeLink *root, Callback &cb) {
+static void inorder_traversal(BinaryTreeLink_ *root, Callback &cb) {
     if (root) {
         inorder_traversal(root->left, cb);
         cb(root);
@@ -135,7 +135,7 @@ static void inorder_traversal(_BinaryTreeLink *root, Callback &cb) {
     }
 }
 
-static _BinaryTreeLink * next_postorder(_BinaryTreeLink *link) {
+static BinaryTreeLink_ * next_postorder(BinaryTreeLink_ *link) {
     if (link == nullptr) {
         return nullptr;
     }
@@ -160,7 +160,7 @@ static _BinaryTreeLink * next_postorder(_BinaryTreeLink *link) {
 }
 
 template <typename Callback>
-static void postorder_traversal(_BinaryTreeLink *root, Callback cb) {
+static void postorder_traversal(BinaryTreeLink_ *root, Callback cb) {
     if (root) {
         postorder_traversal(root->left, cb);
         postorder_traversal(root->right, cb);
@@ -169,7 +169,7 @@ static void postorder_traversal(_BinaryTreeLink *root, Callback cb) {
 }
 
 template <typename T>
-using EmbeddedBinaryTreeNode = TreeNode<T, _BinaryTreeLink>;
+using EmbeddedBinaryTreeNode = TreeNode<T, BinaryTreeLink_>;
 
 }
 }

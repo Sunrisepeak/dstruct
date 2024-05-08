@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef AVL_TREE_HPP__DSTRUCT
-#define AVL_TREE_HPP__DSTRUCT
+#ifndef AVL_TREE_HPP_DSTRUCT
+#define AVL_TREE_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/tree/BinaryTree.hpp>
@@ -16,22 +16,22 @@
 namespace dstruct {
 
 template <typename T>
-struct _AVLData {
+struct AVLData_ {
     int height;
     T val;
 
-    _AVLData() : height { 0 }, val { } { }
+    AVLData_() : height { 0 }, val { } { }
 
-    _AVLData(const T &_val) : height { 0 }, val { _val } { }
+    AVLData_(const T &_val) : height { 0 }, val { _val } { }
 
 };
 
 // this is a wrap for CMP of T-Type
 template <typename T, typename CMP>
-struct _AVLDataCMP {
-    _AVLDataCMP(CMP cmp = CMP()) : mCMP_d_d { cmp } {}
+struct AVLDataCMP_ {
+    AVLDataCMP_(CMP cmp = CMP()) : mCMP_d_d { cmp } {}
 
-    bool operator()(const _AVLData<T> &a, const _AVLData<T> &b) const {
+    bool operator()(const AVLData_<T> &a, const AVLData_<T> &b) const {
         return mCMP_d_d(a.val, b.val);
     }
 
@@ -40,38 +40,38 @@ private:
 };
 
 template <typename T>
-class _AVLTreeIterator :  public DStructIteratorTypeSpec<const T> {
+class AVLTreeIterator_ :  public DStructIteratorTypeSpec<const T> {
 private:
-    using Self = _AVLTreeIterator;
+    using Self = AVLTreeIterator_;
 protected:
-    using _Node = tree::EmbeddedBinaryTreeNode<T>;
-    using _BinaryTreeIterator = tree::_BinaryTreeIterator<_AVLData<T>>;
+    using Node_ = tree::EmbeddedBinaryTreeNode<T>;
+    using BinaryTreeIterator_ = tree::BinaryTreeIterator_<AVLData_<T>>;
 public:
-    _AVLTreeIterator(const _BinaryTreeIterator &it) : mIterator_d { it } {
-        __sync();
+    AVLTreeIterator_(const BinaryTreeIterator_ &it) : mIterator_d { it } {
+        _sync();
     }
 
 public: // ForwardIterator
     Self& operator++() {
         mIterator_d++;
-        __sync();
+        _sync();
         return *this;
     }
 
     Self operator++(int) {
         Self old = *this;
         mIterator_d++;
-        __sync();
+        _sync();
         return old;
     }
 
 public:
-    typename _Node::LinkType * __get_link_pointer() {
-        return mIterator_d.__get_link_pointer();
+    typename Node_::LinkType * _get_link_pointer() {
+        return mIterator_d._get_link_pointer();
     }
 
 private:
-    void __sync() {
+    void _sync() {
         if (nullptr == mIterator_d.operator->())
             Self::mPointer_d = nullptr;
         else
@@ -79,18 +79,18 @@ private:
     }
 
 protected:
-    _BinaryTreeIterator mIterator_d;
+    BinaryTreeIterator_ mIterator_d;
 };
 
 // TODO: support dup-data
 template <typename T, typename CMP, typename Alloc>
-class AVLTree : public tree::BinaryTree<_AVLData<T>, Alloc> {
+class AVLTree : public tree::BinaryTree<AVLData_<T>, Alloc> {
 
-    using __BinaryTree  = tree::BinaryTree<_AVLData<T>, Alloc>;
+    using BinaryTree_e  = tree::BinaryTree<AVLData_<T>, Alloc>;
 
 protected:
-    using _Node         = typename __BinaryTree::_Node;
-    using _AllocNode    = typename __BinaryTree::_AllocNode;
+    using Node_         = typename BinaryTree_e::Node_;
+    using AllocNode_    = typename BinaryTree_e::AllocNode_;
 
 public:
     using ValueType            = T;
@@ -102,25 +102,25 @@ public:
     using DifferenceType       = long long;
 
 public:
-    using IteratorType      = _AVLTreeIterator<T>;
-    using ConstIteratorType = _AVLTreeIterator<T>;
-    using TraversalType = typename __BinaryTree::TraversalType;
+    using IteratorType      = AVLTreeIterator_<T>;
+    using ConstIteratorType = AVLTreeIterator_<T>;
+    using TraversalType = typename BinaryTree_e::TraversalType;
 
 public:
-    AVLTree(CMP cmp = CMP()) : __BinaryTree { nullptr, 0 }, mCmp_d { cmp } { }
+    AVLTree(CMP cmp = CMP()) : BinaryTree_e { nullptr, 0 }, mCmp_d { cmp } { }
 
 public:
     void push(const T &element) {
-        auto root = _insert(_Node::to_link(__BinaryTree::mRootPtr_d), element);
-        __BinaryTree::_update_root(root);
-        __BinaryTree::mSize_d++;
+        auto root = _insert(Node_::to_link(BinaryTree_e::mRootPtr_d), element);
+        BinaryTree_e::_update_root(root);
+        BinaryTree_e::mSize_d++;
     }
 
     void pop(const T &obj) {
-        if (__BinaryTree::mSize_d == 0) return; // TODO: better method?
-        auto root = _delete(_Node::to_link(__BinaryTree::mRootPtr_d), obj);
-        if (__BinaryTree::mRootPtr_d != _Node::to_node(root)) {
-            __BinaryTree::_update_root(root);
+        if (BinaryTree_e::mSize_d == 0) return; // TODO: better method?
+        auto root = _delete(Node_::to_link(BinaryTree_e::mRootPtr_d), obj);
+        if (BinaryTree_e::mRootPtr_d != Node_::to_node(root)) {
+            BinaryTree_e::_update_root(root);
         }
     }
 
@@ -128,23 +128,23 @@ public:
 
     typename AVLTree::ConstIteratorType
     find(const T &obj) const {
-        using CMPWrapper = _AVLDataCMP<T, CMP>; // TODO: optimize find(delete CMPWrapper?)
-        auto target = BinarySearchTreeBase<_AVLData<T>, CMPWrapper>::_find(
-            _Node::to_link(__BinaryTree::mRootPtr_d),
+        using CMPWrapper = AVLDataCMP_<T, CMP>; // TODO: optimize find(delete CMPWrapper?)
+        auto target = BinarySearchTreeBase<AVLData_<T>, CMPWrapper>::_find(
+            Node_::to_link(BinaryTree_e::mRootPtr_d),
             obj,
             CMPWrapper(mCmp_d)
         );
-        return __BinaryTree::_create_iterator(target, TraversalType::InOrder);
+        return BinaryTree_e::_create_iterator(target, TraversalType::InOrder);
     }
 
     typename AVLTree::ConstIteratorType
     erase(typename AVLTree::ConstIteratorType it) {
-        auto target = it.__get_link_pointer();
+        auto target = it._get_link_pointer();
         decltype(it) next = ++it;
         typename RemoveConst<T>::Type nextData;
         bool needUpdateNext = false;
         
-        if (next.__get_link_pointer() != nullptr) {
+        if (next._get_link_pointer() != nullptr) {
             nextData = *next;
             needUpdateNext = true;
         }
@@ -155,25 +155,25 @@ public:
     }
 
     int height() const {
-        return __BinaryTree::mRootPtr_d ? __BinaryTree::mRootPtr_d->data.height : 0;
+        return BinaryTree_e::mRootPtr_d ? BinaryTree_e::mRootPtr_d->data.height : 0;
     }
 
 public: // range-for and iterator
 
     typename AVLTree::ConstIteratorType
     begin(TraversalType ttype = TraversalType::InOrder) const {
-        return __BinaryTree::begin();
+        return BinaryTree_e::begin();
     }
 
     typename AVLTree::ConstIteratorType
     end(TraversalType ttype = TraversalType::InOrder) const {
-        return __BinaryTree::end();
+        return BinaryTree_e::end();
     }
 
 protected:
     CMP mCmp_d;
 
-    typename _Node::LinkType * _check_and_balance(typename _Node::LinkType *root) {
+    typename Node_::LinkType * _check_and_balance(typename Node_::LinkType *root) {
         int balance = _balance_factor(root);
         if (balance > 1) { // need r-rotate
             if (_balance_factor(root->left) < 0) {
@@ -189,7 +189,7 @@ protected:
         return root;
     }
 
-    void _rebalance_after_delete(typename _Node::LinkType *root) {
+    void _rebalance_after_delete(typename Node_::LinkType *root) {
         while (root != nullptr) {
             // bottom-up balance
             auto parent = root->parent;
@@ -203,27 +203,27 @@ protected:
                 }
                 _update_height(parent);
             } else if (newRoot != root) {
-                __BinaryTree::_update_root(newRoot);
+                BinaryTree_e::_update_root(newRoot);
             }
 
             root = parent;
         }
     }
 
-    typename _Node::LinkType *
-    _insert(typename _Node::LinkType *root, const T &element, typename _Node::LinkType *parent = nullptr) {
-        _Node *rootNode = nullptr;
+    typename Node_::LinkType *
+    _insert(typename Node_::LinkType *root, const T &element, typename Node_::LinkType *parent = nullptr) {
+        Node_ *rootNode = nullptr;
         if (root == nullptr) { // create node
-            rootNode = _AllocNode::allocate();
-            dstruct::construct(rootNode, _Node(_AVLData<T>(element)));
-            root = _Node::to_link(rootNode);
+            rootNode = AllocNode_::allocate();
+            dstruct::construct(rootNode, Node_(AVLData_<T>(element)));
+            root = Node_::to_link(rootNode);
             root->parent = parent;
         } else {
-            rootNode = _Node::to_node(root);
+            rootNode = Node_::to_node(root);
             if (mCmp_d(element, rootNode->data.val)) {
                 root->left = _insert(root->left, element, root);
                 if (_height(root->left) - _height(root->right) == 2) {
-                    if (mCmp_d(_Node::to_node(root->left)->data.val, element)) { // LR: double-rotate
+                    if (mCmp_d(Node_::to_node(root->left)->data.val, element)) { // LR: double-rotate
                         root->left = _left_rotate(root->left);
                     }
                     root = _right_rotate(root);
@@ -231,7 +231,7 @@ protected:
             } else if (mCmp_d(rootNode->data.val, element)) {
                 root->right = _insert(root->right, element, root);
                 if (_height(root->right) - _height(root->left) == 2) {
-                    if (mCmp_d(element, _Node::to_node(root->right)->data.val)) { // RL: double-rotate
+                    if (mCmp_d(element, Node_::to_node(root->right)->data.val)) { // RL: double-rotate
                         root->right = _right_rotate(root->right);
                         // TODO: verify need update root-height?
                     }
@@ -247,7 +247,7 @@ protected:
         return root;
     }
 
-    typename _Node::LinkType * _delete_by_target(typename _Node::LinkType *target) {
+    typename Node_::LinkType * _delete_by_target(typename Node_::LinkType *target) {
         if (target == nullptr) {
             return nullptr;
         }
@@ -273,7 +273,7 @@ protected:
             return nullptr;
         } else if (leftChild != nullptr && rightChild != nullptr) {
             // Case 3: Node has two children
-            auto successor = __BinaryTree::first_node(rightChild);
+            auto successor = BinaryTree_e::first_node(rightChild);
             _swap_node(target, successor);
             return _delete_by_target(successor);
         } else {
@@ -296,8 +296,8 @@ protected:
         }
     }
 
-    typename _Node::LinkType * _delete(typename _Node::LinkType *root, const T &obj) {
-        auto nPtr = _Node::to_node(root);
+    typename Node_::LinkType * _delete(typename Node_::LinkType *root, const T &obj) {
+        auto nPtr = Node_::to_node(root);
         if (mCmp_d(obj, nPtr->data.val)) {
             root->left = _delete(root->left, obj);
         } else if (mCmp_d(nPtr->data.val, obj)) {
@@ -307,12 +307,12 @@ protected:
             // l and r isn't nullptr, need to find leaf-node(r-side)
             if (nullptr != root->left && nullptr != root->right) {
                 // step1: find first node in right-sub-tree
-                auto target = __BinaryTree::first_node(root->right);
+                auto target = BinaryTree_e::first_node(root->right);
                 // step2: swap root and target, then continue _delete
                 _swap_node(root, target);
                 root->right = _delete(root->right, obj); // retry
             } else {
-                typename _Node::LinkType *subTree = nullptr;
+                typename Node_::LinkType *subTree = nullptr;
 
                 if (nullptr == root->left) {
                     subTree = root->right;
@@ -336,30 +336,30 @@ protected:
     }
 
 protected: // helper
-    int _height(typename _Node::LinkType *root) {
+    int _height(typename Node_::LinkType *root) {
         if (root == nullptr)
             return 0;
-        return _Node::to_node(root)->data.height;
+        return Node_::to_node(root)->data.height;
     }
 
-    void _update_height(typename _Node::LinkType *node) {
+    void _update_height(typename Node_::LinkType *node) {
         int height = dstruct::max(_height(node->left), _height(node->right)) + 1;
-        _Node::to_node(node)->data.height = height;
+        Node_::to_node(node)->data.height = height;
     }
 
-    int _balance_factor(typename _Node::LinkType *root) {
+    int _balance_factor(typename Node_::LinkType *root) {
         return root == nullptr ? 0 : _height(root->left) - _height(root->right);
     }
 
-    void _real_delete(typename _Node::LinkType *linkPtr) {
-        auto nodePtr = _Node::to_node(linkPtr);
+    void _real_delete(typename Node_::LinkType *linkPtr) {
+        auto nodePtr = Node_::to_node(linkPtr);
         dstruct::destroy(nodePtr);
-        _AllocNode::deallocate(nodePtr);
-        __BinaryTree::mSize_d--;
+        AllocNode_::deallocate(nodePtr);
+        BinaryTree_e::mSize_d--;
     }
 
     // only for support _delete / _delete_by_target operate
-    void _swap_node(typename _Node::LinkType * &a, typename _Node::LinkType * &b) {
+    void _swap_node(typename Node_::LinkType * &a, typename Node_::LinkType * &b) {
 
         // Ensure that a is the ancestor node of b
         if (a->parent == b) dstruct::swap(a, b);
@@ -431,28 +431,28 @@ protected: // helper
         }
 
         // swap height
-        dstruct::swap(_Node::to_node(a)->data.height, _Node::to_node(b)->data.height);
+        dstruct::swap(Node_::to_node(a)->data.height, Node_::to_node(b)->data.height);
         dstruct::swap(a, b);
 
         // update root if root changed
-        if (a->parent == nullptr) __BinaryTree::_update_root(a);
-        if (b->parent == nullptr) __BinaryTree::_update_root(b);
+        if (a->parent == nullptr) BinaryTree_e::_update_root(a);
+        if (b->parent == nullptr) BinaryTree_e::_update_root(b);
 
     }
 
-    typename _Node::LinkType * _left_rotate(typename _Node::LinkType *root) {
+    typename Node_::LinkType * _left_rotate(typename Node_::LinkType *root) {
         root = tree::left_rotate(root);
-        auto rootNode = _Node::to_node(root);
-        auto leftNode = _Node::to_node(root->left);
+        auto rootNode = Node_::to_node(root);
+        auto leftNode = Node_::to_node(root->left);
         leftNode->data.height = dstruct::max(_height(leftNode->link.left), _height(leftNode->link.right)) + 1;
         rootNode->data.height = dstruct::max(leftNode->data.height, _height(rootNode->link.left)) + 1;
         return root;
     }
 
-    typename _Node::LinkType * _right_rotate(typename _Node::LinkType *root) {
+    typename Node_::LinkType * _right_rotate(typename Node_::LinkType *root) {
         root = tree::right_rotate(root);
-        auto rootNode = _Node::to_node(root);
-        auto rightNode = _Node::to_node(root->right);
+        auto rootNode = Node_::to_node(root);
+        auto rightNode = Node_::to_node(root->right);
         rightNode->data.height = dstruct::max(_height(rightNode->link.left), _height(rightNode->link.right)) + 1;
         rootNode->data.height = dstruct::max(_height(rootNode->link.left), rightNode->data.height) + 1;
         return root;

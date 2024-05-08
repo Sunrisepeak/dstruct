@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef STACK_HPP__DSTRUCT
-#define STACK_HPP__DSTRUCT
+#ifndef STACK_HPP_DSTRUCT
+#define STACK_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/array/Vector.hpp>

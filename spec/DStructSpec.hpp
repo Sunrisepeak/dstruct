@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef DSTRUCT_SPEC_HPP__DSTRUCT_V001
-#define DSTRUCT_SPEC_HPP__DSTRUCT_V001
+#ifndef DSTRUCT_SPEC_HPP_DSTRUCTV001
+#define DSTRUCT_SPEC_HPP_DSTRUCTV001
 
 #define DSTRUCT_CRASH(expr) \
     if (expr) { \
@@ -130,7 +130,7 @@ public: // iterator type
     using IteratorType         = Iterator;
     using ConstIteratorType    = ConstIterator;
 protected: // alloc type
-    using _Alloc               = AllocSpec<T, Alloc>;
+    using Alloc_               = AllocSpec<T, Alloc>;
 private:
     using Self               = DStructTypeSpec;
 
@@ -172,7 +172,7 @@ public: // iterator/range-for support
 };
 
 template <typename T, typename Alloc, template <typename> class Iterator>
-using _DStructTypeSpec = DStructTypeSpec<T, Alloc, Iterator<T>, Iterator<const T>>;
+using DStructTypeSpec_ = DStructTypeSpec<T, Alloc, Iterator<T>, Iterator<const T>>;
 
 };
 
