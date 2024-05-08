@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __COMMON_HPP__DSTRUCT
-#define __COMMON_HPP__DSTRUCT
+#ifndef COMMON_HPP_DSTRUCT
+#define COMMON_HPP_DSTRUCT
 
 // Don't modify this file easily
 #include <spec/DStructSpec.hpp>
@@ -35,17 +35,17 @@ public: \
     DStruct(const DStruct &ds) : DStruct() { *this = ds; } \
     DStruct & operator=(const DStruct &ds) { \
         if (this == &ds) return *this; \
-        return __dstruct_copy_sema(ds); \
+        return _dstruct_copy_sema(ds); \
     } \
-    DStruct & __dstruct_copy_sema(const DStruct &ds)
+    DStruct & _dstruct_copy_sema(const DStruct &ds)
 
 #define DSTRUCT_MOVE_SEMANTICS(DStruct) \
     DStruct(DStruct &&ds) : DStruct() { *this = dstruct::move(ds); } \
     DStruct & operator=(DStruct &&ds) { \
         if (this == &ds) return *this; \
-        return __dstruct_move_sema(dstruct::move(ds)); \
+        return _dstruct_move_sema(dstruct::move(ds)); \
     } \
-    DStruct & __dstruct_move_sema(DStruct &&ds)
+    DStruct & _dstruct_move_sema(DStruct &&ds)
 
 // TODO: Check placement new for primitive type(example pointer) and self-def type
 // https://en.cppreference.com/w/cpp/language/new
@@ -53,7 +53,7 @@ public: \
 template <typename T>
 static T* construct(void *addr, const T& obj) noexcept {
     static DStructPlacementNewFlag placementNewFlag;
-    __DSTRUCT_CRASH(addr == nullptr);
+    DSTRUCT_CRASH(addr == nullptr);
     return new(addr, &placementNewFlag) T(obj); // use T's constructor(copy/spec)
 }
 
@@ -69,7 +69,7 @@ static T ** construct(void *addr, const T *obj) {
 
 template <>
 int * construct<int>(void *addr, const int& obj) noexcept {
-    __DSTRUCT_CRASH(addr == nullptr);
+    DSTRUCT_CRASH(addr == nullptr);
     *(reinterpret_cast<int *>(addr)) = obj;
     return reinterpret_cast<int *>(addr);
 }
@@ -82,7 +82,7 @@ static void destroy(T *addr) noexcept {
     delete(ptr, &placementNewFlag);
 */
     // method2, skip detele
-    __DSTRUCT_CRASH(addr == nullptr); // addr is nullptr, trigger crash
+    DSTRUCT_CRASH(addr == nullptr); // addr is nullptr, trigger crash
     addr->~T();
 }
 

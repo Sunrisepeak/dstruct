@@ -7,37 +7,37 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __VECTOR_HPP__DSTRUCT
-#define __VECTOR_HPP__DSTRUCT
+#ifndef VECTOR_HPP_DSTRUCT
+#define VECTOR_HPP_DSTRUCT
 
 #include <core/common.hpp>
 
 namespace dstruct {
 
-template <typename T, typename __Alloc = dstruct::Alloc>
-class Vector : public _DStructTypeSpec<T, __Alloc, PrimitiveIterator> {
+template <typename T, typename Alloc = dstruct::Alloc>
+class Vector : public DStructTypeSpec_<T, Alloc, PrimitiveIterator> {
 
     DSTRUCT_TYPE_SPEC_HELPER(Vector);
 
 public: // big five
-    Vector() :  _mSize { 0 }, _mCapacity { 0 }, _mC { nullptr } { }
+    Vector() :  mSize_d { 0 }, mCapacity_d { 0 }, mC_d { nullptr } { }
 
     Vector(size_t n, ConstReferenceType element) : Vector() {
         DSTRUCT_ASSERT(n != 0);
         resize(n);
         for (int i = 0; i < n; i++)
-             dstruct::construct(_mC + i, element);
-        _mSize = n;
-        _mCapacity = n;
+             dstruct::construct(mC_d + i, element);
+        mSize_d = n;
+        mCapacity_d = n;
     }
 
     DSTRUCT_COPY_SEMANTICS(Vector) {
         clear();
-        resize(ds._mCapacity);
-        _mSize = ds._mSize;
-        for (int i = 0; i < _mSize; i++) {
-            dstruct::destroy(_mC + i);
-            dstruct::construct(_mC + i, ds._mC[i]);
+        resize(ds.mCapacity_d);
+        mSize_d = ds.mSize_d;
+        for (int i = 0; i < mSize_d; i++) {
+            dstruct::destroy(mC_d + i);
+            dstruct::construct(mC_d + i, ds.mC_d[i]);
         }
         return *this;
     }
@@ -45,13 +45,13 @@ public: // big five
     DSTRUCT_MOVE_SEMANTICS(Vector) {
         clear();
 
-        this->_mC = ds._mC;
-        this->_mSize = ds._mSize;
-        this->_mCapacity = ds._mCapacity;
+        this->mC_d = ds.mC_d;
+        this->mSize_d = ds.mSize_d;
+        this->mCapacity_d = ds.mCapacity_d;
 
         // init ds
-        ds._mC = nullptr;
-        ds._mSize = ds._mCapacity = 0;
+        ds.mC_d = nullptr;
+        ds.mSize_d = ds.mCapacity_d = 0;
 
         return *this;
     }
@@ -62,32 +62,32 @@ public: // big five
 
 public: // Capacity
     bool empty() const {
-        return _mSize == 0;
+        return mSize_d == 0;
     }
 
     SizeType size() const {
-        return _mSize;
+        return mSize_d;
     }
 
     SizeType capacity() const {
-        return _mCapacity;
+        return mCapacity_d;
     }
 
 public: // Access
     ConstReferenceType back() const {
-        DSTRUCT_ASSERT(_mSize > 0);
-        return _mC[_mSize - 1];
+        DSTRUCT_ASSERT(mSize_d > 0);
+        return mC_d[mSize_d - 1];
     }
 
     ConstReferenceType front() const {
-        return _mC[0];
+        return mC_d[0];
     }
 
     ConstReferenceType operator[](int index) const {
         if (index < 0)
-            index = _mSize + index;
-        DSTRUCT_ASSERT(index < static_cast<int>(_mSize));
-        return _mC[index];
+            index = mSize_d + index;
+        DSTRUCT_ASSERT(index < static_cast<int>(mSize_d));
+        return mC_d[index];
     }
 
 public: // Modifiers
@@ -96,14 +96,14 @@ public: // Modifiers
     }
 
     void push_back(ConstReferenceType element) {
-        if (_mSize + 1 > _mCapacity) {
-            if (_mSize)
-                resize(2 * _mSize);
+        if (mSize_d + 1 > mCapacity_d) {
+            if (mSize_d)
+                resize(2 * mSize_d);
             else
                 resize(2);
         }
-        dstruct::construct(_mC + _mSize, element);
-        _mSize++;
+        dstruct::construct(mC_d + mSize_d, element);
+        mSize_d++;
     }
 
     void pop() {
@@ -111,73 +111,73 @@ public: // Modifiers
     }
 
     void pop_back() {
-        DSTRUCT_ASSERT(_mSize > 0);
-        --_mSize;
-        dstruct::destroy(_mC + _mSize);
-        if (_mSize < _mCapacity / 3) {
-            resize(_mCapacity / 2);
+        DSTRUCT_ASSERT(mSize_d > 0);
+        --mSize_d;
+        dstruct::destroy(mC_d + mSize_d);
+        if (mSize_d < mCapacity_d / 3) {
+            resize(mCapacity_d / 2);
         }
     }
 
     ReferenceType operator[](int index) {
         if (index < 0)
-            index = _mSize + index;
-        DSTRUCT_ASSERT(index < static_cast<int>(_mSize));
-        return _mC[index];
+            index = mSize_d + index;
+        DSTRUCT_ASSERT(index < static_cast<int>(mSize_d));
+        return mC_d[index];
     }
 
     void clear() {
-        if (_mC) {
+        if (mC_d) {
             // don't need to destroy haven't contructed area
-            for (int i = 0; i < _mSize; i++) {
-                dstruct::destroy(_mC + i);
+            for (int i = 0; i < mSize_d; i++) {
+                dstruct::destroy(mC_d + i);
             }
-            Vector::_Alloc::deallocate(_mC, _mCapacity);
+            Vector::Alloc_::deallocate(mC_d, mCapacity_d);
         }
-        _mSize = _mCapacity = 0;
-        _mC = nullptr;
+        mSize_d = mCapacity_d = 0;
+        mC_d = nullptr;
     }
 
 public: // iterator
     IteratorType begin() {
-        return _mC;
+        return mC_d;
     }
 
     ConstIteratorType begin() const {
-        return _mC;
+        return mC_d;
     }
 
     IteratorType end() {
-        return _mC + _mSize;
+        return mC_d + mSize_d;
     }
 
     ConstIteratorType end() const {
-        return _mC + _mSize;
+        return mC_d + mSize_d;
     }
 
 public:
     void resize(size_t n) {
-        PointerType oldC = _mC;
+        PointerType oldC = mC_d;
 
         if (n == 0)
-            _mC = nullptr;
+            mC_d = nullptr;
         else
-            _mC = Vector::_Alloc::allocate(n);
+            mC_d = Vector::Alloc_::allocate(n);
 
         if (oldC) {
-            DSTRUCT_ASSERT(_mCapacity != 0);
-            for (int i = 0; i < _mSize; i++) {
+            DSTRUCT_ASSERT(mCapacity_d != 0);
+            for (int i = 0; i < mSize_d; i++) {
                 if (i < n) // TODO: use move by check type-tag
-                    dstruct::construct(_mC + i, oldC[i]);
+                    dstruct::construct(mC_d + i, oldC[i]);
                 dstruct::destroy(oldC + i);
             }
-            Vector::_Alloc::deallocate(oldC, _mCapacity);
+            Vector::Alloc_::deallocate(oldC, mCapacity_d);
         }
 
-        _mCapacity = n;
+        mCapacity_d = n;
 
-        if (n < _mSize)
-            _mSize = n;
+        if (n < mSize_d)
+            mSize_d = n;
     }
 
     void resize(size_t n, ConstReferenceType element) {
@@ -188,30 +188,30 @@ public:
         }
 
         // alloc
-        PointerType oldC = _mC;
-        _mC = Vector::_Alloc::allocate(n);
+        PointerType oldC = mC_d;
+        mC_d = Vector::Alloc_::allocate(n);
 
         // release
         if (oldC) {
-            for (int i = 0; i < _mSize; i++) {
+            for (int i = 0; i < mSize_d; i++) {
                 if (i < n) // TODO: use move by check type-tag
-                    dstruct::construct(_mC + i, oldC[i]);
+                    dstruct::construct(mC_d + i, oldC[i]);
                 dstruct::destroy(oldC + i);
             }
-            Vector::_Alloc::deallocate(oldC, _mCapacity);
+            Vector::Alloc_::deallocate(oldC, mCapacity_d);
         }
 
         // set
-        for (int i = _mSize; i < n; i++) {
-            dstruct::construct(_mC + i, element);
+        for (int i = mSize_d; i < n; i++) {
+            dstruct::construct(mC_d + i, element);
         }
 
-        _mCapacity = _mSize = n;
+        mCapacity_d = mSize_d = n;
     }
 
 protected: // data member
-    SizeType _mSize, _mCapacity;
-    PointerType _mC;
+    SizeType mSize_d, mCapacity_d;
+    PointerType mC_d;
 };
 
 };

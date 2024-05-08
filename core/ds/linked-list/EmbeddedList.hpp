@@ -7,48 +7,48 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __EMBEDDED_LINKED_LIST_HPP__DSTRUCT
-#define __EMBEDDED_LINKED_LIST_HPP__DSTRUCT
+#ifndef EMBEDDED_LINKED_LIST_HPP_DSTRUCT
+#define EMBEDDED_LINKED_LIST_HPP_DSTRUCT
 
 namespace dstruct {
 
-struct _SinglyLink {
-    struct _SinglyLink *next;
+struct SinglyLink_ {
+    struct SinglyLink_ *next;
 
 public: // op
-    static void init(_SinglyLink *link) {
+    static void init(SinglyLink_ *link) {
         link->next = link;
     }
 
-    static bool empty(_SinglyLink *link) {
+    static bool empty(SinglyLink_ *link) {
         return link->next == link;
     }
 
-    static void add(_SinglyLink *prev, _SinglyLink *curr) {
+    static void add(SinglyLink_ *prev, SinglyLink_ *curr) {
         curr->next = prev->next;
         prev->next = curr;
     }
 
-    static void del(_SinglyLink *prev, _SinglyLink *curr) {
+    static void del(SinglyLink_ *prev, SinglyLink_ *curr) {
         prev->next = curr->next;
         curr->next = nullptr;
     }
 };
 
-struct _DoublyLink {
-    struct _DoublyLink *next;
-    struct _DoublyLink *prev;
+struct DoublyLink_ {
+    struct DoublyLink_ *next;
+    struct DoublyLink_ *prev;
 
 public: // op
-    static void init(_DoublyLink *link) {
+    static void init(DoublyLink_ *link) {
         link->next = link->prev = link;
     }
 
-    static bool empty(_DoublyLink *link) {
+    static bool empty(DoublyLink_ *link) {
         return link->next == link;
     }
 
-    static void add(_DoublyLink *prev, _DoublyLink *curr) {
+    static void add(DoublyLink_ *prev, DoublyLink_ *curr) {
         curr->next = prev->next;
         curr->prev = prev;
         if (prev->next)
@@ -56,7 +56,7 @@ public: // op
         prev->next = curr;
     }
 
-    static void del(_DoublyLink *prev, _DoublyLink *curr) {
+    static void del(DoublyLink_ *prev, DoublyLink_ *curr) {
         prev->next = curr->next;
         if (curr->next)
             curr->next->prev = prev;
@@ -64,34 +64,34 @@ public: // op
     }
 };
 
-template <typename T, typename Link = _DoublyLink>
-struct _EmbeddedListNode /* Node */ {
+template <typename T, typename Link = DoublyLink_>
+struct EmbeddedListNode_ /* Node */ {
     Link link;
     T data;
 public:
     using LinkType = Link;
 public: // op
-    static void init(_EmbeddedListNode *list) {
+    static void init(EmbeddedListNode_ *list) {
         Link::init(to_link(list));
     }
 
-    static bool empty(_EmbeddedListNode *list) {
+    static bool empty(EmbeddedListNode_ *list) {
         return Link::empty(to_link(list));
     }
 
-    static void add(_EmbeddedListNode *prev, _EmbeddedListNode *curr) {
+    static void add(EmbeddedListNode_ *prev, EmbeddedListNode_ *curr) {
         Link::add(to_link(prev), to_link(curr));
     }
 
-    static void del(_EmbeddedListNode *prev, _EmbeddedListNode *curr) {
+    static void del(EmbeddedListNode_ *prev, EmbeddedListNode_ *curr) {
         Link::del(to_link(prev), to_link(curr));
     }
 
-    static _EmbeddedListNode * to_node(Link *link) {
-        return reinterpret_cast<_EmbeddedListNode *>(link);
+    static EmbeddedListNode_ * to_node(Link *link) {
+        return reinterpret_cast<EmbeddedListNode_ *>(link);
     }
 
-    static Link * to_link(_EmbeddedListNode *node) {
+    static Link * to_link(EmbeddedListNode_ *node) {
         return &(node->link);
     }
 };

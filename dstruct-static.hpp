@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DSTRUCT_STATIC_HPP__DSTRUCT
-#define __DSTRUCT_STATIC_HPP__DSTRUCT
+#ifndef DSTRUCT_STATIC_HPP_DSTRUCT
+#define DSTRUCT_STATIC_HPP_DSTRUCT
 
 #include <core/ds/Heap.hpp>
 
@@ -61,8 +61,8 @@ namespace smemory {
     using String = BasicString<char, SMA>;
 
 // EmbeddedList
-    template <typename T, typename Link = _DoublyLink>
-    using EListNode = _EmbeddedListNode<T, Link>;
+    template <typename T, typename Link = DoublyLink_>
+    using EListNode = EmbeddedListNode_<T, Link>;
 
 // SinglyLinkedList
     template <typename T>

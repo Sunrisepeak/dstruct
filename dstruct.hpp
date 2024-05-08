@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DSTRUCT_HPP__DSTRUCT
-#define __DSTRUCT_HPP__DSTRUCT
+#ifndef DSTRUCT_HPP_DSTRUCT
+#define DSTRUCT_HPP_DSTRUCT
 
 //#define ENABLE_SMA
 
@@ -61,8 +61,8 @@ namespace dstruct {
     using String = BasicString<char, dstruct::Alloc>;
 
 // EmbeddedList
-    template <typename T, typename Link = _DoublyLink>
-    using EListNode = _EmbeddedListNode<T, Link>;
+    template <typename T, typename Link = DoublyLink_>
+    using EListNode = EmbeddedListNode_<T, Link>;
 
 // SinglyLinkedList
     template <typename T, typename Alloc = dstruct::Alloc>

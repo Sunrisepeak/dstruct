@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __TEST_BASE_HPP__DSTRUCT
-#define __TEST_BASE_HPP__DSTRUCT
+#ifndef TEST_BASE_HPP_DSTRUCT
+#define TEST_BASE_HPP_DSTRUCT
 
 //#include <iostream>
 #include <dstruct.hpp>
@@ -25,21 +25,21 @@ namespace test {
 
 struct Destory {
 public:
-    Destory() : __mCnt { 1 } {
+    Destory() : mCnt_e { 1 } {
         TEST_LOG("Destory");
     }
 
-    Destory(const Destory &des) : __mCnt { des.__mCnt } {
+    Destory(const Destory &des) : mCnt_e { des.mCnt_e } {
         TEST_LOG("Copy Destory");
     }
 
     ~Destory() {
-        __mCnt--;
-        DSTRUCT_ASSERT(__mCnt == 0);
+        mCnt_e--;
+        DSTRUCT_ASSERT(mCnt_e == 0);
         TEST_LOG("~Destory");
     }
 private:
-    int __mCnt;
+    int mCnt_e;
 };
 
 template <typename DStruct>

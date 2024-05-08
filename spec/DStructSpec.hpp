@@ -7,10 +7,10 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DSTRUCT_SPEC_HPP__DSTRUCT_V001
-#define __DSTRUCT_SPEC_HPP__DSTRUCT_V001
+#ifndef DSTRUCT_SPEC_HPP_DSTRUCTV001
+#define DSTRUCT_SPEC_HPP_DSTRUCTV001
 
-#define __DSTRUCT_CRASH(expr) \
+#define DSTRUCT_CRASH(expr) \
     if (expr) { \
         *(static_cast<volatile char *>(0)) = 'E'; \
     }
@@ -74,42 +74,42 @@ public: // common type
 protected: // iterator category type
     using CategoryType         = Category;
 private:
-    using __Self               = DStructIteratorTypeSpec;
+    using Self               = DStructIteratorTypeSpec;
 
 /*
 public: // bigfive
-    __Self();
-    __Self(const __Self &);
-    __Self & operator=(const __Self&);
-    __Self(__Self &&);
-    __Self & operator=(__Self &&);
-    ~__Self();
+    Self();
+    Self(const Self &);
+    Self & operator=(const Self&);
+    Self(Self &&);
+    Self & operator=(Self &&);
+    ~Self();
 */
 
 // Interface Spec
 public: // base op
-    ReferenceType operator*() const { return *_mPointer; }
-    PointerType operator->() const { return _mPointer; }
-    virtual bool operator!=(const DStructIteratorTypeSpec &it) const { return _mPointer != it._mPointer; }
-    virtual bool operator==(const DStructIteratorTypeSpec &it) const { return _mPointer == it._mPointer; }
+    ReferenceType operator*() const { return *mPointer_d; }
+    PointerType operator->() const { return mPointer_d; }
+    virtual bool operator!=(const DStructIteratorTypeSpec &it) const { return mPointer_d != it.mPointer_d; }
+    virtual bool operator==(const DStructIteratorTypeSpec &it) const { return mPointer_d == it.mPointer_d; }
 
 /* pls: according to your dstruct impl them
 public: // ForwardIterator
-    __Self& operator++();
-    __Self operator++(int);
+    Self& operator++();
+    Self operator++(int);
 public: // BidirectionalIterator
-    __Self& operator--();
-    __Self operator--(int);
+    Self& operator--();
+    Self operator--(int);
 public: // RandomIterator
-    __Self operator+(int) const;
-    __Self operator-(int) const;
-    __Self operator+=(int) const;
-    __Self operator-=(int) const;
+    Self operator+(int) const;
+    Self operator-(int) const;
+    Self operator+=(int) const;
+    Self operator-=(int) const;
 */
 
 // Member Var Spec
 protected: // member var
-    PointerType _mPointer;
+    PointerType mPointer_d;
 };
 
 
@@ -130,18 +130,18 @@ public: // iterator type
     using IteratorType         = Iterator;
     using ConstIteratorType    = ConstIterator;
 protected: // alloc type
-    using _Alloc               = AllocSpec<T, Alloc>;
+    using Alloc_               = AllocSpec<T, Alloc>;
 private:
-    using __Self               = DStructTypeSpec;
+    using Self               = DStructTypeSpec;
 
 /* pls: according to your dstruct impl them
 public: // bigfive
-    __Self();
-    __Self(const __Self &);
-    __Self & operator=(const __Self&);
-    __Self(__Self &&);
-    __Self & operator=(__Self &&)；
-    ~__Self();
+    Self();
+    Self(const Self &);
+    Self & operator=(const Self&);
+    Self(Self &&);
+    Self & operator=(Self &&)；
+    ~Self();
 
 // Interface Spec
 public: // Capacity
@@ -172,7 +172,7 @@ public: // iterator/range-for support
 };
 
 template <typename T, typename Alloc, template <typename> class Iterator>
-using _DStructTypeSpec = DStructTypeSpec<T, Alloc, Iterator<T>, Iterator<const T>>;
+using DStructTypeSpec_ = DStructTypeSpec<T, Alloc, Iterator<T>, Iterator<const T>>;
 
 };
 

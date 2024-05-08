@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DISJOINT_SET_HPP__DSTRUCT
-#define __DISJOINT_SET_HPP__DSTRUCT
+#ifndef DISJOINT_SET_HPP_DSTRUCT
+#define DISJOINT_SET_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/array/Array.hpp>
@@ -19,12 +19,12 @@ namespace dstruct {
 template <typename Alloc>
 class DisjointSet {
 private:
-    using __Array = dstruct::Vector<int, Alloc>;
+    using Array_e = dstruct::Vector<int, Alloc>;
 
-    DSTRUCT_TYPE_SPEC_HELPER(__Array)
+    DSTRUCT_TYPE_SPEC_HELPER(Array_e)
 
 public:
-    DisjointSet(int n) : _mArray(n, -1) { }
+    DisjointSet(int n) : mArray_d(n, -1) { }
     DisjointSet(const DisjointSet &) = default;
     DisjointSet & operator=(const DisjointSet &) = default;
     DisjointSet(DisjointSet &&) = default;
@@ -33,27 +33,27 @@ public:
 
 public: // Capacity
     bool empty() const {
-        return _mArray.empty();
+        return mArray_d.empty();
     }
 
     SizeType size() const {
-        return _mArray.size();
+        return mArray_d.size();
     }
 
     SizeType capacity() const {
-        return _mArray.capacity();
+        return mArray_d.capacity();
     }
 
 public:
     ConstReferenceType find(ConstReferenceType index) {
-        if (_mArray[index] < 0)
+        if (mArray_d[index] < 0)
             return index;
-        return _mArray[index] = find(_mArray[index]);
+        return mArray_d[index] = find(mArray_d[index]);
     }
 
     SizeType count() const {
         SizeType setsNum = 0;
-        for (auto &v : _mArray) {
+        for (auto &v : mArray_d) {
             if (v < 0)
                 setsNum++;
         }
@@ -73,16 +73,16 @@ public:
 
     void union_set(ConstReferenceType root1, ConstReferenceType root2) {
         if (root1 < root2) {
-            _mArray[root2] = root1;
+            mArray_d[root2] = root1;
         } else {
-            if (_mArray[root1] == _mArray[root2])
-                _mArray[root1]--;
-            _mArray[root2] = root1;
+            if (mArray_d[root1] == mArray_d[root2])
+                mArray_d[root1]--;
+            mArray_d[root2] = root1;
         }
     }
 
 protected:
-    __Array _mArray;
+    Array_e mArray_d;
 };
 
 }

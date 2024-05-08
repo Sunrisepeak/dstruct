@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __QUEUE_HPP__DSTRUCT
-#define __QUEUE_HPP__DSTRUCT
+#ifndef QUEUE_HPP_DSTRUCT
+#define QUEUE_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/queue/DoubleEndedQueue.hpp>
@@ -34,47 +34,47 @@ public:
 public: // base op
     // status
     SizeType size() const {
-        return _mDS.size();
+        return mDS_d.size();
     }
 
-    //SizeType capacity() const { return _mDS.capacity(); }
+    //SizeType capacity() const { return mDS_d.capacity(); }
 
     bool empty() const {
-        return _mDS.empty();
+        return mDS_d.empty();
     }
 
     // check
-    ValueType back() const { return _mDS.back(); }
+    ValueType back() const { return mDS_d.back(); }
 
     ValueType front() const {
-        return _mDS.front();
+        return mDS_d.front();
     }
 
     const ValueType & operator[](int index) {
-        return _mDS[index];
+        return mDS_d[index];
     }
 
 
     // push/pop
     void push(const T &obj) {
-        _mDS.push_back(obj);
+        mDS_d.push_back(obj);
     }
 
     void pop() {
-        _mDS.pop_front();
+        mDS_d.pop_front();
     }
 
     // Iterator/range-for
     ConstIteratorType begin() const {
-        return _mDS.begin();
+        return mDS_d.begin();
     }
 
     ConstIteratorType end() const {
-        return _mDS.end();
+        return mDS_d.end();
     }
 
 protected:
-    DS _mDS;
+    DS mDS_d;
 };
 
 }

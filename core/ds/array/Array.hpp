@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __ARRAY_HPP__DSTRUCT
-#define __ARRAY_HPP__DSTRUCT
+#ifndef ARRAY_HPP_DSTRUCT
+#define ARRAY_HPP_DSTRUCT
 
 #include <spec/DStructSpec.hpp>
 #include <core/Iterator.hpp>
@@ -17,7 +17,7 @@
 namespace dstruct {
 
 template <typename T, size_t N>
-class Array : public _DStructTypeSpec<T, dstruct::Alloc /*unused*/ , PrimitiveIterator> {
+class Array : public DStructTypeSpec_<T, dstruct::Alloc /*unused*/ , PrimitiveIterator> {
 
 public: // big Five
 
@@ -25,21 +25,21 @@ public: // big Five
 
     Array(typename Array::ConstReferenceType element) {
         for (int i = 0; i < N; i++) {
-            _mC[i] = element;
+            mC_d[i] = element;
         }
     }
 
     Array(const Array &arr) {  *this = arr; }
     Array & operator=(const Array &arr) {
         for (int i = 0; i < N; i++) {
-            _mC[i] = arr._mC[i];
+            mC_d[i] = arr.mC_d[i];
         }
         return *this;
     }
 
     Array(Array &&arr) { *this = dstruct::move(arr); };
     Array & operator=(Array &&arr) {
-        for (int i = 0; i < N; i++) _mC[i] = dstruct::move(arr._mC[i]);
+        for (int i = 0; i < N; i++) mC_d[i] = dstruct::move(arr.mC_d[i]);
         return *this;
     }
 
@@ -60,49 +60,49 @@ public: // Capacity
 
 public: // Access
     typename Array::ConstReferenceType back() const {
-        return _mC[N - 1];
+        return mC_d[N - 1];
     }
 
     typename Array::ConstReferenceType front() const {
-        return _mC[0];
+        return mC_d[0];
     }
 
     typename Array::ConstReferenceType operator[](int index) const {
         if (index < 0)
             index = N + index;
-        return _mC[index];
+        return mC_d[index];
     }
 
 public: // Modifiers
     typename Array::ReferenceType operator[](int index) {
         if (index < 0)
             index = N + index;
-        return _mC[index];
+        return mC_d[index];
     }
 
 public: // iterator
     typename Array::IteratorType begin() {
-        return _mC;
+        return mC_d;
     }
 
     typename Array::ConstIteratorType begin() const {
-        return _mC;
+        return mC_d;
     }
 
     typename Array::IteratorType end() {
-        return _mC + N;
+        return mC_d + N;
     }
 
     typename Array::ConstIteratorType end() const {
-        return _mC + N;
+        return mC_d + N;
     }
 
 protected:
-    T _mC[N == 0 ? 1 : N];
+    T mC_d[N == 0 ? 1 : N];
 }; // Array
 
 };
 
 
 
-#endif /* __ARRAY_HPP__TSL */
+#endif

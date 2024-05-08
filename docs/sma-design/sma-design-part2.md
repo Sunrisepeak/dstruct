@@ -195,15 +195,15 @@ struct MemBlock {
 #### 3.2 内存池初始化
 
 ```cpp
-MiniMemPool() : _mFreeMemSize { 1024 }, _mPoolStartAddr { nullptr }, _mPoolEndAddr { nullptr } {
-    MemBlockList::init(&_mFreeMemBlockList);
+MiniMemPool() : mFreeMemSize_d { 1024 }, mPoolStartAddr_d { nullptr }, mPoolEndAddr_d { nullptr } {
+    MemBlockList::init(&mFreeMemBlockList_d);
     (char *)sbrk(0); // init heap
-    _mPoolStartAddr = (char *)sbrk(_mFreeMemSize);
-    _mPoolEndAddr = _mPoolStartAddr + _mFreeMemSize;
+    mPoolStartAddr_d = (char *)sbrk(mFreeMemSize_d);
+    mPoolEndAddr_d = mPoolStartAddr_d + mFreeMemSize_d;
     // init list
-    auto *memBlkPtr = reinterpret_cast<MemBlock *>(_mPoolStartAddr);
+    auto *memBlkPtr = reinterpret_cast<MemBlock *>(mPoolStartAddr_d);
     memBlkPtr->data = 1024;
-    MemBlockList::add(&_mFreeMemBlockList, memBlkPtr);
+    MemBlockList::add(&mFreeMemBlockList_d, memBlkPtr);
 }
 ```
 
@@ -215,9 +215,9 @@ MiniMemPool() : _mFreeMemSize { 1024 }, _mPoolStartAddr { nullptr }, _mPoolEndAd
 
 ```cpp
 MemBlock * _memblk_search_ffma(int size) {
-    Linker *prevLinkPtr = MemBlockList::to_link(&_mFreeMemBlockList);
+    Linker *prevLinkPtr = MemBlockList::to_link(&mFreeMemBlockList_d);
     MemBlock *memBlkPtr = nullptr;
-    while (prevLinkPtr->next != MemBlockList::to_link(&_mFreeMemBlockList)) {
+    while (prevLinkPtr->next != MemBlockList::to_link(&mFreeMemBlockList_d)) {
         auto nodePtr = MemBlockList::to_node(prevLinkPtr->next);
         if (nodePtr->data >= size) {
             Linker::del(prevLinkPtr, prevLinkPtr->next /* nodePtr */);
@@ -240,7 +240,7 @@ MemBlock * _memblk_search_ffma(int size) {
 
 ```cpp
 void _memblk_insert(MemBlock *memBlkPtr) {
-    MemBlockList::add(&_mFreeMemBlockList, memBlkPtr);
+    MemBlockList::add(&mFreeMemBlockList_d, memBlkPtr);
 }
 ```
 
@@ -253,7 +253,7 @@ void _memblk_insert(MemBlock *memBlkPtr) {
 #### 3.5 内存对齐
 
 ```cpp
-static int _MEM_ALIGN_ROUND_UP(int bytes) {
+static int MEM_ALIGN_ROUND_UP(int bytes) {
     return (((bytes) + sizeof(MemBlock) - 1) & ~(sizeof(MemBlock) - 1));
 }
 ```
@@ -286,19 +286,19 @@ struct Alloc {
 ```cpp
 static void * allocate(int bytes) {
     void *memPtr = nullptr;
-    int alignedSize = _MEM_ALIGN_ROUND_UP(bytes);
-    MemBlock *memBlkPtr = _Instance()._memblk_search_ffma(alignedSize);
+    int alignedSize = MEM_ALIGN_ROUND_UP(bytes);
+    MemBlock *memBlkPtr = Instance()._memblk_search_ffma(alignedSize);
 
     if (memBlkPtr == nullptr) {
         memPtr = sbrk(bytes);
-        _Instance()._mPoolEndAddr = reinterpret_cast<char *>(memPtr) + bytes;
+        Instance().mPoolEndAddr_d = reinterpret_cast<char *>(memPtr) + bytes;
     } else {
         memPtr = memBlkPtr;
         if (memBlkPtr->data >= alignedSize + sizeof(MemBlock)) {
             auto *memFragmentPtr = reinterpret_cast<char *>(memPtr) + alignedSize;
             MemBlock *memFragmentBlkPtr = reinterpret_cast<MemBlock *>(memFragmentPtr);
             memFragmentBlkPtr->data = memBlkPtr->data - alignedSize;
-            _Instance()._memblk_insert(memFragmentBlkPtr);
+            Instance()._memblk_insert(memFragmentBlkPtr);
         }
     }
 
@@ -324,8 +324,8 @@ static void * allocate(int bytes) {
 static void deallocate(void *addr, int bytes) {
     // mem_valid_check(addr);
     auto memBlkPtr = reinterpret_cast<MemBlock *>(addr);
-    memBlkPtr->data = _MEM_ALIGN_ROUND_UP(bytes);
-    _Instance()._memblk_insert(memBlkPtr);
+    memBlkPtr->data = MEM_ALIGN_ROUND_UP(bytes);
+    Instance()._memblk_insert(memBlkPtr);
 }
 ```
 
@@ -380,22 +380,22 @@ class MiniMemPool {
 public:
     static void * allocate(int bytes) {
         void *memPtr = nullptr;
-        int alignedSize = _MEM_ALIGN_ROUND_UP(bytes);
-        MemBlock *memBlkPtr = _Instance()._memblk_search_ffma(alignedSize);
+        int alignedSize = MEM_ALIGN_ROUND_UP(bytes);
+        MemBlock *memBlkPtr = Instance()._memblk_search_ffma(alignedSize);
         LOGD("request bytes %d, align to %d", bytes, alignedSize);
 
         if (memBlkPtr == nullptr) {
             LOGD("not found mem-block in mempool, and try to request by sbrk");
             memPtr = sbrk(bytes);
-            _Instance()._mPoolEndAddr = reinterpret_cast<char *>(memPtr) + bytes;
-            LOGD("sbrk %p, update mem-pool end addr to %p", memPtr, _Instance()._mPoolEndAddr);
+            Instance().mPoolEndAddr_d = reinterpret_cast<char *>(memPtr) + bytes;
+            LOGD("sbrk %p, update mem-pool end addr to %p", memPtr, Instance().mPoolEndAddr_d);
         } else {
             memPtr = memBlkPtr;
             if (memBlkPtr->data >= alignedSize + sizeof(MemBlock)) {
                 auto *memFragmentPtr = reinterpret_cast<char *>(memPtr) + alignedSize;
                 MemBlock *memFragmentBlkPtr = reinterpret_cast<MemBlock *>(memFragmentPtr);
                 memFragmentBlkPtr->data = memBlkPtr->data - alignedSize;
-                _Instance()._memblk_insert(memFragmentBlkPtr);
+                Instance()._memblk_insert(memFragmentBlkPtr);
                 LOGD("split mem-block from [%p, %d] to [[%p, %d], [%p, %d]], and insert to mem-pool",
                     memBlkPtr, memBlkPtr->data,
                     memBlkPtr, alignedSize, memFragmentBlkPtr, memFragmentBlkPtr->data
@@ -411,56 +411,56 @@ public:
     static void deallocate(void *addr, int bytes) {
         // mem_valid_check(addr);
         auto memBlkPtr = reinterpret_cast<MemBlock *>(addr);
-        memBlkPtr->data = _MEM_ALIGN_ROUND_UP(bytes);
+        memBlkPtr->data = MEM_ALIGN_ROUND_UP(bytes);
         LOGD("release memory to mempool: addr %p, size %d(%d)", addr, bytes, memBlkPtr->data);
-        _Instance()._memblk_insert(memBlkPtr);
+        Instance()._memblk_insert(memBlkPtr);
     }
 
     static int free_mem_size() {
-        return _Instance()._mFreeMemSize;
+        return Instance().mFreeMemSize_d;
     }
 
 protected:
-    //void *_mPoolStartAddr, *_mPoolEndAddr;
-    int _mFreeMemSize;
-    char *_mPoolStartAddr, *_mPoolEndAddr;
-    MemBlock _mFreeMemBlockList;
+    //void *mPoolStartAddr_d, *mPoolEndAddr_d;
+    int mFreeMemSize_d;
+    char *mPoolStartAddr_d, *mPoolEndAddr_d;
+    MemBlock mFreeMemBlockList_d;
 
-    MiniMemPool() : _mFreeMemSize { 1024 }, _mPoolStartAddr { nullptr }, _mPoolEndAddr { nullptr } {
-        MemBlockList::init(&_mFreeMemBlockList);
+    MiniMemPool() : mFreeMemSize_d { 1024 }, mPoolStartAddr_d { nullptr }, mPoolEndAddr_d { nullptr } {
+        MemBlockList::init(&mFreeMemBlockList_d);
         (char *)sbrk(0); // init heap
-        _mPoolStartAddr = (char *)sbrk(_mFreeMemSize);
-        _mPoolEndAddr = _mPoolStartAddr + _mFreeMemSize;
+        mPoolStartAddr_d = (char *)sbrk(mFreeMemSize_d);
+        mPoolEndAddr_d = mPoolStartAddr_d + mFreeMemSize_d;
 
-        assert(_mPoolStartAddr != (void *)ENOMEM);
+        assert(mPoolStartAddr_d != (void *)ENOMEM);
         LOGI("init: mem-pool start addr %p, mempool end addr %p, free memory size %d",
-            _mPoolStartAddr, _mPoolEndAddr, _mFreeMemSize);
+            mPoolStartAddr_d, mPoolEndAddr_d, mFreeMemSize_d);
 
         // init list
-        auto *memBlkPtr = reinterpret_cast<MemBlock *>(_mPoolStartAddr);
+        auto *memBlkPtr = reinterpret_cast<MemBlock *>(mPoolStartAddr_d);
         memBlkPtr->data = 1024;
-        MemBlockList::add(&_mFreeMemBlockList, memBlkPtr);
+        MemBlockList::add(&mFreeMemBlockList_d, memBlkPtr);
     }
 
     MiniMemPool(const MiniMemPool &) = delete;
     MiniMemPool &operator=(const MiniMemPool &) = delete;
 
     ~MiniMemPool() {
-        brk(_mPoolStartAddr);
-        _mPoolEndAddr = _mPoolEndAddr = nullptr;
-        _mFreeMemSize = 0;
+        brk(mPoolStartAddr_d);
+        mPoolEndAddr_d = mPoolEndAddr_d = nullptr;
+        mFreeMemSize_d = 0;
         LOGI("release all memory by brk-syscall");
     }
 
-    static MiniMemPool & _Instance() {
+    static MiniMemPool & Instance() {
         static MiniMemPool miniMemPool; // create & manage static memory area
         return miniMemPool;
     }
 
     MemBlock * _memblk_search_ffma(int size) {
-        Linker *prevLinkPtr = MemBlockList::to_link(&_mFreeMemBlockList);
+        Linker *prevLinkPtr = MemBlockList::to_link(&mFreeMemBlockList_d);
         MemBlock *memBlkPtr = nullptr;
-        while (prevLinkPtr->next != MemBlockList::to_link(&_mFreeMemBlockList)) {
+        while (prevLinkPtr->next != MemBlockList::to_link(&mFreeMemBlockList_d)) {
             auto nodePtr = MemBlockList::to_node(prevLinkPtr->next);
             if (nodePtr->data >= size) {
                 Linker::del(prevLinkPtr, prevLinkPtr->next /* nodePtr */);
@@ -473,10 +473,10 @@ protected:
     }
 
     void _memblk_insert(MemBlock *memBlkPtr) {
-        MemBlockList::add(&_mFreeMemBlockList, memBlkPtr);
+        MemBlockList::add(&mFreeMemBlockList_d, memBlkPtr);
     }
 
-    static int _MEM_ALIGN_ROUND_UP(int bytes) {
+    static int MEM_ALIGN_ROUND_UP(int bytes) {
         return (((bytes) + sizeof(MemBlock) - 1) & ~(sizeof(MemBlock) - 1));
     }
 

@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef __DOUBLE_LINKED_LIST_HPP__DSTRUCT
-#define __DOUBLE_LINKED_LIST_HPP__DSTRUCT
+#ifndef DOUBLE_LINKED_LIST_HPP_DSTRUCT
+#define DOUBLE_LINKED_LIST_HPP_DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/linked-list/EmbeddedList.hpp>
@@ -17,59 +17,59 @@
 namespace dstruct {
 
 template <typename T>
-class _DoublyLinkListIterator : public DStructIteratorTypeSpec<T, BidirectionalIterator> {
+class DoublyLinkListIterator_ : public DStructIteratorTypeSpec<T, BidirectionalIterator> {
 public:
-    using _Node  = _EmbeddedListNode<T, _DoublyLink>;
+    using Node_  = EmbeddedListNode_<T, DoublyLink_>;
 private:
-    using __Self = _DoublyLinkListIterator;
+    using Self = DoublyLinkListIterator_;
 
 public: // big five
-    _DoublyLinkListIterator(typename _Node::LinkType *linkPtr) {
-        __sync(linkPtr);
+    DoublyLinkListIterator_(typename Node_::LinkType *linkPtr) {
+        _sync(linkPtr);
     }
 
 public: // ForwardIterator
-    __Self& operator++() { 
-        __sync(_mLinkPtr->next);
+    Self& operator++() { 
+        _sync(mLinkPtr_d->next);
         return *this;
     };
-    __Self operator++(int) {
-        auto oldLinkPtr = _mLinkPtr;
-        __sync(_mLinkPtr->next);
+    Self operator++(int) {
+        auto oldLinkPtr = mLinkPtr_d;
+        _sync(mLinkPtr_d->next);
         return oldLinkPtr;
     };
 public: // BidirectionalIterator
-    __Self& operator--() {
-        __sync(_mLinkPtr->prev);
+    Self& operator--() {
+        _sync(mLinkPtr_d->prev);
         return *this;
     };
-    __Self operator--(int) {
-        auto oldLinkPtr = _mLinkPtr;
-        __sync(_mLinkPtr->prev);
+    Self operator--(int) {
+        auto oldLinkPtr = mLinkPtr_d;
+        _sync(mLinkPtr_d->prev);
         return oldLinkPtr;
     };
 private:
-    // update _mLinkPtr and _mPointer
-    void __sync(typename _Node::LinkType *ptr) {
-        _mLinkPtr = ptr;
-        __Self::_mPointer = &(_Node::to_node(_mLinkPtr)->data);
+    // update mLinkPtr_d and mPointer_d
+    void _sync(typename Node_::LinkType *ptr) {
+        mLinkPtr_d = ptr;
+        Self::mPointer_d = &(Node_::to_node(mLinkPtr_d)->data);
     }
 protected:
-    typename _Node::LinkType *_mLinkPtr;
+    typename Node_::LinkType *mLinkPtr_d;
 };
 
 template <typename T, typename Alloc = dstruct::Alloc>
-class DoublyLinkedList : public _LinkedList<T, _DoublyLinkListIterator, Alloc> {
+class DoublyLinkedList : public LinkedList_<T, DoublyLinkListIterator_, Alloc> {
 
 protected:
-    using _List = _LinkedList<T, _DoublyLinkListIterator, Alloc>;
-    using typename _List::_Node;
-    using typename _List::_AllocNode;
-    using _List::_mSize;
-    using _List::_mHeadNode;
+    using List_ = LinkedList_<T, DoublyLinkListIterator_, Alloc>;
+    using typename List_::Node_;
+    using typename List_::AllocNode_;
+    using List_::mSize_d;
+    using List_::mHeadNode_d;
 
 public: // big five
-    // use _List to complete
+    // use List_ to complete
     DoublyLinkedList() = default;
     DoublyLinkedList(size_t n, const T &obj) : DoublyLinkedList() { while(n--) push_back(obj); }
 
@@ -84,11 +84,11 @@ public: // big five
 
     DSTRUCT_MOVE_SEMANTICS(DoublyLinkedList) {
         // move list data
-        _List::operator=(dstruct::move(ds));
+        List_::operator=(dstruct::move(ds));
         // update link: first-data and last-data point to new headNode
-        auto headLinkPtr = _Node::to_link(&_mHeadNode);
-        _mHeadNode.link.prev->next = headLinkPtr;
-        _mHeadNode.link.next->prev = headLinkPtr;
+        auto headLinkPtr = Node_::to_link(&mHeadNode_d);
+        mHeadNode_d.link.prev->next = headLinkPtr;
+        mHeadNode_d.link.next->prev = headLinkPtr;
         return *this;
     }
 
@@ -97,38 +97,38 @@ public: // big five
 public: // base op
 
     T back() const {
-        DSTRUCT_ASSERT(_mSize > 0);
-        return _Node::to_node(_mHeadNode.link.prev)->data;
+        DSTRUCT_ASSERT(mSize_d > 0);
+        return Node_::to_node(mHeadNode_d.link.prev)->data;
     }
 
     void push_back(const T &obj) {
         // 1. alloc memory
-        _Node *nPtr = _AllocNode::allocate();
+        Node_ *nPtr = AllocNode_::allocate();
         // 2. construct node
-        _mHeadNode.data = obj; // only for contruct nPtr
-        dstruct::construct(nPtr, _mHeadNode);
+        mHeadNode_d.data = obj; // only for contruct nPtr
+        dstruct::construct(nPtr, mHeadNode_d);
         // 3. add node to list
-        _Node::LinkType::add(_mHeadNode.link.prev, _Node::to_link(nPtr));
+        Node_::LinkType::add(mHeadNode_d.link.prev, Node_::to_link(nPtr));
         // 4. increase size
-        _mSize++;
+        mSize_d++;
     }
 
     void pop_back() {
-        DSTRUCT_ASSERT(_mSize > 0);
+        DSTRUCT_ASSERT(mSize_d > 0);
         // 1. get node link ptr
-        typename _Node::LinkType *lPtr = _mHeadNode.link.prev;
+        typename Node_::LinkType *lPtr = mHeadNode_d.link.prev;
         // 2. del node from list
-        _Node::LinkType::del(lPtr->prev, lPtr);
+        Node_::LinkType::del(lPtr->prev, lPtr);
         // 3. get target node
-        _Node *nPtr = _Node::to_node(lPtr);
+        Node_ *nPtr = Node_::to_node(lPtr);
         // 4. free and decrease size/len
         dstruct::destroy(nPtr);
-        _AllocNode::deallocate(nPtr);
-        _mSize--;
+        AllocNode_::deallocate(nPtr);
+        mSize_d--;
     }
 
     void clear() {
-        _List::_clear();
+        List_::_clear();
     }
 };
 
