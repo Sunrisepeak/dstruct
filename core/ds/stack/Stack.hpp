@@ -33,30 +33,30 @@ public:
 
 public: // base op
     // status
-    SizeType size() const { return _mDS.size(); }
-    //SizeType capacity() const { return _mDS.capacity(); }
-    bool empty() const { return _mDS.empty(); }
+    SizeType size() const { return mDS_d.size(); }
+    //SizeType capacity() const { return mDS_d.capacity(); }
+    bool empty() const { return mDS_d.empty(); }
 
     // check
-    ValueType top /* back */ () const { return _mDS.back(); }
+    ValueType top /* back */ () const { return mDS_d.back(); }
 
     // push/pop
-    void push(const T &obj) { _mDS.push_back(obj); }
+    void push(const T &obj) { mDS_d.push_back(obj); }
     void pop() {
-        T data = _mDS.back();
-        _mDS.pop_back();
+        T data = mDS_d.back();
+        mDS_d.pop_back();
     }
 
     void clear() {
-        _mDS.clear();
+        mDS_d.clear();
     }
 
     // Iterator/range-for
-    ConstIteratorType begin() const { return _mDS.begin(); }
-    ConstIteratorType end() const { return _mDS.end(); }
+    ConstIteratorType begin() const { return mDS_d.begin(); }
+    ConstIteratorType end() const { return mDS_d.end(); }
 
 protected:
-    DS _mDS;
+    DS mDS_d;
 };
 
 } // namespace adapter

@@ -23,26 +23,26 @@ private:
     DSTRUCT_TYPE_SPEC_HELPER(__CharList);
 
 public:
-    BasicString() : _mCharList {1, '\0'} {
-        _mCharList.resize(15);
+    BasicString() : mCharList_d {1, '\0'} {
+        mCharList_d.resize(15);
     }
 
     DSTRUCT_COPY_SEMANTICS(BasicString) {
-        _mCharList = ds._mCharList;
+        mCharList_d = ds.mCharList_d;
         return *this;
     }
 
     DSTRUCT_MOVE_SEMANTICS(BasicString) {
-        _mCharList = dstruct::move(ds._mCharList);
+        mCharList_d = dstruct::move(ds.mCharList_d);
         return *this;
     }
 
     BasicString(const char *str) : BasicString() {
-        _mCharList[-1] = *str;
+        mCharList_d[-1] = *str;
         while (*(++str) != '\0') {
-            _mCharList.push_back(*str);
+            mCharList_d.push_back(*str);
         }
-        _mCharList.push_back('\0');
+        mCharList_d.push_back('\0');
     }
 
     ~BasicString() = default;
@@ -58,70 +58,70 @@ public: // Capacity
     }
 
     SizeType size() const {
-        return _mCharList.size() - 1 /* '\0' */;
+        return mCharList_d.size() - 1 /* '\0' */;
     }
 
     SizeType capacity() const {
-        return _mCharList.capacity();
+        return mCharList_d.capacity();
     }
 
 public: // Access
     ConstReferenceType back() const {
-        return _mCharList[-2];
+        return mCharList_d[-2];
     }
 
     ConstReferenceType front() const {
-        return _mCharList.front();
+        return mCharList_d.front();
     }
 
     ConstReferenceType operator[](int index) const {
-        return _mCharList[index];
+        return mCharList_d[index];
     }
 
 public: // Modifiers
     void push_back(ConstReferenceType element) {
-        _mCharList[-1] = element;
-        _mCharList.push_back('\0');
+        mCharList_d[-1] = element;
+        mCharList_d.push_back('\0');
     }
 
     ReferenceType operator[](int index) {
-        return _mCharList[index];
+        return mCharList_d[index];
     }
 
     void clear() {
-        _mCharList.clear();
-        _mCharList.push_back('\0');
-        _mCharList.resize(15);
+        mCharList_d.clear();
+        mCharList_d.push_back('\0');
+        mCharList_d.resize(15);
     }
 
 public: // iterator/range-for support
     IteratorType begin() {
-        return _mCharList.begin();
+        return mCharList_d.begin();
     }
 
     ConstIteratorType begin() const {
-        return _mCharList.begin();
+        return mCharList_d.begin();
     }
 
     IteratorType end() {
-        return _mCharList.end() - 1;
+        return mCharList_d.end() - 1;
     }
 
     ConstIteratorType end() const {
-        return _mCharList.end() - 1;
+        return mCharList_d.end() - 1;
     }
 
 public:
     ConstPointerType c_str() const {
-        return &(_mCharList[0]);
+        return &(mCharList_d[0]);
     }
 
     BasicString & operator+=(const BasicString &str) {
-        if (_mCharList.capacity() < _mCharList.size() + str._mCharList.size() - 1)
-            _mCharList.resize(_mCharList.size() + str._mCharList.size() - 1);
-        _mCharList[-1] = str[0];
-        for (int i = 1; i < str._mCharList.size(); i++) {
-            _mCharList.push_back(str._mCharList[i]);
+        if (mCharList_d.capacity() < mCharList_d.size() + str.mCharList_d.size() - 1)
+            mCharList_d.resize(mCharList_d.size() + str.mCharList_d.size() - 1);
+        mCharList_d[-1] = str[0];
+        for (int i = 1; i < str.mCharList_d.size(); i++) {
+            mCharList_d.push_back(str.mCharList_d[i]);
         }
         return *this;
     }
@@ -131,7 +131,7 @@ public:
     }
 
 protected:
-    __CharList _mCharList;
+    __CharList mCharList_d;
 };
 
 template <typename CharType, typename Alloc>

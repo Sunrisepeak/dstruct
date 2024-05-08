@@ -25,59 +25,59 @@ class XValueStack {
 
 public:
     XValueStack() = default;
-    XValueStack(const Compare &cmp) : _mCmp { cmp } { }
+    XValueStack(const Compare &cmp) : mCmp_d { cmp } { }
 
     DSTRUCT_COPY_SEMANTICS(XValueStack) {
-        this->_mXValue = ds._mXValue;
-        this->_mCmp = ds._mCmp;
-        this->_mStack = ds._mStack;
+        this->mXValue_d = ds.mXValue_d;
+        this->mCmp_d = ds.mCmp_d;
+        this->mStack_d = ds.mStack_d;
         return *this;
     }
 
     DSTRUCT_MOVE_SEMANTICS(XValueStack) {
-        _mXValue = dstruct::move(ds._mXValue);
-        _mCmp =  dstruct::move(ds._mCmp);
-        _mStack =  dstruct::move(ds._mStack);
+        mXValue_d = dstruct::move(ds.mXValue_d);
+        mCmp_d =  dstruct::move(ds.mCmp_d);
+        mStack_d =  dstruct::move(ds.mStack_d);
         return *this;
     }
 
     ~XValueStack() = default;
 
 public:
-    bool empty() const { return _mStack.empty(); }
+    bool empty() const { return mStack_d.empty(); }
 
-    T top() const { return _mStack.top(); }
+    T top() const { return mStack_d.top(); }
 
-    T getXValue() const { return _mXValue; }
+    T getXValue() const { return mXValue_d; }
 
     void push(const T &val) {
-        if (_mStack.empty() || _mCmp(val, _mXValue)) {
-            _mStack.push(_mXValue); // save XValue
-            _mXValue = val;
+        if (mStack_d.empty() || mCmp_d(val, mXValue_d)) {
+            mStack_d.push(mXValue_d); // save XValue
+            mXValue_d = val;
         }
-        _mStack.push(val);
+        mStack_d.push(val);
     }
 
     void pop() {
-        T data = _mStack.top(); _mStack.pop();
-        if (_mXValue == data) {
-            _mXValue = _mStack.top(); _mStack.pop();
+        T data = mStack_d.top(); mStack_d.pop();
+        if (mXValue_d == data) {
+            mXValue_d = mStack_d.top(); mStack_d.pop();
         }
         // return dstruct::move(data);
     }
 
     void clear() {
-        _mStack.clear();
+        mStack_d.clear();
     }
 
     // Iterator/range-for
-    ConstIteratorType begin() const { return _mStack.begin(); }
-    ConstIteratorType end() const { return _mStack.end(); }
+    ConstIteratorType begin() const { return mStack_d.begin(); }
+    ConstIteratorType end() const { return mStack_d.end(); }
 
 protected:
-    T _mXValue;
-    Compare _mCmp;
-    StackType _mStack;
+    T mXValue_d;
+    Compare mCmp_d;
+    StackType mStack_d;
 };
 
 }

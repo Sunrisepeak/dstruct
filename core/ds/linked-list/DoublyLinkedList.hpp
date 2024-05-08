@@ -30,32 +30,32 @@ public: // big five
 
 public: // ForwardIterator
     Self& operator++() { 
-        __sync(_mLinkPtr->next);
+        __sync(mLinkPtr_d->next);
         return *this;
     };
     Self operator++(int) {
-        auto oldLinkPtr = _mLinkPtr;
-        __sync(_mLinkPtr->next);
+        auto oldLinkPtr = mLinkPtr_d;
+        __sync(mLinkPtr_d->next);
         return oldLinkPtr;
     };
 public: // BidirectionalIterator
     Self& operator--() {
-        __sync(_mLinkPtr->prev);
+        __sync(mLinkPtr_d->prev);
         return *this;
     };
     Self operator--(int) {
-        auto oldLinkPtr = _mLinkPtr;
-        __sync(_mLinkPtr->prev);
+        auto oldLinkPtr = mLinkPtr_d;
+        __sync(mLinkPtr_d->prev);
         return oldLinkPtr;
     };
 private:
-    // update _mLinkPtr and _mPointer
+    // update mLinkPtr_d and mPointer_d
     void __sync(typename _Node::LinkType *ptr) {
-        _mLinkPtr = ptr;
-        Self::_mPointer = &(_Node::to_node(_mLinkPtr)->data);
+        mLinkPtr_d = ptr;
+        Self::mPointer_d = &(_Node::to_node(mLinkPtr_d)->data);
     }
 protected:
-    typename _Node::LinkType *_mLinkPtr;
+    typename _Node::LinkType *mLinkPtr_d;
 };
 
 template <typename T, typename Alloc = dstruct::Alloc>
@@ -65,8 +65,8 @@ protected:
     using _List = _LinkedList<T, _DoublyLinkListIterator, Alloc>;
     using typename _List::_Node;
     using typename _List::_AllocNode;
-    using _List::_mSize;
-    using _List::_mHeadNode;
+    using _List::mSize_d;
+    using _List::mHeadNode_d;
 
 public: // big five
     // use _List to complete
@@ -86,9 +86,9 @@ public: // big five
         // move list data
         _List::operator=(dstruct::move(ds));
         // update link: first-data and last-data point to new headNode
-        auto headLinkPtr = _Node::to_link(&_mHeadNode);
-        _mHeadNode.link.prev->next = headLinkPtr;
-        _mHeadNode.link.next->prev = headLinkPtr;
+        auto headLinkPtr = _Node::to_link(&mHeadNode_d);
+        mHeadNode_d.link.prev->next = headLinkPtr;
+        mHeadNode_d.link.next->prev = headLinkPtr;
         return *this;
     }
 
@@ -97,26 +97,26 @@ public: // big five
 public: // base op
 
     T back() const {
-        DSTRUCT_ASSERT(_mSize > 0);
-        return _Node::to_node(_mHeadNode.link.prev)->data;
+        DSTRUCT_ASSERT(mSize_d > 0);
+        return _Node::to_node(mHeadNode_d.link.prev)->data;
     }
 
     void push_back(const T &obj) {
         // 1. alloc memory
         _Node *nPtr = _AllocNode::allocate();
         // 2. construct node
-        _mHeadNode.data = obj; // only for contruct nPtr
-        dstruct::construct(nPtr, _mHeadNode);
+        mHeadNode_d.data = obj; // only for contruct nPtr
+        dstruct::construct(nPtr, mHeadNode_d);
         // 3. add node to list
-        _Node::LinkType::add(_mHeadNode.link.prev, _Node::to_link(nPtr));
+        _Node::LinkType::add(mHeadNode_d.link.prev, _Node::to_link(nPtr));
         // 4. increase size
-        _mSize++;
+        mSize_d++;
     }
 
     void pop_back() {
-        DSTRUCT_ASSERT(_mSize > 0);
+        DSTRUCT_ASSERT(mSize_d > 0);
         // 1. get node link ptr
-        typename _Node::LinkType *lPtr = _mHeadNode.link.prev;
+        typename _Node::LinkType *lPtr = mHeadNode_d.link.prev;
         // 2. del node from list
         _Node::LinkType::del(lPtr->prev, lPtr);
         // 3. get target node
@@ -124,7 +124,7 @@ public: // base op
         // 4. free and decrease size/len
         dstruct::destroy(nPtr);
         _AllocNode::deallocate(nPtr);
-        _mSize--;
+        mSize_d--;
     }
 
     void clear() {

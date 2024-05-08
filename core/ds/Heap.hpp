@@ -7,8 +7,8 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#ifndef HEAP_HPP__DSTRUCT
-#define HEAP_HPP__DSTRUCT
+#ifndef __HEAP_HPP__DSTRUCT
+#define __HEAP_HPP__DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/array/Vector.hpp>
@@ -26,33 +26,33 @@ protected:
 
 public:
     Heap(const Compare &cmp = Compare(), const T &obj = T()) :
-        _mCmp { cmp }, _mHeap(1, obj) { }
+        mCmp_d { cmp }, mHeap_d(1, obj) { }
 
     Heap(const IteratorType &begin, const IteratorType &end) : Heap() {
 
-        _mHeap.resize(distance(begin, end) + 1);
+        mHeap_d.resize(distance(begin, end) + 1);
 
         for (auto it = begin; it != end; it++) {
-            _mHeap.push_back(*it);
+            mHeap_d.push_back(*it);
         }
 
-        for (int i = (_mHeap.size() - 1) / 2; i >= 1; i--) {
+        for (int i = (mHeap_d.size() - 1) / 2; i >= 1; i--) {
             _adjust_down(i);
         }
     }
 
     Heap(const Heap &hep) { *this = hep; }
     Heap & operator=(const Heap &hep) {
-        _mCmp = hep._mCmp;
-        _mHeap = hep._mHeap;
+        mCmp_d = hep.mCmp_d;
+        mHeap_d = hep.mHeap_d;
         return *this;
     }
 
     Heap(Heap &&hep) { *this = dstruct::move(hep); }
     Heap & operator=(Heap &&hep) {
-        this->_mCmp = hep._mCmp;
-        this->_mHeap = dstruct::move(hep._mHeap);
-        hep._mHeap.resize(1, this->_mHeap[0]);
+        this->mCmp_d = hep.mCmp_d;
+        this->mHeap_d = dstruct::move(hep.mHeap_d);
+        hep.mHeap_d.resize(1, this->mHeap_d[0]);
         return *this;
     }
 
@@ -61,41 +61,41 @@ public:
 public: // base op
     // status
     SizeType size() const {
-        return _mHeap.size() - 1;
+        return mHeap_d.size() - 1;
     }
 
     SizeType capacity() const {
-        return _mHeap.capacity() - 1;
+        return mHeap_d.capacity() - 1;
     }
 
     bool empty() const {
-        return _mHeap.size() == 1;
+        return mHeap_d.size() == 1;
     }
 
 
     // check
     ValueType top() const {
-        return _mHeap[1];
+        return mHeap_d[1];
     }
 
     const ValueType & operator[](int index) {
-        return _mHeap[index];
+        return mHeap_d[index];
     }
 
 
     // push/pop
     void push(const T& obj) {
-        _mHeap.push_back(obj);
+        mHeap_d.push_back(obj);
         _adjust_up();
     }
 
     void pop() {
-        // T data = _mHeap[1];
+        // T data = mHeap_d[1];
         // TODO: undefined or Vector?
-        //_mHeap[1] = _mHeap.pop_back(); // when pop_back resize, _mHeap[1] will released
-        //_mHeap[1] = dstruct::move(_mHeap.back());
-        _mHeap[1] = _mHeap.back();
-        _mHeap.pop_back();
+        //mHeap_d[1] = mHeap_d.pop_back(); // when pop_back resize, mHeap_d[1] will released
+        //mHeap_d[1] = dstruct::move(mHeap_d.back());
+        mHeap_d[1] = mHeap_d.back();
+        mHeap_d.pop_back();
         _adjust_down(1);
         // return data;
     }
@@ -103,11 +103,11 @@ public: // base op
 
     // iterator/range-for support
     ConstIteratorType begin() const {
-        return _mHeap.begin() + 1;
+        return mHeap_d.begin() + 1;
     }
 
     ConstIteratorType end() const {
-        return _mHeap.end();
+        return mHeap_d.end();
     }
 
 public: // pub static
@@ -129,15 +129,15 @@ public: // pub static
     }
 
 protected:
-    Compare _mCmp;
-    _Heap _mHeap;
+    Compare mCmp_d;
+    _Heap mHeap_d;
 
     void _adjust_up() {
-        int nodeIndex = _mHeap.size() - 1;
+        int nodeIndex = mHeap_d.size() - 1;
         while (nodeIndex > 1) {
             int parent = nodeIndex / 2;
-            if (!_mCmp(_mHeap[parent], _mHeap[nodeIndex])) {
-                dstruct::swap(_mHeap[parent], _mHeap[nodeIndex]);
+            if (!mCmp_d(mHeap_d[parent], mHeap_d[nodeIndex])) {
+                dstruct::swap(mHeap_d[parent], mHeap_d[nodeIndex]);
                 nodeIndex = parent;
             } else {
                 break;
@@ -146,7 +146,7 @@ protected:
     }
 
     void _adjust_down(int nodeIndex) {
-        int heapSize = _mHeap.size();
+        int heapSize = mHeap_d.size();
         int parent = nodeIndex;
         int left, right;
 
@@ -155,17 +155,17 @@ protected:
             int right = left + 1;
             int target = parent;
 
-            if (left < heapSize && !_mCmp(_mHeap[target], _mHeap[left])) {
+            if (left < heapSize && !mCmp_d(mHeap_d[target], mHeap_d[left])) {
                 target = left;
             }
 
-            if (right < heapSize && !_mCmp(_mHeap[target], _mHeap[right])) {
+            if (right < heapSize && !mCmp_d(mHeap_d[target], mHeap_d[right])) {
                 target = right;
             }
 
             if (target == parent) break;
 
-            dstruct::swap(_mHeap[parent], _mHeap[target]);
+            dstruct::swap(mHeap_d[parent], mHeap_d[target]);
             parent = target;
         }
     }

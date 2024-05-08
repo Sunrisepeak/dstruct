@@ -8,7 +8,7 @@
 //
 
 #ifndef MAP_HPP__DSTRUCT
-#define MAP_HPP__DSTRUCT
+#define __MAP_HPP__DSTRUCT
 
 #include <core/common.hpp>
 #include <core/ds/tree/AVLTree.hpp>
@@ -29,14 +29,14 @@ struct KeyValue {
 // KeyValue
 template <typename KVType, typename CMP>
 struct KVCMPKey {
-    KVCMPKey(CMP cmp = CMP()) : __mCMP { cmp } { }
+    KVCMPKey(CMP cmp = CMP()) : mCMP_d_d { cmp } { }
 
     bool operator()(const KVType &a, const KVType &b) const {
-        return __mCMP(a.key, b.key);
+        return mCMP_d_d(a.key, b.key);
     }
 
 private:
-    CMP __mCMP;
+    CMP mCMP_d_d;
 };
 
 template <
@@ -73,30 +73,30 @@ public: // big five
 
 public: // Capacity
     bool empty() const {
-        return _mDStruct.empty();
+        return mDStruct_d.empty();
     }
 
     SizeType size() const {
-        return _mDStruct.size();
+        return mDStruct_d.size();
     }
 
     SizeType capacity() const {
-        return _mDStruct.capacity();
+        return mDStruct_d.capacity();
     }
 
 public: // Access & Modifiers
 
     void push(const KeyValueType &element) {
-        _mDStruct.push(element);
+        mDStruct_d.push(element);
     }
 
     void pop(const KeyType &key) {
-        _mDStruct.pop({key, ValueType()});
+        mDStruct_d.pop({key, ValueType()});
     }
 
     ConstReferenceType operator[](const KType &key) const {
         auto target = find(key);
-        DSTRUCT_ASSERT(target != _mDStruct.end());
+        DSTRUCT_ASSERT(target != mDStruct_d.end());
         return target->value;
     }
 
@@ -104,7 +104,7 @@ public: // Access & Modifiers
         auto target = find(key);
         if (target == end()) {
             // TODO: optimize to only once find(by find_and_insert)
-            _mDStruct.push({key, ValueType()});
+            mDStruct_d.push({key, ValueType()});
             return dstruct::_remove_const(find(key)->value);
         }
         // convert from const ValueType to ValueType - remove const
@@ -115,37 +115,37 @@ public: // Access & Modifiers
 
 public:
     IteratorType find(const KeyType &key) {
-        return _mDStruct.find(KeyValueType { key, ValueType() });
+        return mDStruct_d.find(KeyValueType { key, ValueType() });
     }
 
     IteratorType erase(IteratorType &it) {
-        return _mDStruct.erase(it);
+        return mDStruct_d.erase(it);
     }
 
     void clear() {
-        _mDStruct.clear();
+        mDStruct_d.clear();
     }
 
 public:
 
     IteratorType begin() {
-        return _mDStruct.begin();
+        return mDStruct_d.begin();
     }
 
     IteratorType end() {
-        return _mDStruct.end();
+        return mDStruct_d.end();
     }
 
     ConstIteratorType begin() const {
-        return _mDStruct.begin();
+        return mDStruct_d.begin();
     }
 
     ConstIteratorType end() const {
-        return _mDStruct.end();
+        return mDStruct_d.end();
     }
 
 protected:
-    DStruct _mDStruct;
+    DStruct mDStruct_d;
 };
 
 

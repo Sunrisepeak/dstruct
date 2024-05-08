@@ -28,22 +28,22 @@ public: // big five
     }
 public: // ForwardIterator
     Self& operator++() { 
-        __sync(_mLinkPtr->next);
+        __sync(mLinkPtr_d->next);
         return *this;
     };
     Self operator++(int) {
-        auto oldLinkPtr = _mLinkPtr;
-        __sync(_mLinkPtr->next);
+        auto oldLinkPtr = mLinkPtr_d;
+        __sync(mLinkPtr_d->next);
         return oldLinkPtr;
     };
 private:
-    // update _mLinkPtr and _mPointer
+    // update mLinkPtr_d and mPointer_d
     void __sync(typename _Node::LinkType *ptr) {
-        _mLinkPtr = ptr;
-        Self::_mPointer = &(_Node::to_node(_mLinkPtr)->data);
+        mLinkPtr_d = ptr;
+        Self::mPointer_d = &(_Node::to_node(mLinkPtr_d)->data);
     }
 protected:
-    typename _Node::LinkType *_mLinkPtr;
+    typename _Node::LinkType *mLinkPtr_d;
 };
 
 template <typename T, typename Alloc = dstruct::Alloc>
@@ -52,11 +52,11 @@ protected:
     using _List = _LinkedList<T, _SinglyLinkListIterator, Alloc>;
     using typename _List::_Node;
     using typename _List::_AllocNode;
-    using _List::_mHeadNode;
-    using _List::_mSize;
+    using _List::mHeadNode_d;
+    using _List::mSize_d;
 
 public: // big five
-    SinglyLinkedList() : _List(), _mTailNodePtr { &_mHeadNode } {
+    SinglyLinkedList() : _List(), mTailNodePtr_d { &mHeadNode_d } {
 
     }
 
@@ -69,18 +69,18 @@ public: // big five
     DSTRUCT_COPY_SEMANTICS(SinglyLinkedList) {
         clear();
         // copy
-        if (ds._mSize != 0) {
-            auto linkPtr =  ds._mHeadNode.link.next;
+        if (ds.mSize_d != 0) {
+            auto linkPtr =  ds.mHeadNode_d.link.next;
             auto nextLinkPtr = linkPtr->next;
             auto nodePtr = _Node::to_node(linkPtr);
-            while (nextLinkPtr != &(ds._mHeadNode.link)) {
+            while (nextLinkPtr != &(ds.mHeadNode_d.link)) {
                 push_back(nodePtr->data);
                 linkPtr = nextLinkPtr;
                 nextLinkPtr = nextLinkPtr->next;
                 auto nodePtr = _Node::to_node(linkPtr);
             }
             push_back(nodePtr->data);
-            _mTailNodePtr = nodePtr;
+            mTailNodePtr_d = nodePtr;
         }
         return *this;
     }
@@ -88,10 +88,10 @@ public: // big five
     DSTRUCT_MOVE_SEMANTICS(SinglyLinkedList) {
         // move list
         _List::operator=(dstruct::move(ds));
-        _mTailNodePtr = ds._mTailNodePtr;
-        _mTailNodePtr->link.next = _Node::to_link(&_mHeadNode);
+        mTailNodePtr_d = ds.mTailNodePtr_d;
+        mTailNodePtr_d->link.next = _Node::to_link(&mHeadNode_d);
         // reset
-        ds._mTailNodePtr = &(ds._mHeadNode);
+        ds.mTailNodePtr_d = &(ds.mHeadNode_d);
         return *this;
     }
 
@@ -99,58 +99,58 @@ public: // big five
 
 public:
     T back() const {
-        DSTRUCT_ASSERT(_mSize > 0);
-        return _mTailNodePtr->data;
+        DSTRUCT_ASSERT(mSize_d > 0);
+        return mTailNodePtr_d->data;
     }
 
     void push_back(const T &obj) {
         // 1. alloc and construct node
         _Node *nPtr = _AllocNode::allocate();
-        this->_mHeadNode.data = obj; // only for contruct nPtr
-        dstruct::construct(nPtr, this->_mHeadNode);
+        this->mHeadNode_d.data = obj; // only for contruct nPtr
+        dstruct::construct(nPtr, this->mHeadNode_d);
         // 2. add to list
-        _Node::LinkType::add(_Node::to_link(_mTailNodePtr), _Node::to_link(nPtr));
+        _Node::LinkType::add(_Node::to_link(mTailNodePtr_d), _Node::to_link(nPtr));
         // 3. increase size
-        _mSize++;
-        // 4. update _mTailNodePtr
-        _mTailNodePtr = nPtr;
+        mSize_d++;
+        // 4. update mTailNodePtr_d
+        mTailNodePtr_d = nPtr;
     }
 
     void push_front(const T &obj) {
         _List::push_front(obj);
-        if (_mSize == 1)
-            _mTailNodePtr = _Node::to_node(_mHeadNode.link.next);
+        if (mSize_d == 1)
+            mTailNodePtr_d = _Node::to_node(mHeadNode_d.link.next);
     }
 
     void pop_front() {
         _List::pop_front();
-        if (_mSize == 0)
-            _mTailNodePtr = &_mHeadNode;
+        if (mSize_d == 0)
+            mTailNodePtr_d = &mHeadNode_d;
     }
 
     void clear() {
         _List::_clear();
-        _mTailNodePtr = &_mHeadNode;
+        mTailNodePtr_d = &mHeadNode_d;
     }
 
 public: // low efficient
     void _pop_back() {
-        DSTRUCT_ASSERT(_mSize > 0);
-        auto link = _Node::to_link(&_mHeadNode);
-        while (link->next != _Node::to_link(_mTailNodePtr)) {
+        DSTRUCT_ASSERT(mSize_d > 0);
+        auto link = _Node::to_link(&mHeadNode_d);
+        while (link->next != _Node::to_link(mTailNodePtr_d)) {
             link = link->next;
         }
         //free and decrease size/len
-        dstruct::destroy(_mTailNodePtr);
-        _AllocNode::deallocate(_mTailNodePtr);
-        this->_mSize--;
-        // update _mTailNodePtr and link
-        _mTailNodePtr = _Node::to_node(link);
-        _mTailNodePtr->link.next = _Node::to_link(&_mHeadNode);
+        dstruct::destroy(mTailNodePtr_d);
+        _AllocNode::deallocate(mTailNodePtr_d);
+        this->mSize_d--;
+        // update mTailNodePtr_d and link
+        mTailNodePtr_d = _Node::to_node(link);
+        mTailNodePtr_d->link.next = _Node::to_link(&mHeadNode_d);
     }
 
 protected:
-    _Node *_mTailNodePtr;
+    _Node *mTailNodePtr_d;
 };
 
 }

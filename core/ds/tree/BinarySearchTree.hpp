@@ -30,7 +30,7 @@ protected:
 
 public: // big five
 
-    BinarySearchTree(CMP cmp = CMP()) : __BinaryTree { nullptr, 0 }, _mCmp { cmp } { }
+    BinarySearchTree(CMP cmp = CMP()) : __BinaryTree { nullptr, 0 }, mCmp_d { cmp } { }
 
     BinarySearchTree(const PrimitiveIterator<T> &begin, const PrimitiveIterator<T> &end, CMP cmp = CMP()) :
         BinarySearchTree(cmp) {
@@ -41,9 +41,9 @@ public: // big five
 
     DSTRUCT_COPY_SEMANTICS(BinarySearchTree) {
         __BinaryTree::clear();
-        __BinaryTree::_mRootPtr = __BinaryTree::copy(ds._mRootPtr);
-        __BinaryTree::_mSize = ds._mSize;
-        _mCmp = ds._mCmp;
+        __BinaryTree::mRootPtr_d = __BinaryTree::copy(ds.mRootPtr_d);
+        __BinaryTree::mSize_d = ds.mSize_d;
+        mCmp_d = ds.mCmp_d;
         return *this;
     }
 
@@ -51,13 +51,13 @@ public: // big five
         __BinaryTree::clear();
 
         // move
-        __BinaryTree::_mRootPtr = ds._mRootPtr;
-        __BinaryTree::_mSize = ds._mSize;
-        _mCmp = ds._mCmp;
+        __BinaryTree::mRootPtr_d = ds.mRootPtr_d;
+        __BinaryTree::mSize_d = ds.mSize_d;
+        mCmp_d = ds.mCmp_d;
 
         // reset
-        ds._mRootPtr = nullptr;
-        ds._mSize = 0;
+        ds.mRootPtr_d = nullptr;
+        ds.mSize_d = 0;
 
         return *this;
     }
@@ -68,24 +68,24 @@ public: // push/pop
 
     void push(const T &obj) {
         auto tree = _insert(obj);
-        if (__BinaryTree::_mRootPtr == nullptr)
+        if (__BinaryTree::mRootPtr_d == nullptr)
             __BinaryTree::_update_root(tree);
-        __BinaryTree::_mSize++;
+        __BinaryTree::mSize_d++;
     }
 
     void pop(const T &obj) {
-        if (__BinaryTree::_mSize == 0) return; // TODO: better method?
-        auto root = _delete(_Node::to_link(__BinaryTree::_mRootPtr), obj);
-        if (__BinaryTree::_mRootPtr != _Node::to_node(root)) {
+        if (__BinaryTree::mSize_d == 0) return; // TODO: better method?
+        auto root = _delete(_Node::to_link(__BinaryTree::mRootPtr_d), obj);
+        if (__BinaryTree::mRootPtr_d != _Node::to_node(root)) {
             __BinaryTree::_update_root(root);
         }
-        // _mSize--; in _try_to_delete
+        // mSize_d--; in _try_to_delete
     }
 
 public:
     typename BinarySearchTree::ConstIteratorType
     find(const T &obj) const {
-        auto target = BinarySearchTreeBase<T, CMP>::_find(_Node::to_link(__BinaryTree::_mRootPtr), obj, _mCmp);
+        auto target = BinarySearchTreeBase<T, CMP>::_find(_Node::to_link(__BinaryTree::mRootPtr_d), obj, mCmp_d);
         return typename BinarySearchTree::ConstIteratorType(
             __BinaryTree::_create_iterator(target, TraversalType::InOrder),
             true
@@ -125,7 +125,7 @@ public: // range-for and iterator
     begin(TraversalType ttype = TraversalType::InOrder) const {
         return typename __BinaryTree::ConstIteratorType(
             __BinaryTree::_create_iterator(
-                __BinaryTree::first_node(_Node::to_link(__BinaryTree::_mRootPtr), ttype),
+                __BinaryTree::first_node(_Node::to_link(__BinaryTree::mRootPtr_d), ttype),
                 ttype
             ),
             true
@@ -141,19 +141,19 @@ public: // range-for and iterator
     }
 
 protected:
-    CMP _mCmp;
+    CMP mCmp_d;
 
     typename _Node::LinkType * _insert(const T &obj) {
 
-        typename _Node::LinkType * target = _Node::to_link(__BinaryTree::_mRootPtr);
+        typename _Node::LinkType * target = _Node::to_link(__BinaryTree::mRootPtr_d);
         typename _Node::LinkType * parent = nullptr;
 
         // find parent(leaf-node)
         while (target != nullptr) {
             parent = target;
-            if (_mCmp(obj, _Node::to_node(target)->data)) {
+            if (mCmp_d(obj, _Node::to_node(target)->data)) {
                 target = target->left;
-            } else if (_mCmp(_Node::to_node(target)->data, obj)) {
+            } else if (mCmp_d(_Node::to_node(target)->data, obj)) {
                 target = target->right;
             } else {
                 // TODO: pls check your cmp, a < b, b < a, but a != b
@@ -170,7 +170,7 @@ protected:
         if (parent != nullptr) { // nodePtr isn't root
             newNodeLink->parent = parent;
             decltype(parent) subTree = nullptr; // for readability
-            if (_mCmp(obj, _Node::to_node(parent)->data)) {
+            if (mCmp_d(obj, _Node::to_node(parent)->data)) {
                 subTree = parent->left;
                 parent->left = newNodeLink;
                 newNodeLink->left = subTree;
@@ -188,9 +188,9 @@ protected:
 
     typename _Node::LinkType * _delete(typename _Node::LinkType *root, const T &obj) {
         auto nPtr = _Node::to_node(root);
-        if (_mCmp(obj, nPtr->data)) {
+        if (mCmp_d(obj, nPtr->data)) {
             root->left = _delete(root->left, obj);
-        } else if (_mCmp(nPtr->data, obj)) {
+        } else if (mCmp_d(nPtr->data, obj)) {
             root->right = _delete(root->right, obj);
         } else {
             // try to del the node
@@ -231,7 +231,7 @@ protected:
         auto nPtr = _Node::to_node(linkPtr);
         dstruct::destroy(nPtr);
         _AllocNode::deallocate(nPtr);
-        __BinaryTree::_mSize--;
+        __BinaryTree::mSize_d--;
 
         return subTree;
     }

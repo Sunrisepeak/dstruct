@@ -35,8 +35,8 @@ protected:
 
 public: // big five
     _LinkedList() {
-        _Node::init(&_mHeadNode);
-        _mSize = 0;
+        _Node::init(&mHeadNode_d);
+        mSize_d = 0;
     }
 
     // copy/move-action impl in subclass
@@ -47,12 +47,12 @@ public: // big five
         // 1._clear
         _clear();
         // 2.only move data
-        _LinkedList::_mHeadNode = ds._mHeadNode;
-        _LinkedList::_mSize = ds._mSize;
+        _LinkedList::mHeadNode_d = ds.mHeadNode_d;
+        _LinkedList::mSize_d = ds.mSize_d;
         // 3.spec move impl in subclass
         // 4.reset
-        _Node::init(&(ds._mHeadNode));
-        ds._mSize = 0;
+        _Node::init(&(ds.mHeadNode_d));
+        ds.mSize_d = 0;
 
         return *this;
     }
@@ -64,21 +64,21 @@ public: // big five
 public: // Capacity
 
     bool empty() const {
-        // Note: when _mSize == 1 ->  _mHeadNode.link.next -> _mHeadNode.link
-        if (_mSize == 0) {
-            DSTRUCT_ASSERT(_mHeadNode.link.next == &(_mHeadNode.link));
+        // Note: when mSize_d == 1 ->  mHeadNode_d.link.next -> mHeadNode_d.link
+        if (mSize_d == 0) {
+            DSTRUCT_ASSERT(mHeadNode_d.link.next == &(mHeadNode_d.link));
             return true;
         }
         return false;
     }
 
     typename _LinkedList::SizeType size() const {
-        return _mSize;
+        return mSize_d;
     }
 
 public: // Access
     T front() const {
-        return _Node::to_node(_mHeadNode.link.next)->data;
+        return _Node::to_node(mHeadNode_d.link.next)->data;
     }
 
 public: // Modifiers
@@ -89,12 +89,12 @@ public: // Modifiers
     void push_front(const T &obj) {
         // 1. alloc and construct node
         _Node *nPtr = _AllocNode::allocate();
-        _mHeadNode.data = obj; // only for contruct nPtr
-        dstruct::construct(nPtr, _mHeadNode);
+        mHeadNode_d.data = obj; // only for contruct nPtr
+        dstruct::construct(nPtr, mHeadNode_d);
         // 2. add to list
-        _Node::LinkType::add(&(_mHeadNode.link), _Node::to_link(nPtr));
+        _Node::LinkType::add(&(mHeadNode_d.link), _Node::to_link(nPtr));
         // 3. increase size
-        _mSize++;
+        mSize_d++;
     }
 
     void pop() {
@@ -102,44 +102,44 @@ public: // Modifiers
     }
 
     void pop_front() {
-        DSTRUCT_ASSERT(_mSize > 0);
+        DSTRUCT_ASSERT(mSize_d > 0);
         // 1. get target node's link
-        typename _Node::LinkType *lPtr = _mHeadNode.link.next;
+        typename _Node::LinkType *lPtr = mHeadNode_d.link.next;
         // 2. del target node
-        _Node::LinkType::del(_Node::to_link(&_mHeadNode), lPtr);
+        _Node::LinkType::del(_Node::to_link(&mHeadNode_d), lPtr);
         // 3. get target node
         _Node *nPtr = _Node::to_node(lPtr);
         // 4. free and decrease size/len
         dstruct::destroy(nPtr);
         _AllocNode::deallocate(nPtr);
-        _mSize--;
+        mSize_d--;
     }
 
 public: // support it/range-for
 
     typename _LinkedList::IteratorType
     begin() {
-        return typename _LinkedList::IteratorType(_mHeadNode.link.next);
+        return typename _LinkedList::IteratorType(mHeadNode_d.link.next);
     }
 
     typename _LinkedList::ConstIteratorType
     begin() const {
-        return typename _LinkedList::ConstIteratorType(_mHeadNode.link.next);
+        return typename _LinkedList::ConstIteratorType(mHeadNode_d.link.next);
     }
 
     typename _LinkedList::IteratorType
     end() {
-        return typename _LinkedList::IteratorType(_Node::to_link(&_mHeadNode));
+        return typename _LinkedList::IteratorType(_Node::to_link(&mHeadNode_d));
     }
 
     typename _LinkedList::ConstIteratorType
     end() const { // headNode-link
-        return typename _LinkedList::ConstIteratorType(_Node::to_link(&_mHeadNode));
+        return typename _LinkedList::ConstIteratorType(_Node::to_link(&mHeadNode_d));
     }
 
 protected:
-    mutable _Node _mHeadNode;
-    typename _LinkedList::SizeType _mSize;
+    mutable _Node mHeadNode_d;
+    typename _LinkedList::SizeType mSize_d;
 
     void _clear() {
         while (!empty()) {

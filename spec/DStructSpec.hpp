@@ -88,10 +88,10 @@ public: // bigfive
 
 // Interface Spec
 public: // base op
-    ReferenceType operator*() const { return *_mPointer; }
-    PointerType operator->() const { return _mPointer; }
-    virtual bool operator!=(const DStructIteratorTypeSpec &it) const { return _mPointer != it._mPointer; }
-    virtual bool operator==(const DStructIteratorTypeSpec &it) const { return _mPointer == it._mPointer; }
+    ReferenceType operator*() const { return *mPointer_d; }
+    PointerType operator->() const { return mPointer_d; }
+    virtual bool operator!=(const DStructIteratorTypeSpec &it) const { return mPointer_d != it.mPointer_d; }
+    virtual bool operator==(const DStructIteratorTypeSpec &it) const { return mPointer_d == it.mPointer_d; }
 
 /* pls: according to your dstruct impl them
 public: // ForwardIterator
@@ -109,7 +109,7 @@ public: // RandomIterator
 
 // Member Var Spec
 protected: // member var
-    PointerType _mPointer;
+    PointerType mPointer_d;
 };
 
 

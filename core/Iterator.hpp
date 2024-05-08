@@ -45,27 +45,27 @@ private:
 public:
     PrimitiveIterator() = default;
     PrimitiveIterator(T *ptr) : PrimitiveIterator() {
-        Self::_mPointer = ptr;
+        Self::mPointer_d = ptr;
     }
 
 public: // ForwardIterator
-    Self& operator++() { Self::_mPointer++; return *this; };
-    Self operator++(int) { return Self::_mPointer++; };
+    Self& operator++() { Self::mPointer_d++; return *this; };
+    Self operator++(int) { return Self::mPointer_d++; };
 public: // BidirectionalIterator
-    Self& operator--() { Self::_mPointer--; return *this; };
-    Self operator--(int) { return Self::_mPointer--; };
+    Self& operator--() { Self::mPointer_d--; return *this; };
+    Self operator--(int) { return Self::mPointer_d--; };
 public: // RandomIterator
-    Self operator+(const int &n) const { return Self::_mPointer + n; };
-    Self operator-(const int &n) const { return Self::_mPointer - n; };
-//    typename Self::ReferenceType operator[](int index) { return Self::_mPointer[index]; }
-//    typename Self::ValueType operator[](int index) const { return Self::_mPointer[index]; };
+    Self operator+(const int &n) const { return Self::mPointer_d + n; };
+    Self operator-(const int &n) const { return Self::mPointer_d - n; };
+//    typename Self::ReferenceType operator[](int index) { return Self::mPointer_d[index]; }
+//    typename Self::ValueType operator[](int index) const { return Self::mPointer_d[index]; };
 };
 
 
 template <typename T>
 static typename PrimitiveIterator<T>::DifferenceType
 operator-(const PrimitiveIterator<T> &last, const PrimitiveIterator<T> &first) {
-    return last._mPointer - first._mPointer;
+    return last.mPointer_d - first.mPointer_d;
 };
 
 // instance (int) function template
