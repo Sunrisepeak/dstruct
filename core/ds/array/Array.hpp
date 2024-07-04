@@ -29,22 +29,6 @@ public: // big Five
         }
     }
 
-    Array(const Array &arr) {  *this = arr; }
-    Array & operator=(const Array &arr) {
-        for (int i = 0; i < N; i++) {
-            mC_d[i] = arr.mC_d[i];
-        }
-        return *this;
-    }
-
-    Array(Array &&arr) { *this = dstruct::move(arr); };
-    Array & operator=(Array &&arr) {
-        for (int i = 0; i < N; i++) mC_d[i] = dstruct::move(arr.mC_d[i]);
-        return *this;
-    }
-
-    ~Array() = default; // array: auto-destroy for every element
-
 public: // Capacity
     bool empty() const {
         return N == 0;
