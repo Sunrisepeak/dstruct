@@ -1,0 +1,15 @@
+// Use of this source code is governed by Apache-2.0 License
+// that can be found in the License file.
+//
+// Copyright (C) 2023 - present  Sunrisepeak
+//
+// Author: Sunrisepeak (speakshen@163.com)
+// ProjectLinks: https://github.com/Sunrisepeak/DStruct
+//
+
+#ifndef INITIALIZER_LIST_HPP_DSTRUCT
+#define INITIALIZER_LIST_HPP_DSTRUCT
+
+#include <initializer_list>
+
+#endif

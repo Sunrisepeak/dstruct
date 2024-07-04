@@ -10,8 +10,15 @@
 #ifndef DSTRUCT_PORT_HPP_DSTRUCT
 #define DSTRUCT_PORT_HPP_DSTRUCT
 
+#include <port/std/initializer_list.hpp>
+
 namespace dstruct {
-namespace port { // pls impl/port the alloc
+namespace port {
+    
+    template <typename T>
+    using initializer_list = std::initializer_list<T>;
+    
+    // pls impl/port the alloc
     static void *allocate(int bytes);
     static void deallocate(void *addr, int bytes);
 } // namespace port end
