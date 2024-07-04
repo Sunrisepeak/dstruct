@@ -27,7 +27,7 @@ jobs:
     - name: set build mode
       run: xmake f -m debug
     - name: build examples|test
-      run: xmake
+      run: xmake -y
     - name: run all test
       run: xmake r
 
@@ -47,6 +47,6 @@ jobs:
     - name: set build mode
       run: xmake f -m debug
     - name: build examples|test
-      run: xmake
+      run: xmake -y
     - name: run all test
       run: xmake r
