@@ -15,13 +15,15 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: book
+
     steps:
     - uses: actions/checkout@v3
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
         xmake-version: branch@master
-    - name: cd to test dir
-      run: cd tests
     - name: set build mode
       run: xmake f -m debug
     - name: build examples|test
@@ -33,13 +35,15 @@ jobs:
 
     runs-on: windows-latest
 
+    defaults:
+      run:
+        working-directory: book
+
     steps:
     - uses: actions/checkout@v3
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
         xmake-version: branch@master
-    - name: cd to test dir
-      run: cd tests
     - name: set build mode
       run: xmake f -m debug
     - name: build examples|test
