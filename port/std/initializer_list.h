@@ -7,9 +7,9 @@
 // ProjectLinks: https://github.com/Sunrisepeak/DStruct
 //
 
-#include <gtest/gtest.h>
+#ifndef INITIALIZER_LIST_HPP_DSTRUCT
+#define INITIALIZER_LIST_HPP_DSTRUCT
 
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
+#include <initializer_list>
+
+#endif

@@ -28,6 +28,9 @@ struct Alloc {
 
 } // namespace dstruct
 
+// std
+#include <port/std/initializer_list.h>
+
 // interface impl
 #ifdef ENABLE_SMA
 #include <port/static-memory/sma-dstruct-port.hpp>
