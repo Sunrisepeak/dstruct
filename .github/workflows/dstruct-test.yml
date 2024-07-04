@@ -25,7 +25,7 @@ jobs:
       with:
         xmake-version: branch@master
     - name: set build mode
-      run: xmake f -m debug
+      run: xmake f -m debug -y
     - name: build examples|test
       run: xmake -y
     - name: run all test
@@ -45,7 +45,7 @@ jobs:
       with:
         xmake-version: branch@master
     - name: set build mode
-      run: xmake f -m debug
+      run: xmake f -m debug -y
     - name: build examples|test
       run: xmake -y
     - name: run all test
