@@ -47,6 +47,19 @@ public: // big Five
         }
     }
 
+public: // Capacity
+    bool empty() const noexcept {
+        return N == 0;
+    }
+
+    SizeType size() const noexcept {
+        return N;
+    }
+
+    SizeType capacity() const noexcept {
+        return N == 0 ? 1 : N;
+    }
+
 public: // Access
     ConstReferenceType back() const noexcept {
         return mData[N - 1];
@@ -76,25 +89,12 @@ public: // Access
         return mData[index];
     }
 
-    PointerType data() const noexcept {
+    PointerType data() noexcept {
         return mData;
     }
 
-    ConstPointerType data() noexcept {
+    ConstPointerType data() const noexcept {
         return mData;
-    }
-
-public: // Capacity
-    bool empty() const noexcept {
-        return N == 0;
-    }
-
-    SizeType size() const noexcept {
-        return N;
-    }
-
-    SizeType capacity() const noexcept {
-        return N;
     }
 
 public: // iterator
@@ -108,14 +108,28 @@ public: // iterator
 
 public: // Method chaining
     using SortCmpFunc = bool (*)(ConstReferenceType, ConstReferenceType);
-    Array & sort(SortCmpFunc cmp = [](ConstReferenceType a, ConstReferenceType b) { return a < b; }) {
+    Array & sort(SortCmpFunc cmp = [](ConstReferenceType a, ConstReferenceType b) { return a < b; }) noexcept {
         // tmp-impl
-        for (std::size_t i = 0; i < N - 1; ++i) {
-            for (std::size_t j = 0; j < N - 1 - i; ++j) {
+        for (int i = 0; i < N - 1; ++i) {
+            for (int j = 0; j < N - 1 - i; ++j) {
                 if (!cmp(mData[j], mData[j + 1])) {
                     dstruct::swap(mData[j], mData[j + 1]);
                 }
             }
+        }
+        return *this;
+    }
+
+    Array & reverse() {
+        for (int i = 0; i < N / 2; i++) {
+            dstruct::swap((*this)[i], (*this)[-1 - i]);
+        }
+        return *this;
+    }
+
+    Array & swap(Array &arr) {
+        for (int i = 0; i < N; i++) {
+            dstruct::swap(mData[i], arr.mData[i]);
         }
         return *this;
     }

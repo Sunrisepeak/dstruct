@@ -12,6 +12,10 @@
 
 //#define ENABLE_SMA
 
+// base
+
+#include <core/utils.hpp>
+
 #include <dstruct-static.hpp>
 
 #include <core/ds/Heap.hpp>
