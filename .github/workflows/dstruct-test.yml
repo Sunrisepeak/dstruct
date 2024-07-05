@@ -15,15 +15,19 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: tests
+
     steps:
     - uses: actions/checkout@v3
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
         xmake-version: branch@master
     - name: set build mode
-      run: xmake f -m debug
+      run: xmake f -m debug -y
     - name: build examples|test
-      run: xmake
+      run: xmake -y
     - name: run all test
       run: xmake r
 
@@ -31,14 +35,18 @@ jobs:
 
     runs-on: windows-latest
 
+    defaults:
+      run:
+        working-directory: tests
+
     steps:
     - uses: actions/checkout@v3
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
         xmake-version: branch@master
     - name: set build mode
-      run: xmake f -m debug
+      run: xmake f -m debug -y
     - name: build examples|test
-      run: xmake
+      run: xmake -y
     - name: run all test
       run: xmake r

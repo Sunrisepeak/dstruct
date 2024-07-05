@@ -49,6 +49,26 @@ struct IsPointer<T *> {
 };
 
 template <typename T>
+struct IsConst {
+    const static bool value = false;
+};
+
+template <typename T>
+struct IsConst<const T> {
+    const static bool value = true;
+};
+
+template <typename T>
+struct IsConst<const T &> {
+    const static bool value = true;
+};
+
+template <typename T>
+struct IsConst<const T *> {
+    const static bool value = true;
+};
+
+template <typename T>
 struct less {
     bool operator()(const T& a, const T& b) const {
         return a < b;

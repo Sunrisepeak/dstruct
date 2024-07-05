@@ -17,88 +17,125 @@
 namespace dstruct {
 
 template <typename T, size_t N>
-class Array : public DStructTypeSpec_<T, dstruct::Alloc /*unused*/ , PrimitiveIterator> {
+class Array : public DStructTypeSpec_<T, void, PrimitiveIterator> {
+
+    DSTRUCT_TYPE_SPEC_HELPER(Array)
 
 public: // big Five
 
     Array() = default;
 
-    Array(typename Array::ConstReferenceType element) {
+    Array(ConstReferenceType element) {
         for (int i = 0; i < N; i++) {
-            mC_d[i] = element;
+            mData[i] = element;
         }
     }
 
-    Array(const Array &arr) {  *this = arr; }
-    Array & operator=(const Array &arr) {
-        for (int i = 0; i < N; i++) {
-            mC_d[i] = arr.mC_d[i];
+    Array(port::initializer_list<T> &&list) {
+        auto it = list.begin();
+        int i = 0;
+
+        while (it != list.end() && i < N) {
+            mData[i] = dstruct::move(*it);
+            it++;
+            i++;
         }
-        return *this;
-    }
 
-    Array(Array &&arr) { *this = dstruct::move(arr); };
-    Array & operator=(Array &&arr) {
-        for (int i = 0; i < N; i++) mC_d[i] = dstruct::move(arr.mC_d[i]);
-        return *this;
+        while (i < N) {
+            mData[i] = T();
+            i++;
+        }
     }
-
-    ~Array() = default; // array: auto-destroy for every element
 
 public: // Capacity
-    bool empty() const {
+    bool empty() const noexcept {
         return N == 0;
     }
 
-    typename Array::SizeType size() const {
+    SizeType size() const noexcept {
         return N;
     }
 
-    typename Array::SizeType capacity() const {
-        return N;
+    SizeType capacity() const noexcept {
+        return N == 0 ? 1 : N;
     }
 
 public: // Access
-    typename Array::ConstReferenceType back() const {
-        return mC_d[N - 1];
+    ConstReferenceType back() const noexcept {
+        return mData[N - 1];
     }
 
-    typename Array::ConstReferenceType front() const {
-        return mC_d[0];
+    ReferenceType back() noexcept {
+        return mData[N - 1];
     }
 
-    typename Array::ConstReferenceType operator[](int index) const {
+    ConstReferenceType front() const noexcept {
+        return mData[0];
+    }
+
+    ReferenceType front() noexcept {
+        return mData[0];
+    }
+
+    ConstReferenceType operator[](int index) const noexcept {
         if (index < 0)
             index = N + index;
-        return mC_d[index];
+        return mData[index];
     }
 
-public: // Modifiers
-    typename Array::ReferenceType operator[](int index) {
+    ReferenceType operator[](int index) noexcept {
         if (index < 0)
             index = N + index;
-        return mC_d[index];
+        return mData[index];
+    }
+
+    PointerType data() noexcept {
+        return mData;
+    }
+
+    ConstPointerType data() const noexcept {
+        return mData;
     }
 
 public: // iterator
-    typename Array::IteratorType begin() {
-        return mC_d;
+    IteratorType begin() noexcept { return mData; }
+    ConstIteratorType begin() const noexcept { return mData; }
+    ConstIteratorType cbegin() const noexcept { return mData; }
+
+    IteratorType end() noexcept { return mData + N; }
+    ConstIteratorType end() const noexcept { return mData + N; }
+    ConstIteratorType cend() const noexcept { return mData + N; }
+
+public: // Method chaining
+    using SortCmpFunc = bool (*)(ConstReferenceType, ConstReferenceType);
+    Array & sort(SortCmpFunc cmp = [](ConstReferenceType a, ConstReferenceType b) { return a < b; }) noexcept {
+        // tmp-impl
+        for (int i = 0; i < N - 1; ++i) {
+            for (int j = 0; j < N - 1 - i; ++j) {
+                if (!cmp(mData[j], mData[j + 1])) {
+                    dstruct::swap(mData[j], mData[j + 1]);
+                }
+            }
+        }
+        return *this;
     }
 
-    typename Array::ConstIteratorType begin() const {
-        return mC_d;
+    Array & reverse() {
+        for (int i = 0; i < N / 2; i++) {
+            dstruct::swap((*this)[i], (*this)[-1 - i]);
+        }
+        return *this;
     }
 
-    typename Array::IteratorType end() {
-        return mC_d + N;
-    }
-
-    typename Array::ConstIteratorType end() const {
-        return mC_d + N;
+    Array & swap(Array &arr) {
+        for (int i = 0; i < N; i++) {
+            dstruct::swap(mData[i], arr.mData[i]);
+        }
+        return *this;
     }
 
 protected:
-    T mC_d[N == 0 ? 1 : N];
+    T mData[N == 0 ? 1 : N];
 }; // Array
 
 };

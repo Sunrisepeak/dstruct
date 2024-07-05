@@ -18,19 +18,6 @@
 
 namespace dstruct {
 
-#define DSTRUCT_TYPE_SPEC_HELPER(DStruct) \
-public: \
-    using ValueType            = typename DStruct::ValueType; \
-    using ReferenceType        = typename DStruct::ReferenceType; \
-    using ConstReferenceType   = typename DStruct::ConstReferenceType; \
-    using PointerType          = typename DStruct::PointerType; \
-    using ConstPointerType     = typename DStruct::ConstPointerType; \
-    using SizeType             = typename DStruct::SizeType; \
-    using DifferenceType       = typename DStruct::DifferenceType; \
-public: \
-    using IteratorType         = typename DStruct::IteratorType; \
-    using ConstIteratorType    = typename DStruct::ConstIteratorType;
-
 #define DSTRUCT_COPY_SEMANTICS(DStruct) \
     DStruct(const DStruct &ds) : DStruct() { *this = ds; } \
     DStruct & operator=(const DStruct &ds) { \
